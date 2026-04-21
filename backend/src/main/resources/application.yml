@@ -3,6 +3,9 @@ spring:
     url: jdbc:mysql://localhost:3306/TomaFlowDB?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
     password: ${DB_PASSWORD:}
+    url: jdbc:mysql://tomaflow-db-tomaflow.d.aivencloud.com:16057/TomaFlowDB?useSSL=true&serverTimezone=UTC
+    username: avnadmin
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
