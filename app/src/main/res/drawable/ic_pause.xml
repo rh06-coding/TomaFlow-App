@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ic_pause.xml — Pause icon
+    Converted from ic_pause.svg (40×48 viewBox).
+    Pause bars are symmetric, so no flip needed — but kept consistent.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="48dp"
+    android:viewportWidth="40"
+    android:viewportHeight="48">
+
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M12,12 L18,12 L18,36 L12,36 Z" />
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M22,12 L28,12 L28,36 L22,36 Z" />
+</vector>
