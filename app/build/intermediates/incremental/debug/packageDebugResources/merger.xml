@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~:!&lt;dir>navigation"><source path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res"><file name="selector_nav_item" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\color\selector_nav_item.xml" qualifiers="" type="color"/><file name="bg_btn_play_pause" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\bg_btn_play_pause.xml" qualifiers="" type="drawable"/><file name="ic_launcher_background" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\ic_launcher_background.xml" qualifiers="" type="drawable"/><file name="ic_launcher_foreground" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\ic_launcher_foreground.xml" qualifiers="" type="drawable"/><file name="ic_nav_focus" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\ic_nav_focus.xml" qualifiers="" type="drawable"/><file name="ic_nav_rewards" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\ic_nav_rewards.xml" qualifiers="" type="drawable"/><file name="ic_nav_settings" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\ic_nav_settings.xml" qualifiers="" type="drawable"/><file name="ic_nav_stats" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\ic_nav_stats.xml" qualifiers="" type="drawable"/><file name="ic_nav_tasks" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\ic_nav_tasks.xml" qualifiers="" type="drawable"/><file name="ic_pause" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\ic_pause.xml" qualifiers="" type="drawable"/><file name="ic_play" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\ic_play.xml" qualifiers="" type="drawable"/><file name="ic_reset" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\ic_reset.xml" qualifiers="" type="drawable"/><file name="ic_skip" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\ic_skip.xml" qualifiers="" type="drawable"/><file name="ic_task_leaf" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\ic_task_leaf.xml" qualifiers="" type="drawable"/><file name="ripple_circle_ghost" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\ripple_circle_ghost.xml" qualifiers="" type="drawable"/><file name="shape_dot_badge" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\shape_dot_badge.xml" qualifiers="" type="drawable"/><file name="shape_task_icon_bg" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\drawable\shape_task_icon_bg.xml" qualifiers="" type="drawable"/><file name="manrope_bold" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\font\manrope_bold.ttf" qualifiers="" type="font"/><file name="manrope_extrabold" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\font\manrope_extrabold.ttf" qualifiers="" type="font"/><file name="manrope_medium" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\font\manrope_medium.ttf" qualifiers="" type="font"/><file name="manrope_regular" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\font\manrope_regular.ttf" qualifiers="" type="font"/><file name="manrope_semibold" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\font\manrope_semibold.ttf" qualifiers="" type="font"/><file name="activity_main" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\layout\activity_main.xml" qualifiers="" type="layout"/><file name="menu_bottom_nav" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\menu\menu_bottom_nav.xml" qualifiers="" type="menu"/><file name="ic_launcher" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\mipmap-anydpi-v26\ic_launcher.xml" qualifiers="anydpi-v26" type="mipmap"/><file name="ic_launcher_round" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\mipmap-anydpi-v26\ic_launcher_round.xml" qualifiers="anydpi-v26" type="mipmap"/><file path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\values\attrs.xml" qualifiers=""><declare-styleable name="TimerView">
+        
+        <attr format="color" name="trackColor"/>
+        
+        <attr format="color" name="progressColor"/>
+        
+        <attr format="dimension" name="strokeWidth"/>
+    </declare-styleable></file><file path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\values\colors.xml" qualifiers=""><color name="palette_red_primary">#AF101A</color><color name="palette_red_dark">#8B0D15</color><color name="palette_red_track">#FFDAD6</color><color name="palette_green">#1B6D24</color><color name="palette_green_tint">#4DA03000</color><color name="palette_near_black">#1C1B1F</color><color name="palette_warm_white">#FDF8FD</color><color name="palette_surface">#FFFFFF</color><color name="palette_muted_brown">#5B403D</color><color name="color_primary">#AF101A</color><color name="color_primary_80">#CC1A1F</color><color name="color_primary_dark">#8B0D15</color><color name="color_background">#FDF8FD</color><color name="color_surface">#FFFFFF</color><color name="color_on_background">#1C1B1F</color><color name="color_muted_text">#995B403D</color><color name="color_label_text">#CCAF101A</color><color name="color_green">#1B6D24</color><color name="color_green_tint">#4DA0F399</color><color name="color_timer_track">#FFDAD6</color><color name="color_border">#1AE4BEBA</color><color name="color_nav_bar_bg">#F2FDF8FD</color><color name="color_nav_inactive">#737373</color><color name="color_nav_active">#AF101A</color><color name="color_nav_selected_bg">#F1ECF2</color><color name="white">#FFFFFF</color><color name="black">#000000</color></file><file path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\values\strings.xml" qualifiers=""><string name="app_name">TomaFlow</string><string name="label_current_session">Current Session</string><string name="title_focus_time">Focus Time</string><string name="label_deep_work">Deep Work</string><string name="cd_reset_timer">Reset timer</string><string name="cd_start_pause_timer">Start or pause timer</string><string name="cd_skip_timer">Skip session</string><string name="cd_task_icon">Task category icon</string><string name="placeholder_task_title">Design System Review</string><string name="placeholder_task_subtitle">Part of Project Sanctuary</string><string name="session_skipped">Session skipped</string><string name="session_complete">Great job! Session complete 🎉</string><string name="navigate_tasks_hint">Opening Tasks…</string><string name="nav_focus">Focus</string><string name="nav_tasks">Tasks</string><string name="nav_stats">Stats</string><string name="nav_rewards">Rewards</string><string name="nav_settings">Settings</string><string name="label_my_tasks">My Tasks</string><string name="title_todo_list">To-Do List</string><string name="hint_add_task">Add a new task…</string><string name="label_weekly_progress">Weekly Progress</string><string name="title_statistics">Statistics</string><string name="label_total_hours">Total Hours</string><string name="label_total_cycles">Total Cycles</string><string name="label_focus_hours_chart">Focus Hours</string><string name="label_cycles_chart">Pomodoro Cycles</string><string name="label_achievements">Achievements</string><string name="title_rewards">Rewards</string><string name="label_collected_rewards">Collected Rewards</string><string name="label_user_level">Focus Master</string><string name="label_user_level_detail">Level 8 • 127 hours</string><string name="label_preferences">Preferences</string><string name="title_settings">Settings</string><string name="label_work_duration">Work Duration</string><string name="label_break_duration">Break Duration</string><string name="label_sound_notifications">Sound Notifications</string><string name="desc_sound_notifications">Play sound when timer ends</string><string name="label_strict_mode">Strict Mode</string><string name="desc_strict_mode">Block distracting apps during focus</string><string name="label_about">About TomaFlow</string><string name="label_version">Version 1.0.0</string><string name="label_built_with">Built with Material Design 3</string></file><file path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\values\themes.xml" qualifiers=""><style name="Theme.TomaFlow" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryVariant">@color/color_primary_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        
+        <item name="colorSecondary">@color/color_green</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        
+        <item name="android:colorBackground">@color/color_background</item>
+        <item name="colorSurface">@color/color_surface</item>
+        <item name="colorOnSurface">@color/color_on_background</item>
+
+        
+        <item name="android:statusBarColor">@color/color_background</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        
+        <item name="android:navigationBarColor">@color/color_nav_bar_bg</item>
+
+        
+        <item name="android:fontFamily">@font/manrope_regular</item>
+
+        
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.TomaFlow.Small</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.TomaFlow.Medium</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.TomaFlow.Large</item>
+
+        
+        <item name="bottomNavigationStyle">@style/Widget.TomaFlow.BottomNavigation</item>
+
+    </style><style name="ShapeAppearance.TomaFlow.Small" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerSize">16dp</item>
+    </style><style name="ShapeAppearance.TomaFlow.Medium" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerSize">24dp</item>
+    </style><style name="ShapeAppearance.TomaFlow.Large" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerSize">32dp</item>
+    </style><style name="Widget.TomaFlow.BottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">@color/color_nav_bar_bg</item>
+        <item name="itemIconTint">@color/selector_nav_item</item>
+        <item name="itemTextColor">@color/selector_nav_item</item>
+        <item name="elevation">4dp</item>
+    </style><style name="Widget.TomaFlow.Card" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">24dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/color_surface</item>
+        <item name="strokeColor">@color/color_border</item>
+        <item name="strokeWidth">1dp</item>
+    </style></file><file name="selector_task_icon" path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\main\res\color\selector_task_icon.xml" qualifiers="" type="color"/></source></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\debug\res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~:!&lt;dir>navigation"><source path="C:\Users\Hp\source\repos\TomaFlow-App\app\src\debug\res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="C:\Users\Hp\source\repos\TomaFlow-App\app\build\generated\res\resValues\debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated" generated-set="generated$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~:!&lt;dir>navigation"><source path="C:\Users\Hp\source\repos\TomaFlow-App\app\build\generated\res\resValues\debug"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="TimerView">
+        
+        <attr format="color" name="trackColor"/>
+        
+        <attr format="color" name="progressColor"/>
+        
+        <attr format="dimension" name="strokeWidth"/>
+    </declare-styleable></configuration></mergedItems></merger>
