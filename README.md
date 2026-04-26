@@ -8,10 +8,6 @@
 
 **TomaFlow** là ứng dụng Android giúp người dùng quản lý thời gian làm việc theo kỹ thuật **Pomodoro** — chia nhỏ công việc thành các phiên tập trung 25 phút xen kẽ với những khoảng nghỉ ngắn. Ứng dụng kết hợp bộ đếm giờ thông minh, danh sách công việc và thống kê trực quan giúp bạn theo dõi năng suất mỗi ngày.
 
-Dự án được phát triển trong khuôn khổ môn **Nhập môn Công nghệ Phần mềm (SE104)** — Trường Đại học Công nghệ Thông tin, ĐHQG TP.HCM.
-
----
-
 ## ✨ Tính năng chính
 
 ### 🕐 Đồng hồ Pomodoro
@@ -130,20 +126,18 @@ TomaFlow/
 
 ## 📋 Trạng thái phát triển
 
-- [x] Kiến trúc MVVM & Room DB schema
-- [x] Timer Engine (CountDownTimer + LiveData)
-- [x] ForegroundService + WakeLock
-- [x] Task Management (CRUD)
-- [x] Settings tuỳ chỉnh thời gian
-- [x] Notification + âm thanh + rung
-- [x] Thống kê SQLite + MPAndroidChart
-- [x] Dark Mode
-- [ ] Firebase Auth (tuỳ chọn mở rộng)
-- [ ] Cloud Sync với Firestore (tuỳ chọn mở rộng)
+- Kiến trúc MVVM & Room DB schema
+- Timer Engine (CountDownTimer + LiveData)
+- ForegroundService + WakeLock
+- Task Management (CRUD)
+- Settings tuỳ chỉnh thời gian
+- Notification + âm thanh + rung
+- Thống kê SQLite + MPAndroidChart
+- Dark Mode
+- Firebase Auth (tuỳ chọn mở rộng)
+- Cloud Sync với Firestore (tuỳ chọn mở rộng)
 
 ---
 
-## 📄 Giấy phép
-
-Dự án được phát triển cho mục đích học thuật trong khuôn khổ môn SE104 — UIT.  
-© 2025 Nhóm TomaFlow. All rights reserved.
+## 📄 Giấy phép  
+© 2026 Nhóm TomaFlow. All rights reserved.
