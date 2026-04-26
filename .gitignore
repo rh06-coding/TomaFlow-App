@@ -3,8 +3,9 @@
 build/
 app/build/
 
-# IntelliJ / Android Studio
+# IntelliJ / Android Studio / VS Code
 .idea/
+.vscode/
 *.iml
 *.iws
 .idea/workspace.xml
@@ -26,6 +27,9 @@ captures/
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 .cxx/
+
+# Prototype / Other
+TomaFlow_prototype/
 
 # OS generated files
 .DS_Store
