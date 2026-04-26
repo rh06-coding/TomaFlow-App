@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ic_launcher_foreground.xml — Adaptive icon foreground layer.
+    Simple "T" tomato-red circle for TomaFlow launcher icon placeholder.
+    Replace with the final branded icon before release.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Red circle background accent -->
+    <path
+        android:fillColor="#AF101A"
+        android:pathData="M54,24 a30,30 0 1,1 0,60 a30,30 0 1,1 0,-60Z" />
+
+    <!-- Letter T -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M42,42 L66,42 L66,48 L57,48 L57,66 L51,66 L51,48 L42,48 Z" />
+
+</vector>

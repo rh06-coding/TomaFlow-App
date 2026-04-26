@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    bg_btn_play_pause.xml — Gradient background for the primary Play/Pause button.
+    Matches the Figma spec: linear gradient from #AF101A → #D32F2F at 135°.
+    Corners are fully rounded (50% radius = circular button).
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <gradient
+        android:angle="135"
+        android:endColor="#D32F2F"
+        android:startColor="#AF101A"
+        android:type="linear" />
+
+    <corners android:radius="24dp" />
+
+</shape>
