@@ -17,6 +17,7 @@ app/build/
 
 # Local configuration file (sdk path, etc)
 local.properties
+TimerEngine.md
 
 # Log Files
 *.log
