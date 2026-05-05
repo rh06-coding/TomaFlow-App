@@ -4,22 +4,12 @@ import android.content.Context;
 
 import com.tomaflow.app.timer.PomodoroTimer.TimerPhase;
 
-/**
- * TimerUtils — Helper utilities for timer operations
- *
- * Provides utility methods for time formatting, phase labeling, and progress calculations.
- * These utilities are used across MainActivity, TimerService, and UI components.
- */
 public final class TimerUtils {
 
     private TimerUtils() {
-        // Prevent instantiation
+        // Utility class.
     }
 
-    /**
-     * Format milliseconds to "MM:SS" string format.
-     * Useful for displaying timer in UI.
-     */
     public static String formatMillisToMmSs(long millis) {
         long totalSeconds = millis / 1000;
         long minutes = totalSeconds / 60;
@@ -47,8 +37,7 @@ public final class TimerUtils {
             return "Unknown";
         }
 
-        // For now, return the phase's built-in display name
-        // In the future, this can fetch from strings.xml for proper internationalization
+        // TODO: map to localized strings from resources.
         return phase.getDisplayName();
     }
 
