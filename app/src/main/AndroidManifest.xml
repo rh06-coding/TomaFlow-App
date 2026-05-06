@@ -50,6 +50,11 @@
             android:name=".ui.settings.SettingsActivity"
             android:exported="false" />
 
+        <!-- ── Timer Engine Service (foreground) ────────── -->
+        <service
+            android:name=".timer.TimerEngineService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

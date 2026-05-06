@@ -1,10 +1,9 @@
 package com.tomaflow.app;
 
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -13,76 +12,59 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.tomaflow.app.constants.AppConstants;
+import com.tomaflow.app.timer.PomodoroTimer;
+import com.tomaflow.app.timer.TimerEngineService;
 import com.tomaflow.app.ui.timer.TimerView;
+import com.tomaflow.app.ui.timer.TimerViewModel;
 
-/**
- * MainActivity — Home Screen (Focus Tab)
- *
- * Displays the circular Pomodoro countdown timer (default 25:00), a Start/Pause
- * button, a Reset button, a Skip button, and a card showing the currently
- * active task. All timer state is kept in-memory; persistence will be wired
- * through the Room database layer once that package is implemented.
- */
 public class MainActivity extends AppCompatActivity {
-
-    // -------------------------------------------------------------------------
-    // Timer constants
-    // -------------------------------------------------------------------------
-    private static final long WORK_DURATION_MS  = 25 * 60 * 1000L; // 25 minutes
-    private static final long COUNTDOWN_INTERVAL = 1_000L;          // 1 second tick
-
-    // -------------------------------------------------------------------------
-    // State
-    // -------------------------------------------------------------------------
-    private enum TimerState { IDLE, RUNNING, PAUSED }
-
-    private TimerState  mTimerState   = TimerState.IDLE;
-    private long        mTimeLeftMs   = WORK_DURATION_MS;
-    private CountDownTimer mCountDownTimer;
-
-    // -------------------------------------------------------------------------
-    // Views
-    // -------------------------------------------------------------------------
-    private TimerView       mTimerView;
-    private TextView        mTvTime;
-    private TextView        mTvSessionLabel;
-    private ImageButton     mBtnPlayPause;
-    private ImageButton     mBtnReset;
-    private ImageButton     mBtnSkip;
-    private CardView        mCardCurrentTask;
-    private TextView        mTvTaskTitle;
-    private TextView        mTvTaskSubtitle;
-    private ImageView       mIvTaskIcon;
+    private TimerView mTimerView;
+    private TextView mTvTime;
+    private TextView mTvSessionLabel;
+    private ImageButton mBtnPlayPause;
+    private ImageButton mBtnReset;
+    private ImageButton mBtnSkip;
+    private CardView mCardCurrentTask;
+    private TextView mTvTaskTitle;
+    private TextView mTvTaskSubtitle;
+    private ImageView mIvTaskIcon;
     private BottomNavigationView mBottomNav;
 
-    // -------------------------------------------------------------------------
-    // Lifecycle
-    // -------------------------------------------------------------------------
+    private TimerViewModel mTimerViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mTimerViewModel = new ViewModelProvider(this).get(TimerViewModel.class);
+
         bindViews();
+        setupTimerObserver();
         setupBottomNavigation();
-        updateTimerDisplay(mTimeLeftMs);
-        updatePlayPauseIcon();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startTimerService();
+        mTimerViewModel.startListening();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        // Cancel timer to avoid memory leak when activity goes to background.
-        // Time left is preserved so the user can resume.
-        cancelTimer();
+        mTimerViewModel.stopListening();
     }
 
-    // -------------------------------------------------------------------------
-    // View binding
-    // -------------------------------------------------------------------------
+    private void startTimerService() {
+        Intent serviceIntent = new Intent(this, TimerEngineService.class);
+        startService(serviceIntent);
+    }
 
     private void bindViews() {
         mTimerView      = findViewById(R.id.timer_view);
@@ -102,52 +84,48 @@ public class MainActivity extends AppCompatActivity {
         mBtnSkip.setOnClickListener(v -> onSkipClicked());
         mCardCurrentTask.setOnClickListener(v -> onTaskCardClicked());
 
-        // Populate task card with placeholder data (replace with DB query later)
         mTvTaskTitle.setText(R.string.placeholder_task_title);
         mTvTaskSubtitle.setText(R.string.placeholder_task_subtitle);
     }
 
-    // -------------------------------------------------------------------------
-    // Timer controls
-    // -------------------------------------------------------------------------
+    private void setupTimerObserver() {
+        mTimerViewModel.getTimerState().observe(this, timerState -> {
+            if (timerState == null) return;
+
+            updateTimerDisplay(timerState.remainingMs);
+            updatePlayPauseIcon(timerState.state);
+            updateProgress(timerState);
+            updateSessionLabel(timerState);
+        });
+    }
 
     private void onPlayPauseClicked() {
-        switch (mTimerState) {
-            case IDLE:
-            case PAUSED:
-                startTimer();
-                break;
-            case RUNNING:
-                pauseTimer();
-                break;
+        PomodoroTimer.TimerState currentState = mTimerViewModel.getTimerState().getValue();
+        if (currentState == null) {
+            sendCommand(TimerEngineService.COMMAND_START_FOCUS);
+        } else if (currentState.isRunning) {
+            sendCommand(TimerEngineService.COMMAND_PAUSE);
+        } else if (currentState.state == PomodoroTimer.State.IDLE) {
+            sendCommand(TimerEngineService.COMMAND_START_FOCUS);
+        } else {
+            sendCommand(TimerEngineService.COMMAND_RESUME);
         }
     }
 
     private void onResetClicked() {
-        cancelTimer();
-        mTimerState = TimerState.IDLE;
-        mTimeLeftMs = WORK_DURATION_MS;
-        updateTimerDisplay(mTimeLeftMs);
+        sendCommand(TimerEngineService.COMMAND_RESET);
         animateProgress(mTimerView.getProgress(), 0f);
-        updatePlayPauseIcon();
     }
 
     private void onSkipClicked() {
-        cancelTimer();
-        mTimerState = TimerState.IDLE;
-        mTimeLeftMs = 0;
-        updateTimerDisplay(0);
-        mTimerView.setProgress(1f); // full ring = session complete
-        updatePlayPauseIcon();
+        sendCommand(TimerEngineService.COMMAND_SKIP);
         Toast.makeText(this, R.string.session_skipped, Toast.LENGTH_SHORT).show();
     }
 
     private void onTaskCardClicked() {
-        // Toggle the 'activated' state of the icon
         boolean isActivated = !mIvTaskIcon.isActivated();
         mIvTaskIcon.setActivated(isActivated);
 
-        // Optional: Strike through the title when completed
         if (isActivated) {
             mTvTaskTitle.setPaintFlags(mTvTaskTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
@@ -158,59 +136,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void startTimer() {
-        mTimerState = TimerState.RUNNING;
-        updatePlayPauseIcon();
-
-        mCountDownTimer = new CountDownTimer(mTimeLeftMs, COUNTDOWN_INTERVAL) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                mTimeLeftMs = millisUntilFinished;
-                updateTimerDisplay(millisUntilFinished);
-
-                float progress = 1f - ((float) millisUntilFinished / WORK_DURATION_MS);
-                mTimerView.setProgress(progress);
-            }
-
-            @Override
-            public void onFinish() {
-                mTimerState = TimerState.IDLE;
-                mTimeLeftMs = 0;
-                updateTimerDisplay(0);
-                mTimerView.setProgress(1f);
-                updatePlayPauseIcon();
-                onTimerFinished();
-            }
-        }.start();
-    }
-
-    private void pauseTimer() {
-        cancelTimer();
-        mTimerState = TimerState.PAUSED;
-        updatePlayPauseIcon();
-    }
-
-    private void cancelTimer() {
-        if (mCountDownTimer != null) {
-            mCountDownTimer.cancel();
-            mCountDownTimer = null;
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // Timer finished callback
-    // -------------------------------------------------------------------------
-
-    private void onTimerFinished() {
-        Toast.makeText(this, R.string.session_complete, Toast.LENGTH_LONG).show();
-        // TODO: Trigger notification, save session to DB via repository
-    }
-
-    // -------------------------------------------------------------------------
-    // UI helpers
-    // -------------------------------------------------------------------------
-
-    /** Formats milliseconds as MM:SS and pushes to the time TextView. */
     private void updateTimerDisplay(long millisLeft) {
         long totalSeconds = millisLeft / 1000;
         long minutes = totalSeconds / 60;
@@ -219,19 +144,28 @@ public class MainActivity extends AppCompatActivity {
         mTvTime.setText(timeText);
     }
 
-    /** Swaps the play/pause icon depending on the current state. */
-    private void updatePlayPauseIcon() {
-        if (mTimerState == TimerState.RUNNING) {
+    private void updatePlayPauseIcon(PomodoroTimer.State state) {
+        boolean isRunning = state == PomodoroTimer.State.RUNNING_FOCUS || state == PomodoroTimer.State.RUNNING_BREAK;
+        if (isRunning) {
             mBtnPlayPause.setImageResource(R.drawable.ic_pause);
         } else {
             mBtnPlayPause.setImageResource(R.drawable.ic_play);
         }
     }
 
-    /**
-     * Smoothly animates the circular progress arc from {@code from} to {@code to}.
-     * Used when resetting so the ring doesn't jump abruptly.
-     */
+    private void updateProgress(PomodoroTimer.TimerState timerState) {
+        long duration = timerState.phase == PomodoroTimer.Phase.FOCUS
+                ? AppConstants.TIMER_WORK_DURATION_MS
+                : AppConstants.TIMER_SHORT_BREAK_MS;
+        float progress = duration > 0 ? 1f - ((float) timerState.remainingMs / duration) : 0f;
+        mTimerView.setProgress(Math.max(0, Math.min(1, progress)));
+    }
+
+    private void updateSessionLabel(PomodoroTimer.TimerState timerState) {
+        String label = String.format("%s — Session %d", timerState.phase.getDisplayName(), timerState.sessionCount);
+        mTvSessionLabel.setText(label);
+    }
+
     private void animateProgress(float from, float to) {
         ValueAnimator animator = ValueAnimator.ofFloat(from, to);
         animator.setDuration(400);
@@ -240,16 +174,19 @@ public class MainActivity extends AppCompatActivity {
         animator.start();
     }
 
-    // -------------------------------------------------------------------------
-    // Bottom navigation
-    // -------------------------------------------------------------------------
+    private void sendCommand(String command) {
+        Intent intent = new Intent(TimerEngineService.ACTION_COMMAND);
+        intent.setClass(this, TimerEngineService.class);
+        intent.putExtra(AppConstants.INTENT_EXTRA_COMMAND, command);
+        startService(intent);
+    }
 
     private void setupBottomNavigation() {
         mBottomNav.setSelectedItemId(R.id.nav_focus);
         mBottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_focus) {
-                return true; // already here
+                return true;
             } else if (id == R.id.nav_tasks) {
                 // TODO: navigate to TasksActivity
                 return true;
