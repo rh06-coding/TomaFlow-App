@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -12,6 +13,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.tomaflow.app.constants.AppConstants;
 import com.tomaflow.app.timer.PomodoroTimer;
 import com.tomaflow.app.timer.TimerEngineService;
 
@@ -62,8 +64,13 @@ public class TimerViewModel extends AndroidViewModel {
     public void sendCommand(String command) {
         Intent intent = new Intent(TimerEngineService.ACTION_COMMAND);
         intent.setClass(getApplication(), TimerEngineService.class);
-        intent.putExtra(getApplication().getPackageName() + ".COMMAND", command);
-        getApplication().startService(intent);
+        intent.putExtra(AppConstants.INTENT_EXTRA_COMMAND, command);
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            getApplication().startForegroundService(intent);
+        } else {
+            getApplication().startService(intent);
+        }
     }
 
     @Override
@@ -92,5 +99,3 @@ public class TimerViewModel extends AndroidViewModel {
         }
     }
 }
-
-

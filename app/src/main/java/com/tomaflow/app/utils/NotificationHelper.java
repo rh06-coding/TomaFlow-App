@@ -14,8 +14,8 @@ import com.tomaflow.app.MainActivity;
 import com.tomaflow.app.R;
 import com.tomaflow.app.constants.AppConstants;
 import com.tomaflow.app.timer.PomodoroTimer.Phase;
-import com.tomaflow.app.timer.PomodoroTimer.State;
 import com.tomaflow.app.timer.PomodoroTimer.TimerState;
+import com.tomaflow.app.timer.TimerEngineService;
 
 public class NotificationHelper {
     private final Context mContext;
@@ -36,6 +36,7 @@ public class NotificationHelper {
             );
             timerChannel.setDescription("Pomodoro timer notifications");
             timerChannel.enableVibration(false);
+            timerChannel.setShowBadge(false);
             mNotificationManager.createNotificationChannel(timerChannel);
 
             NotificationChannel soundChannel = new NotificationChannel(
@@ -51,34 +52,48 @@ public class NotificationHelper {
 
     public Notification buildTimerNotification(TimerState timerState) {
         String timeStr = TimerUtils.formatMillisToMmSs(timerState.remainingMs);
-        String phase = timerState.phase == Phase.FOCUS ? "Focus" : "Break";
-        String text = String.format("%s - %s", phase, timeStr);
+        String phaseLabel = TimerUtils.getPhaseLabel(timerState.phase);
+        String contentText = String.format("%s - %s", phaseLabel, timeStr);
 
         Intent intent = new Intent(mContext, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        int smallIcon = timerState.isRunning ? R.drawable.ic_pause : R.drawable.ic_play;
-
-        return new NotificationCompat.Builder(mContext, AppConstants.NOTIFICATION_CHANNEL_TIMER)
-                .setContentTitle("TomaFlow Timer")
-                .setContentText(text)
-                .setSmallIcon(smallIcon)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, AppConstants.NOTIFICATION_CHANNEL_TIMER)
+                .setContentTitle("TomaFlow")
+                .setContentText(contentText)
+                .setSmallIcon(R.drawable.ic_pause) // Should be a dedicated timer icon
                 .setContentIntent(pendingIntent)
-                .setAutoCancel(false)
+                .setOnlyAlertOnce(true)
                 .setOngoing(timerState.isRunning)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .build();
+                .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .setPriority(NotificationCompat.PRIORITY_LOW);
+
+        // Add Actions
+        if (timerState.isRunning) {
+            builder.addAction(R.drawable.ic_pause, "Pause", getServicePendingIntent(AppConstants.COMMAND_PAUSE));
+        } else {
+            builder.addAction(R.drawable.ic_play, "Resume", getServicePendingIntent(AppConstants.COMMAND_RESUME));
+        }
+        builder.addAction(R.drawable.ic_play, "Skip", getServicePendingIntent(AppConstants.COMMAND_SKIP));
+
+        return builder.build();
+    }
+
+    private PendingIntent getServicePendingIntent(String command) {
+        Intent intent = new Intent(mContext, TimerEngineService.class);
+        intent.setAction(TimerEngineService.ACTION_COMMAND);
+        intent.putExtra(AppConstants.INTENT_EXTRA_COMMAND, command);
+        return PendingIntent.getService(mContext, command.hashCode(), intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     public Notification buildPhaseCompleteNotification(Phase phase, int sessionCount) {
-        String title = phase == Phase.FOCUS
-                ? mContext.getString(R.string.session_complete)
-                : "Break Complete";
-        String message = phase == Phase.FOCUS
-                ? String.format("Session %d completed", sessionCount)
-                : "Ready for next session";
+        String title = phase == Phase.FOCUS ? "Work Session Complete" : "Break Complete";
+        String message = phase == Phase.FOCUS 
+                ? String.format("Session %d finished! Time for a break.", sessionCount)
+                : "Break is over. Ready to focus?";
 
         Intent intent = new Intent(mContext, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -92,6 +107,7 @@ public class NotificationHelper {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .build();
     }
 
@@ -100,4 +116,3 @@ public class NotificationHelper {
         mNotificationManager.notify(AppConstants.NOTIFICATION_ID_PHASE_COMPLETE, notification);
     }
 }
-

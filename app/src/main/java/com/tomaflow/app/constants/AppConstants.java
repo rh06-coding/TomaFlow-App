@@ -12,6 +12,7 @@ public final class AppConstants {
     public static final long TIMER_LONG_BREAK_MS = 15 * 60 * 1000L;
     public static final int TIMER_CYCLES_BEFORE_LONG_BREAK = 4;
     public static final long TIMER_COUNTDOWN_INTERVAL_MS = 1000L;
+    public static final int TIMER_DEFAULT_TARGET_SESSIONS = 8;
 
     // SharedPreferences keys.
     public static final String PREFERENCES_FILE_NAME = "tomaflow_prefs";
@@ -38,6 +39,13 @@ public final class AppConstants {
     // Intent extras.
     public static final String INTENT_EXTRA_COMMAND = "timer_command";
     public static final String INTENT_EXTRA_TASK_ID = "task_id";
+
+    // Timer Commands (Actions for Service)
+    public static final String COMMAND_START_FOCUS = "com.tomaflow.app.COMMAND_START_FOCUS";
+    public static final String COMMAND_PAUSE = "com.tomaflow.app.COMMAND_PAUSE";
+    public static final String COMMAND_RESUME = "com.tomaflow.app.COMMAND_RESUME";
+    public static final String COMMAND_SKIP = "com.tomaflow.app.COMMAND_SKIP";
+    public static final String COMMAND_RESET = "com.tomaflow.app.COMMAND_RESET";
 
     // Database.
     public static final String DATABASE_NAME = "tomaflow.db";
