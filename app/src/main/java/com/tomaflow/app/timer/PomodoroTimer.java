@@ -5,10 +5,13 @@ import android.os.SystemClock;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.tomaflow.app.constants.AppConstants;
+
 public class PomodoroTimer {
     public enum Phase {
         FOCUS("Focus"),
-        BREAK("Break");
+        SHORT_BREAK("Short Break"),
+        LONG_BREAK("Long Break");
 
         private final String displayName;
 
@@ -25,23 +28,22 @@ public class PomodoroTimer {
         IDLE, RUNNING_FOCUS, PAUSED_FOCUS, RUNNING_BREAK, PAUSED_BREAK, COMPLETED
     }
 
-    private static final long DEFAULT_FOCUS_MS = 25 * 60 * 1000L;
-    private static final long DEFAULT_SHORT_BREAK_MS = 5 * 60 * 1000L;
-    private static final long DEFAULT_LONG_BREAK_MS = 15 * 60 * 1000L;
-    private static final int DEFAULT_CYCLES_BEFORE_LONG = 4;
-    private static final long TICK_INTERVAL_MS = 1000L;
+    private static final long DEFAULT_FOCUS_MS = AppConstants.TIMER_WORK_DURATION_MS;
+    private static final long DEFAULT_SHORT_BREAK_MS = AppConstants.TIMER_SHORT_BREAK_MS;
+    private static final long DEFAULT_LONG_BREAK_MS = AppConstants.TIMER_LONG_BREAK_MS;
+    private static final int DEFAULT_CYCLES_BEFORE_LONG = AppConstants.TIMER_CYCLES_BEFORE_LONG_BREAK;
 
     private long mFocusDurationMs = DEFAULT_FOCUS_MS;
     private long mShortBreakDurationMs = DEFAULT_SHORT_BREAK_MS;
     private long mLongBreakDurationMs = DEFAULT_LONG_BREAK_MS;
     private int mCyclesBeforeLongBreak = DEFAULT_CYCLES_BEFORE_LONG;
+    private final int mTargetSessions = AppConstants.TIMER_DEFAULT_TARGET_SESSIONS;
 
     private State mState = State.IDLE;
     private Phase mPhase = Phase.FOCUS;
     private long mRemainingMs = DEFAULT_FOCUS_MS;
     private long mStartElapsedMs = 0;
     private int mSessionCount = 0;
-    private volatile boolean mIsRunning = false;
 
     private final MutableLiveData<Long> mTimeRemainingLive = new MutableLiveData<>(DEFAULT_FOCUS_MS);
     private final MutableLiveData<State> mStateLive = new MutableLiveData<>(State.IDLE);
@@ -88,6 +90,10 @@ public class PomodoroTimer {
         this.mFocusDurationMs = focusMs;
         this.mShortBreakDurationMs = shortBreakMs;
         this.mLongBreakDurationMs = longBreakMs;
+        if (mState == State.IDLE) {
+            mRemainingMs = mFocusDurationMs;
+            updateStateLive();
+        }
     }
 
     public void setCyclesBeforeLongBreak(int cycles) {
@@ -130,7 +136,7 @@ public class PomodoroTimer {
 
         if (mState == State.PAUSED_FOCUS) {
             mState = State.RUNNING_FOCUS;
-            mStartElapsedMs = SystemClock.elapsedRealtime() - (getDurationForPhase(mPhase) - mRemainingMs);
+            mStartElapsedMs = SystemClock.elapsedRealtime() - (mFocusDurationMs - mRemainingMs);
         } else if (mState == State.PAUSED_BREAK) {
             mState = State.RUNNING_BREAK;
             mStartElapsedMs = SystemClock.elapsedRealtime() - (getDurationForPhase(mPhase) - mRemainingMs);
@@ -143,9 +149,10 @@ public class PomodoroTimer {
             return;
         }
 
-        if (mState == State.RUNNING_FOCUS || mState == State.PAUSED_FOCUS) {
+        if (mPhase == Phase.FOCUS) {
             transitionToBreak();
-        } else if (mState == State.RUNNING_BREAK || mState == State.PAUSED_BREAK) {
+        } else {
+            // Skipping a break counts as finishing it
             transitionToFocus();
         }
     }
@@ -180,10 +187,34 @@ public class PomodoroTimer {
         }
     }
 
+    public void restoreFromState(TimerState state) {
+        this.mState = state.state;
+        this.mPhase = state.phase;
+        this.mSessionCount = state.sessionCount;
+        this.mRemainingMs = state.remainingMs;
+
+        if (state.isRunning) {
+            long nowElapsed = SystemClock.elapsedRealtime();
+            long timePassedSinceSave = nowElapsed - state.updatedAtElapsed;
+            mRemainingMs -= timePassedSinceSave;
+
+            if (mRemainingMs <= 0) {
+                mRemainingMs = 0;
+                handlePhaseComplete();
+            } else {
+                mStartElapsedMs = nowElapsed - (getDurationForPhase(mPhase) - mRemainingMs);
+                updateStateLive();
+            }
+        } else {
+            mStartElapsedMs = 0;
+            updateStateLive();
+        }
+    }
+
     private void handlePhaseComplete() {
         if (mPhase == Phase.FOCUS) {
             if (mEventListener != null) {
-                mEventListener.onFocusComplete(mSessionCount);
+                mEventListener.onFocusComplete(mSessionCount + 1);
             }
             transitionToBreak();
         } else {
@@ -195,27 +226,29 @@ public class PomodoroTimer {
     }
 
     private void transitionToBreak() {
-        long breakDuration = (mSessionCount % mCyclesBeforeLongBreak == 0 && mSessionCount > 0)
-                ? mLongBreakDurationMs
-                : mShortBreakDurationMs;
+        mSessionCount++;
+        boolean isLongBreak = (mSessionCount % mCyclesBeforeLongBreak == 0);
+        
+        mPhase = isLongBreak ? Phase.LONG_BREAK : Phase.SHORT_BREAK;
+        long breakDuration = isLongBreak ? mLongBreakDurationMs : mShortBreakDurationMs;
 
         mState = State.RUNNING_BREAK;
-        mPhase = Phase.BREAK;
         mRemainingMs = breakDuration;
         mStartElapsedMs = SystemClock.elapsedRealtime();
         updateStateLive();
     }
 
     private void transitionToFocus() {
-        mSessionCount++;
-
-        if (mSessionCount >= mCyclesBeforeLongBreak) {
+        if (mSessionCount >= mTargetSessions) {
             mState = State.COMPLETED;
-            mSessionCount = 0;
-        } else {
-            mState = State.RUNNING_FOCUS;
+            mPhase = Phase.FOCUS;
+            mRemainingMs = 0;
+            mStartElapsedMs = 0;
+            updateStateLive();
+            return;
         }
-
+        
+        mState = State.RUNNING_FOCUS;
         mPhase = Phase.FOCUS;
         mRemainingMs = mFocusDurationMs;
         mStartElapsedMs = SystemClock.elapsedRealtime();
@@ -223,18 +256,23 @@ public class PomodoroTimer {
     }
 
     private long getDurationForPhase(Phase phase) {
-        return (phase == Phase.FOCUS) ? mFocusDurationMs : mShortBreakDurationMs;
+        switch (phase) {
+            case SHORT_BREAK: return mShortBreakDurationMs;
+            case LONG_BREAK: return mLongBreakDurationMs;
+            case FOCUS:
+            default: return mFocusDurationMs;
+        }
     }
 
     private void updateStateLive() {
-        mIsRunningLive.setValue(isRunning());
-        mStateLive.setValue(mState);
-        mPhaseLive.setValue(mPhase);
-        mTimeRemainingLive.setValue(mRemainingMs);
+        mIsRunningLive.postValue(isRunning());
+        mStateLive.postValue(mState);
+        mPhaseLive.postValue(mPhase);
+        mTimeRemainingLive.postValue(mRemainingMs);
 
         long totalDuration = getDurationForPhase(mPhase);
         int progress = totalDuration > 0 ? (int) ((totalDuration - mRemainingMs) * 100 / totalDuration) : 0;
-        mProgressLive.setValue(Math.min(100, Math.max(0, progress)));
+        mProgressLive.postValue(Math.min(100, Math.max(0, progress)));
 
         if (mEventListener != null) {
             mEventListener.onStateChanged(buildTimerState());
@@ -246,7 +284,7 @@ public class PomodoroTimer {
                 SystemClock.elapsedRealtime());
     }
 
-    private boolean isRunning() {
+    public boolean isRunning() {
         return mState == State.RUNNING_FOCUS || mState == State.RUNNING_BREAK;
     }
 
@@ -290,8 +328,16 @@ public class PomodoroTimer {
         return mFocusDurationMs;
     }
 
-    public long getBreakDurationMs() {
+    public long getShortBreakDurationMs() {
         return mShortBreakDurationMs;
+    }
+
+    public long getLongBreakDurationMs() {
+        return mLongBreakDurationMs;
+    }
+
+    public int getCyclesBeforeLongBreak() {
+        return mCyclesBeforeLongBreak;
     }
 
     public void setOnTimerEventListener(OnTimerEventListener listener) {

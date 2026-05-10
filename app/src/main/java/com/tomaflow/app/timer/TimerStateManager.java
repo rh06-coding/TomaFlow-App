@@ -2,11 +2,8 @@ package com.tomaflow.app.timer;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.SystemClock;
 
 import com.tomaflow.app.constants.AppConstants;
-import com.tomaflow.app.timer.PomodoroTimer.State;
-import com.tomaflow.app.timer.PomodoroTimer.Phase;
 
 public class TimerStateManager {
     private static final String PREF_STATE = "timer_state";
@@ -14,8 +11,10 @@ public class TimerStateManager {
     private static final String PREF_REMAINING_MS = "timer_remaining_ms";
     private static final String PREF_SESSION_COUNT = "timer_session_count";
     private static final String PREF_FOCUS_DURATION = "timer_focus_duration";
-    private static final String PREF_BREAK_DURATION = "timer_break_duration";
-    private static final String PREF_UPDATED_ELAPSED = "timer_updated_elapsed";
+    private static final String PREF_SHORT_BREAK_DURATION = "timer_short_break_duration";
+    private static final String PREF_LONG_BREAK_DURATION = "timer_long_break_duration";
+    private static final String PREF_UPDATED_AT_ELAPSED = "timer_updated_at_elapsed";
+    private static final String PREF_IS_RUNNING = "timer_is_running";
 
     private final SharedPreferences mPrefs;
 
@@ -23,45 +22,35 @@ public class TimerStateManager {
         this.mPrefs = context.getSharedPreferences(AppConstants.PREFERENCES_FILE_NAME, Context.MODE_PRIVATE);
     }
 
-    public void saveState(PomodoroTimer.TimerState timerState, long focusMs, long breakMs) {
+    public void saveState(PomodoroTimer.TimerState state, long focusDuration, long shortBreakDuration, long longBreakDuration) {
         mPrefs.edit()
-                .putString(PREF_STATE, timerState.state.name())
-                .putString(PREF_PHASE, timerState.phase.name())
-                .putLong(PREF_REMAINING_MS, timerState.remainingMs)
-                .putInt(PREF_SESSION_COUNT, timerState.sessionCount)
-                .putLong(PREF_FOCUS_DURATION, focusMs)
-                .putLong(PREF_BREAK_DURATION, breakMs)
-                .putLong(PREF_UPDATED_ELAPSED, timerState.updatedAtElapsed)
+                .putString(PREF_STATE, state.state.name())
+                .putString(PREF_PHASE, state.phase.name())
+                .putLong(PREF_REMAINING_MS, state.remainingMs)
+                .putInt(PREF_SESSION_COUNT, state.sessionCount)
+                .putLong(PREF_FOCUS_DURATION, focusDuration)
+                .putLong(PREF_SHORT_BREAK_DURATION, shortBreakDuration)
+                .putLong(PREF_LONG_BREAK_DURATION, longBreakDuration)
+                .putLong(PREF_UPDATED_AT_ELAPSED, state.updatedAtElapsed)
+                .putBoolean(PREF_IS_RUNNING, state.isRunning)
                 .apply();
     }
 
     public RestoredState restoreState() {
-        String stateStr = mPrefs.getString(PREF_STATE, State.IDLE.name());
-        String phaseStr = mPrefs.getString(PREF_PHASE, Phase.FOCUS.name());
-        long remainingMs = mPrefs.getLong(PREF_REMAINING_MS, 0);
-        int sessionCount = mPrefs.getInt(PREF_SESSION_COUNT, 0);
-        long focusDuration = mPrefs.getLong(PREF_FOCUS_DURATION, 25 * 60 * 1000L);
-        long breakDuration = mPrefs.getLong(PREF_BREAK_DURATION, 5 * 60 * 1000L);
-        long savedElapsed = mPrefs.getLong(PREF_UPDATED_ELAPSED, 0);
-
-        if (savedElapsed == 0) {
-            return new RestoredState(State.IDLE, Phase.FOCUS, focusDuration, breakDuration, 0, 0);
-        }
-
-        // Calculate drift correction
-        long nowElapsed = SystemClock.elapsedRealtime();
-        long drift = nowElapsed - savedElapsed;
-        long correctedRemaining = remainingMs - drift;
-
-        State state = State.valueOf(stateStr);
-        Phase phase = Phase.valueOf(phaseStr);
-
-        if (correctedRemaining <= 0) {
-            // Phase expired during offline; transition to next
-            return new RestoredState(State.IDLE, phase, focusDuration, breakDuration, sessionCount, 0);
-        }
-
-        return new RestoredState(state, phase, focusDuration, breakDuration, sessionCount, correctedRemaining);
+        String stateStr = mPrefs.getString(PREF_STATE, PomodoroTimer.State.IDLE.name());
+        String phaseStr = mPrefs.getString(PREF_PHASE, PomodoroTimer.Phase.FOCUS.name());
+        
+        return new RestoredState(
+                PomodoroTimer.State.valueOf(stateStr),
+                PomodoroTimer.Phase.valueOf(phaseStr),
+                mPrefs.getLong(PREF_FOCUS_DURATION, AppConstants.TIMER_WORK_DURATION_MS),
+                mPrefs.getLong(PREF_SHORT_BREAK_DURATION, AppConstants.TIMER_SHORT_BREAK_MS),
+                mPrefs.getLong(PREF_LONG_BREAK_DURATION, AppConstants.TIMER_LONG_BREAK_MS),
+                mPrefs.getInt(PREF_SESSION_COUNT, 0),
+                mPrefs.getLong(PREF_REMAINING_MS, AppConstants.TIMER_WORK_DURATION_MS),
+                mPrefs.getLong(PREF_UPDATED_AT_ELAPSED, 0),
+                mPrefs.getBoolean(PREF_IS_RUNNING, false)
+        );
     }
 
     public void clearSavedState() {
@@ -70,29 +59,38 @@ public class TimerStateManager {
                 .remove(PREF_PHASE)
                 .remove(PREF_REMAINING_MS)
                 .remove(PREF_SESSION_COUNT)
-                .remove(PREF_FOCUS_DURATION)
-                .remove(PREF_BREAK_DURATION)
-                .remove(PREF_UPDATED_ELAPSED)
+                .remove(PREF_UPDATED_AT_ELAPSED)
+                .remove(PREF_IS_RUNNING)
                 .apply();
     }
 
     public static class RestoredState {
-        public final State state;
-        public final Phase phase;
+        public final PomodoroTimer.State state;
+        public final PomodoroTimer.Phase phase;
         public final long focusDurationMs;
-        public final long breakDurationMs;
+        public final long shortBreakDurationMs;
+        public final long longBreakDurationMs;
         public final int sessionCount;
         public final long remainingMs;
+        public final long updatedAtElapsed;
+        public final boolean isRunning;
 
-        public RestoredState(State state, Phase phase, long focusMs, long breakMs,
-                            int sessionCount, long remainingMs) {
+        public RestoredState(PomodoroTimer.State state, PomodoroTimer.Phase phase, 
+                            long focusDurationMs, long shortBreakDurationMs, long longBreakDurationMs,
+                            int sessionCount, long remainingMs, long updatedAtElapsed, boolean isRunning) {
             this.state = state;
             this.phase = phase;
-            this.focusDurationMs = focusMs;
-            this.breakDurationMs = breakMs;
+            this.focusDurationMs = focusDurationMs;
+            this.shortBreakDurationMs = shortBreakDurationMs;
+            this.longBreakDurationMs = longBreakDurationMs;
             this.sessionCount = sessionCount;
             this.remainingMs = remainingMs;
+            this.updatedAtElapsed = updatedAtElapsed;
+            this.isRunning = isRunning;
+        }
+
+        public PomodoroTimer.TimerState toTimerState() {
+            return new PomodoroTimer.TimerState(state, phase, isRunning, remainingMs, sessionCount, updatedAtElapsed);
         }
     }
 }
-

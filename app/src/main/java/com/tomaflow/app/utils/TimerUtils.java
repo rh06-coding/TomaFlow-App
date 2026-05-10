@@ -2,7 +2,9 @@ package com.tomaflow.app.utils;
 
 import android.content.Context;
 
-import com.tomaflow.app.timer.PomodoroTimer.TimerPhase;
+import com.tomaflow.app.timer.PomodoroTimer.Phase;
+
+import java.util.Locale;
 
 public final class TimerUtils {
 
@@ -11,28 +13,30 @@ public final class TimerUtils {
     }
 
     public static String formatMillisToMmSs(long millis) {
+        if (millis < 0) millis = 0;
         long totalSeconds = millis / 1000;
         long minutes = totalSeconds / 60;
         long seconds = totalSeconds % 60;
-        return String.format("%02d:%02d", minutes, seconds);
+        return String.format(Locale.US, "%02d:%02d", minutes, seconds);
     }
 
     public static String formatMillisToHhMmSs(long millis) {
+        if (millis < 0) millis = 0;
         long totalSeconds = millis / 1000;
         long hours = totalSeconds / 3600;
         long minutes = (totalSeconds % 3600) / 60;
         long seconds = totalSeconds % 60;
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        return String.format(Locale.US, "%02d:%02d:%02d", hours, minutes, seconds);
     }
 
-    public static String getPhaseLabel(TimerPhase phase) {
+    public static String getPhaseLabel(Phase phase) {
         if (phase == null) {
             return "Unknown";
         }
         return phase.getDisplayName();
     }
 
-    public static String getPhaseLabelLocalized(Context context, TimerPhase phase) {
+    public static String getPhaseLabelLocalized(Context context, Phase phase) {
         if (context == null || phase == null) {
             return "Unknown";
         }
@@ -55,12 +59,12 @@ public final class TimerUtils {
         return Math.min(1f, (float) elapsedMs / totalMs);
     }
 
-    public static boolean isBreakPhase(TimerPhase phase) {
-        return phase == TimerPhase.SHORT_BREAK || phase == TimerPhase.LONG_BREAK;
+    public static boolean isBreakPhase(Phase phase) {
+        return phase == Phase.SHORT_BREAK || phase == Phase.LONG_BREAK;
     }
 
-    public static boolean isWorkPhase(TimerPhase phase) {
-        return phase == TimerPhase.WORK;
+    public static boolean isWorkPhase(Phase phase) {
+        return phase == Phase.FOCUS;
     }
 
     public static long secondsToMillis(long seconds) {
@@ -90,4 +94,3 @@ public final class TimerUtils {
         return new int[]{minutes, seconds};
     }
 }
-

@@ -1,11 +1,17 @@
 package com.tomaflow.app.timer;
 
+import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.pm.ServiceInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.PowerManager;
+import android.os.SystemClock;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -15,11 +21,6 @@ import com.tomaflow.app.utils.NotificationHelper;
 
 public class TimerEngineService extends Service {
     public static final String ACTION_COMMAND = "com.tomaflow.TIMER_COMMAND";
-    public static final String COMMAND_START_FOCUS = "START_FOCUS";
-    public static final String COMMAND_PAUSE = "PAUSE";
-    public static final String COMMAND_RESUME = "RESUME";
-    public static final String COMMAND_SKIP = "SKIP";
-    public static final String COMMAND_RESET = "RESET";
 
     public static final String ACTION_STATE_CHANGED = "com.tomaflow.TIMER_STATE_CHANGED";
     public static final String ACTION_TICK = "com.tomaflow.TIMER_TICK";
@@ -28,9 +29,11 @@ public class TimerEngineService extends Service {
     private PomodoroTimer mTimer;
     private TimerStateManager mStateManager;
     private NotificationHelper mNotificationHelper;
+    private NotificationManager mNotificationManager;
     private LocalBroadcastManager mBroadcastManager;
     private Handler mTickHandler;
     private Runnable mTickRunnable;
+    private PowerManager.WakeLock mWakeLock;
 
     private volatile boolean mTickScheduled = false;
     private long mLastActivityTimeMs = 0;
@@ -41,31 +44,26 @@ public class TimerEngineService extends Service {
         mTimer = new PomodoroTimer();
         mStateManager = new TimerStateManager(this);
         mNotificationHelper = new NotificationHelper(this);
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mBroadcastManager = LocalBroadcastManager.getInstance(this);
         mTickHandler = new Handler(Looper.getMainLooper());
 
-        restoreState();
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TomaFlow:TimerWakeLock");
+
         setupTimerListener();
+        restoreState();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent == null || intent.getAction() == null) {
-            return START_STICKY;
-        }
-
         mLastActivityTimeMs = System.currentTimeMillis();
 
-        String action = intent.getAction();
-        if (ACTION_COMMAND.equals(action)) {
+        if (intent != null && ACTION_COMMAND.equals(intent.getAction())) {
             handleCommand(intent);
         }
 
-        // Keep foreground if timer is running
-        if (mTimer.getStateValue() != PomodoroTimer.State.IDLE) {
-            startForeground(AppConstants.NOTIFICATION_ID_TIMER,
-                    mNotificationHelper.buildTimerNotification(buildTimerState()));
-        }
+        updateForegroundStatus();
 
         return START_STICKY;
     }
@@ -75,21 +73,40 @@ public class TimerEngineService extends Service {
         if (command == null) return;
 
         switch (command) {
-            case COMMAND_START_FOCUS:
+            case AppConstants.COMMAND_START_FOCUS:
                 mTimer.startFocus(AppConstants.TIMER_WORK_DURATION_MS);
                 break;
-            case COMMAND_PAUSE:
+            case AppConstants.COMMAND_PAUSE:
                 mTimer.pause();
                 break;
-            case COMMAND_RESUME:
+            case AppConstants.COMMAND_RESUME:
                 mTimer.resume();
                 break;
-            case COMMAND_SKIP:
+            case AppConstants.COMMAND_SKIP:
                 mTimer.skip();
                 break;
-            case COMMAND_RESET:
+            case AppConstants.COMMAND_RESET:
                 mTimer.reset();
                 break;
+        }
+    }
+
+    private void updateForegroundStatus() {
+        PomodoroTimer.TimerState state = buildTimerState();
+        if (mTimer.isRunning() || mTimer.getStateValue() != PomodoroTimer.State.IDLE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                startForeground(AppConstants.NOTIFICATION_ID_TIMER,
+                        mNotificationHelper.buildTimerNotification(state),
+                        ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+            } else {
+                startForeground(AppConstants.NOTIFICATION_ID_TIMER,
+                        mNotificationHelper.buildTimerNotification(state));
+            }
+            acquireWakeLock();
+        } else {
+            stopForeground(STOP_FOREGROUND_REMOVE);
+            releaseWakeLock();
+            checkAutoStop();
         }
     }
 
@@ -102,9 +119,23 @@ public class TimerEngineService extends Service {
     @Override
     public void onDestroy() {
         stopTick();
+        releaseWakeLock();
         mTimer.destroy();
-        stopForeground(STOP_FOREGROUND_REMOVE);
         super.onDestroy();
+    }
+
+    private void acquireWakeLock() {
+        if (mWakeLock != null && !mWakeLock.isHeld()) {
+            mWakeLock.acquire(10 * 60 * 1000L /*10 minutes safety timeout*/);
+            Log.d("TimerEngineService", "WakeLock acquired");
+        }
+    }
+
+    private void releaseWakeLock() {
+        if (mWakeLock != null && mWakeLock.isHeld()) {
+            mWakeLock.release();
+            Log.d("TimerEngineService", "WakeLock released");
+        }
     }
 
     private void setupTimerListener() {
@@ -112,24 +143,29 @@ public class TimerEngineService extends Service {
             @Override
             public void onTick(PomodoroTimer.TimerState state) {
                 broadcastState(ACTION_TICK, state);
+                updateNotification(state);
                 scheduleNextTick();
             }
 
             @Override
             public void onStateChanged(PomodoroTimer.TimerState state) {
                 broadcastState(ACTION_STATE_CHANGED, state);
-                mStateManager.saveState(state, mTimer.getFocusDurationMs(), mTimer.getBreakDurationMs());
+                mStateManager.saveState(state, mTimer.getFocusDurationMs(), 
+                        mTimer.getShortBreakDurationMs(), mTimer.getLongBreakDurationMs());
 
-                if (!mTimer.getStateValue().toString().startsWith("RUNNING")) {
+                if (!state.isRunning) {
                     stopTick();
+                    releaseWakeLock();
                 } else if (!mTickScheduled) {
                     scheduleNextTick();
+                    acquireWakeLock();
                 }
 
                 updateNotification(state);
-
-                if (mTimer.getStateValue() == PomodoroTimer.State.IDLE) {
+                
+                if (state.state == PomodoroTimer.State.IDLE || state.state == PomodoroTimer.State.COMPLETED) {
                     stopForeground(STOP_FOREGROUND_REMOVE);
+                    releaseWakeLock();
                     checkAutoStop();
                 }
             }
@@ -141,7 +177,7 @@ public class TimerEngineService extends Service {
 
             @Override
             public void onBreakComplete(int sessionCount) {
-                mNotificationHelper.showPhaseCompleteNotification(PomodoroTimer.Phase.BREAK, sessionCount);
+                mNotificationHelper.showPhaseCompleteNotification(PomodoroTimer.Phase.SHORT_BREAK, sessionCount);
             }
         });
 
@@ -152,7 +188,7 @@ public class TimerEngineService extends Service {
     }
 
     private void scheduleNextTick() {
-        if (mTickScheduled || !mTimer.getStateValue().toString().startsWith("RUNNING")) {
+        if (mTickScheduled || !mTimer.isRunning()) {
             return;
         }
         mTickScheduled = true;
@@ -165,9 +201,9 @@ public class TimerEngineService extends Service {
     }
 
     private void updateNotification(PomodoroTimer.TimerState state) {
-        if (state.isRunning) {
-            startForeground(AppConstants.NOTIFICATION_ID_TIMER,
-                    mNotificationHelper.buildTimerNotification(state));
+        if (mTimer.isRunning() || mTimer.getStateValue() != PomodoroTimer.State.IDLE) {
+             mNotificationManager.notify(AppConstants.NOTIFICATION_ID_TIMER, 
+                     mNotificationHelper.buildTimerNotification(state));
         }
     }
 
@@ -178,10 +214,10 @@ public class TimerEngineService extends Service {
     }
 
     private String serializeTimerState(PomodoroTimer.TimerState state) {
-        return String.format("%s|%s|%s|%d|%d|%d",
+        return String.format("%s|%s|%b|%d|%d|%d",
                 state.state.name(),
                 state.phase.name(),
-                String.valueOf(state.isRunning),
+                state.isRunning,
                 state.remainingMs,
                 state.sessionCount,
                 state.updatedAtElapsed);
@@ -191,31 +227,30 @@ public class TimerEngineService extends Service {
         return new PomodoroTimer.TimerState(
                 mTimer.getStateValue(),
                 mTimer.getPhaseValue(),
-                mTimer.getStateValue().toString().startsWith("RUNNING"),
+                mTimer.isRunning(),
                 mTimer.getRemainingMs(),
                 mTimer.getSessionCount(),
-                System.currentTimeMillis()
+                SystemClock.elapsedRealtime()
         );
     }
 
     private void restoreState() {
         TimerStateManager.RestoredState restored = mStateManager.restoreState();
-        mTimer.setDurations(restored.focusDurationMs, restored.breakDurationMs, restored.breakDurationMs);
-
-        // Transition to IDLE if manager says so; otherwise restore exact state
-        if (restored.state == PomodoroTimer.State.IDLE || restored.remainingMs == 0) {
-            mTimer.reset();
-        } else {
-            // State restoration wired up here; would need setter methods in PomodoroTimer
-            mTimer.reset();
+        mTimer.setDurations(restored.focusDurationMs, restored.shortBreakDurationMs, restored.longBreakDurationMs);
+        
+        if (restored.state != PomodoroTimer.State.IDLE) {
+             mTimer.restoreFromState(restored.toTimerState());
         }
     }
 
     private void checkAutoStop() {
+        if (mTimer.isRunning()) return;
+        
         long idleTimeMs = System.currentTimeMillis() - mLastActivityTimeMs;
         if (idleTimeMs > AppConstants.SERVICE_AUTO_STOP_DELAY_MS) {
             stopSelf();
+        } else {
+            mTickHandler.postDelayed(this::checkAutoStop, 60000);
         }
     }
 }
-

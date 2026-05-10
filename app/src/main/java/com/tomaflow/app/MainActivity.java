@@ -102,23 +102,23 @@ public class MainActivity extends AppCompatActivity {
     private void onPlayPauseClicked() {
         PomodoroTimer.TimerState currentState = mTimerViewModel.getTimerState().getValue();
         if (currentState == null) {
-            sendCommand(TimerEngineService.COMMAND_START_FOCUS);
+            sendCommand(AppConstants.COMMAND_START_FOCUS);
         } else if (currentState.isRunning) {
-            sendCommand(TimerEngineService.COMMAND_PAUSE);
+            sendCommand(AppConstants.COMMAND_PAUSE);
         } else if (currentState.state == PomodoroTimer.State.IDLE) {
-            sendCommand(TimerEngineService.COMMAND_START_FOCUS);
+            sendCommand(AppConstants.COMMAND_START_FOCUS);
         } else {
-            sendCommand(TimerEngineService.COMMAND_RESUME);
+            sendCommand(AppConstants.COMMAND_RESUME);
         }
     }
 
     private void onResetClicked() {
-        sendCommand(TimerEngineService.COMMAND_RESET);
+        sendCommand(AppConstants.COMMAND_RESET);
         animateProgress(mTimerView.getProgress(), 0f);
     }
 
     private void onSkipClicked() {
-        sendCommand(TimerEngineService.COMMAND_SKIP);
+        sendCommand(AppConstants.COMMAND_SKIP);
         Toast.makeText(this, R.string.session_skipped, Toast.LENGTH_SHORT).show();
     }
 
@@ -162,7 +162,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSessionLabel(PomodoroTimer.TimerState timerState) {
-        String label = String.format("%s — Session %d", timerState.phase.getDisplayName(), timerState.sessionCount);
+        int displayCount = timerState.phase == PomodoroTimer.Phase.FOCUS
+                ? timerState.sessionCount + 1
+                : timerState.sessionCount;
+        String label = String.format("%s — Session %d", timerState.phase.getDisplayName(), displayCount);
         mTvSessionLabel.setText(label);
     }
 
