@@ -13,11 +13,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * TaskRepository — single source of truth for TASK data.
+ * Single source of truth for task data.
+ * Reads return LiveData (Room handles background threading).
+ * Writes are dispatched to a single-thread ExecutorService.
  *
- * Abstracts the Room DAO behind a clean interface so ViewModels never
- * touch the database directly. All write operations are dispatched to a
- * background thread via the {@link ExecutorService}.
+ * Flow: UI -> ViewModel -> Repository -> TaskDao -> Room -> SQLite
  */
 public class TaskRepository {
 
@@ -30,23 +30,13 @@ public class TaskRepository {
         mExecutor = Executors.newSingleThreadExecutor();
     }
 
-    // ── Read (LiveData — auto-dispatched on background thread by Room) ──────────
-
-    public LiveData<List<TaskEntity>> getAllTasks()    { return mTaskDao.getAllTasks(); }
+    // Reads (LiveData — auto-dispatched by Room)
+    public LiveData<List<TaskEntity>> getAllTasks()     { return mTaskDao.getAllTasks(); }
     public LiveData<List<TaskEntity>> getPendingTasks() { return mTaskDao.getPendingTasks(); }
     public LiveData<Integer>          getPendingCount() { return mTaskDao.getPendingTaskCount(); }
 
-    // ── Write (must run off the main thread) ────────────────────────────────────
-
-    public void insert(TaskEntity task) {
-        mExecutor.execute(() -> mTaskDao.insert(task));
-    }
-
-    public void update(TaskEntity task) {
-        mExecutor.execute(() -> mTaskDao.update(task));
-    }
-
-    public void delete(TaskEntity task) {
-        mExecutor.execute(() -> mTaskDao.delete(task));
-    }
+    // Writes (background thread via ExecutorService)
+    public void insert(TaskEntity task)  { mExecutor.execute(() -> mTaskDao.insert(task)); }
+    public void update(TaskEntity task)  { mExecutor.execute(() -> mTaskDao.update(task)); }
+    public void delete(TaskEntity task)  { mExecutor.execute(() -> mTaskDao.delete(task)); }
 }

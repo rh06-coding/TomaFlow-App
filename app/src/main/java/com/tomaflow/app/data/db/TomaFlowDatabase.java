@@ -11,15 +11,21 @@ import com.tomaflow.app.data.db.entity.SessionEntity;
 import com.tomaflow.app.data.db.entity.SettingsEntity;
 import com.tomaflow.app.data.db.entity.TaskEntity;
 
-// Bổ sung SettingsEntity vào mảng entities
+/**
+ * Room database singleton. Tables: Tasks, Sessions, Settings.
+ *
+ * Uses double-checked locking so only one instance exists across threads.
+ * fallbackToDestructiveMigration simplifies schema changes during development.
+ */
 @Database(entities = {TaskEntity.class, SessionEntity.class, SettingsEntity.class}, version = 1, exportSchema = false)
 public abstract class TomaFlowDatabase extends RoomDatabase {
 
     public abstract TaskDao taskDao();
     public abstract SessionDao sessionDao();
-    // public abstract SettingsDao settingsDao(); // Uncomment khi tạo SettingsDao
+    // public abstract SettingsDao settingsDao(); // TODO: create SettingsDao
 
     private static volatile TomaFlowDatabase INSTANCE;
+
     public static TomaFlowDatabase getInstance(final Context context) {
         if (INSTANCE == null) {
             synchronized (TomaFlowDatabase.class) {

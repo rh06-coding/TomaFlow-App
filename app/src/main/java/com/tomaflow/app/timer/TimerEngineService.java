@@ -19,9 +19,22 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.tomaflow.app.constants.AppConstants;
 import com.tomaflow.app.utils.NotificationHelper;
 
+/**
+ * Foreground Service that runs the Pomodoro timer in the background.
+ *
+ * Why a Service? The timer must keep running even when the user leaves the app.
+ * Foreground services require a visible notification (Android requirement).
+ *
+ * Communication:
+ *   UI -> Service: Intent with ACTION_COMMAND + extra COMMAND_*
+ *   Service -> UI: LocalBroadcast with ACTION_TICK / ACTION_STATE_CHANGED
+ */
 public class TimerEngineService extends Service {
+
+    // Intent action for commands FROM the UI
     public static final String ACTION_COMMAND = "com.tomaflow.TIMER_COMMAND";
 
+    // Broadcast actions sent TO the UI
     public static final String ACTION_STATE_CHANGED = "com.tomaflow.TIMER_STATE_CHANGED";
     public static final String ACTION_TICK = "com.tomaflow.TIMER_TICK";
     public static final String EXTRA_TIMER_STATE = "timer_state";
@@ -34,6 +47,7 @@ public class TimerEngineService extends Service {
     private Handler mTickHandler;
     private Runnable mTickRunnable;
     private PowerManager.WakeLock mWakeLock;
+
 
     private volatile boolean mTickScheduled = false;
     private long mLastActivityTimeMs = 0;
@@ -55,6 +69,10 @@ public class TimerEngineService extends Service {
         restoreState();
     }
 
+    /**
+     * Handles incoming intents from the UI layer.
+     * Returns START_STICKY so the system restarts this service if killed.
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mLastActivityTimeMs = System.currentTimeMillis();
@@ -68,6 +86,7 @@ public class TimerEngineService extends Service {
         return START_STICKY;
     }
 
+    /** Dispatch command string to the appropriate PomodoroTimer method. */
     private void handleCommand(Intent intent) {
         String command = intent.getStringExtra(AppConstants.INTENT_EXTRA_COMMAND);
         if (command == null) return;
@@ -112,9 +131,7 @@ public class TimerEngineService extends Service {
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
+    public IBinder onBind(Intent intent) { return null; }
 
     @Override
     public void onDestroy() {
@@ -138,8 +155,10 @@ public class TimerEngineService extends Service {
         }
     }
 
+
     private void setupTimerListener() {
         mTimer.setOnTimerEventListener(new PomodoroTimer.OnTimerEventListener() {
+
             @Override
             public void onTick(PomodoroTimer.TimerState state) {
                 broadcastState(ACTION_TICK, state);
@@ -173,11 +192,15 @@ public class TimerEngineService extends Service {
             @Override
             public void onFocusComplete(int sessionCount) {
                 mNotificationHelper.showPhaseCompleteNotification(PomodoroTimer.Phase.FOCUS, sessionCount);
+                mNotificationHelper.playCompletionSound();
+                mNotificationHelper.vibrateForPhaseComplete(PomodoroTimer.Phase.FOCUS);
             }
 
             @Override
             public void onBreakComplete(int sessionCount) {
                 mNotificationHelper.showPhaseCompleteNotification(PomodoroTimer.Phase.SHORT_BREAK, sessionCount);
+                mNotificationHelper.playCompletionSound();
+                mNotificationHelper.vibrateForPhaseComplete(PomodoroTimer.Phase.SHORT_BREAK);
             }
         });
 
@@ -187,6 +210,7 @@ public class TimerEngineService extends Service {
         };
     }
 
+    /** Post the next tick() call after 1 second. Skips if already scheduled. */
     private void scheduleNextTick() {
         if (mTickScheduled || !mTimer.isRunning()) {
             return;
@@ -200,6 +224,7 @@ public class TimerEngineService extends Service {
         mTickHandler.removeCallbacks(mTickRunnable);
     }
 
+    /** Refresh the foreground notification with current timer state. */
     private void updateNotification(PomodoroTimer.TimerState state) {
         if (mTimer.isRunning() || mTimer.getStateValue() != PomodoroTimer.State.IDLE) {
              mNotificationManager.notify(AppConstants.NOTIFICATION_ID_TIMER, 
@@ -207,12 +232,17 @@ public class TimerEngineService extends Service {
         }
     }
 
+    /** Broadcast serialized timer state to the UI via LocalBroadcastManager. */
     private void broadcastState(String action, PomodoroTimer.TimerState state) {
         Intent broadcast = new Intent(action);
         broadcast.putExtra(EXTRA_TIMER_STATE, serializeTimerState(state));
         mBroadcastManager.sendBroadcast(broadcast);
     }
 
+    /**
+     * Serialize TimerState to a pipe-delimited string for Intent transport.
+     * Format: "STATE|PHASE|isRunning|remainingMs|sessionCount|updatedAt"
+     */
     private String serializeTimerState(PomodoroTimer.TimerState state) {
         return String.format("%s|%s|%b|%d|%d|%d",
                 state.state.name(),
@@ -234,15 +264,17 @@ public class TimerEngineService extends Service {
         );
     }
 
+    /** Restore timer state from SharedPreferences in case the service was killed. */
     private void restoreState() {
         TimerStateManager.RestoredState restored = mStateManager.restoreState();
         mTimer.setDurations(restored.focusDurationMs, restored.shortBreakDurationMs, restored.longBreakDurationMs);
-        
+
         if (restored.state != PomodoroTimer.State.IDLE) {
              mTimer.restoreFromState(restored.toTimerState());
         }
     }
 
+    /** Stop the service if idle for longer than SERVICE_AUTO_STOP_DELAY_MS. */
     private void checkAutoStop() {
         if (mTimer.isRunning()) return;
         

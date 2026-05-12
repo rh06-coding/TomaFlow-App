@@ -17,7 +17,18 @@ import com.tomaflow.app.constants.AppConstants;
 import com.tomaflow.app.timer.PomodoroTimer;
 import com.tomaflow.app.timer.TimerEngineService;
 
+/**
+ * MVVM ViewModel bridging TimerEngineService and MainActivity.
+ *
+ * Receives timer state from the Service via LocalBroadcast,
+ * exposes it as LiveData for the UI, and relays user commands back.
+ *
+ * Flow:
+ *   Service --[broadcast]--> ViewModel --[LiveData]--> MainActivity
+ *   MainActivity --[sendCommand]--> ViewModel --[Intent]--> Service
+ */
 public class TimerViewModel extends AndroidViewModel {
+
     private final MutableLiveData<PomodoroTimer.TimerState> mTimerState = new MutableLiveData<>();
     private final LocalBroadcastManager mBroadcastManager;
     private BroadcastReceiver mBroadcastReceiver;
@@ -27,10 +38,12 @@ public class TimerViewModel extends AndroidViewModel {
         this.mBroadcastManager = LocalBroadcastManager.getInstance(application);
     }
 
+    /** Observe this in MainActivity to receive live timer updates. */
     public LiveData<PomodoroTimer.TimerState> getTimerState() {
         return mTimerState;
     }
 
+    /** Start listening for broadcasts. Call in onStart(). */
     public void startListening() {
         if (mBroadcastReceiver != null) return;
 
@@ -54,6 +67,7 @@ public class TimerViewModel extends AndroidViewModel {
         mBroadcastManager.registerReceiver(mBroadcastReceiver, filter);
     }
 
+    /** Stop listening. Call in onStop() to avoid leaks. */
     public void stopListening() {
         if (mBroadcastReceiver != null) {
             mBroadcastManager.unregisterReceiver(mBroadcastReceiver);
@@ -61,6 +75,10 @@ public class TimerViewModel extends AndroidViewModel {
         }
     }
 
+    /**
+     * Send a command to TimerEngineService.
+     * Valid commands: COMMAND_START_FOCUS, COMMAND_PAUSE, COMMAND_RESUME, COMMAND_SKIP, COMMAND_RESET.
+     */
     public void sendCommand(String command) {
         Intent intent = new Intent(TimerEngineService.ACTION_COMMAND);
         intent.setClass(getApplication(), TimerEngineService.class);
@@ -79,6 +97,10 @@ public class TimerViewModel extends AndroidViewModel {
         stopListening();
     }
 
+    /**
+     * Deserialize pipe-delimited string back to TimerState.
+     * Format: "STATE|PHASE|isRunning|remainingMs|sessionCount|updatedAt"
+     */
     private PomodoroTimer.TimerState deserializeTimerState(String serialized) {
         if (serialized == null || serialized.isEmpty()) return null;
 

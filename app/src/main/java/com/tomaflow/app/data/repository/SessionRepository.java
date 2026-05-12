@@ -13,10 +13,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * SessionRepository — single source of truth for SESSION data.
- *
- * Called by MainActivity after a Pomodoro session finishes to persist the record,
- * and by StatsActivity to fetch aggregated weekly data for the bar charts.
+ * Single source of truth for session data.
+ * Called by MainActivity to persist sessions, and by StatsActivity for weekly charts.
  */
 public class SessionRepository {
 
@@ -29,16 +27,12 @@ public class SessionRepository {
         mExecutor   = Executors.newSingleThreadExecutor();
     }
 
-    // ── Read ──────────────────────────────────────────────────────────────────
+    // Reads
+    public LiveData<List<SessionEntity>>              getAllSessions()       { return mSessionDao.getAllSessions(); }
+    public LiveData<Integer>                          getWeeklyMinutes()    { return mSessionDao.getWeeklyFocusMinutes(); }
+    public LiveData<Integer>                          getWeeklyCycles()     { return mSessionDao.getWeeklyCompletedCycles(); }
+    public LiveData<List<SessionDao.DailyStatRow>>    getWeeklyDailyStats() { return mSessionDao.getWeeklyDailyStats(); }
 
-    public LiveData<List<SessionEntity>>              getAllSessions()        { return mSessionDao.getAllSessions(); }
-    public LiveData<Integer>                          getWeeklyMinutes()     { return mSessionDao.getWeeklyFocusMinutes(); }
-    public LiveData<Integer>                          getWeeklyCycles()      { return mSessionDao.getWeeklyCompletedCycles(); }
-    public LiveData<List<SessionDao.DailyStatRow>>    getWeeklyDailyStats()  { return mSessionDao.getWeeklyDailyStats(); }
-
-    // ── Write ─────────────────────────────────────────────────────────────────
-
-    public void insert(SessionEntity session) {
-        mExecutor.execute(() -> mSessionDao.insert(session));
-    }
+    // Writes
+    public void insert(SessionEntity session) { mExecutor.execute(() -> mSessionDao.insert(session)); }
 }

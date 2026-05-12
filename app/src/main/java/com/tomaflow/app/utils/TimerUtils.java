@@ -6,12 +6,12 @@ import com.tomaflow.app.timer.PomodoroTimer.Phase;
 
 import java.util.Locale;
 
+/** Utility methods for time formatting, progress calculation, and unit conversion. */
 public final class TimerUtils {
 
-    private TimerUtils() {
-        // Utility class.
-    }
+    private TimerUtils() {}
 
+    /** 1500000ms -> "25:00", 65000ms -> "01:05" */
     public static String formatMillisToMmSs(long millis) {
         if (millis < 0) millis = 0;
         long totalSeconds = millis / 1000;
@@ -20,6 +20,7 @@ public final class TimerUtils {
         return String.format(Locale.US, "%02d:%02d", minutes, seconds);
     }
 
+    /** 3661000ms -> "01:01:01" */
     public static String formatMillisToHhMmSs(long millis) {
         if (millis < 0) millis = 0;
         long totalSeconds = millis / 1000;
@@ -41,21 +42,18 @@ public final class TimerUtils {
             return "Unknown";
         }
 
-        // TODO: map to localized strings from resources.
         return phase.getDisplayName();
     }
 
+    /** Progress as integer percent (0-100). */
     public static int calculateProgressPercent(long elapsedMs, long totalMs) {
-        if (totalMs <= 0) {
-            return 0;
-        }
+        if (totalMs <= 0) return 0;
         return Math.min(100, (int) ((elapsedMs * 100L) / totalMs));
     }
 
+    /** Progress as float (0.0-1.0) for ProgressBar. */
     public static float calculateProgressFloat(long elapsedMs, long totalMs) {
-        if (totalMs <= 0) {
-            return 0f;
-        }
+        if (totalMs <= 0) return 0f;
         return Math.min(1f, (float) elapsedMs / totalMs);
     }
 
@@ -67,26 +65,13 @@ public final class TimerUtils {
         return phase == Phase.FOCUS;
     }
 
-    public static long secondsToMillis(long seconds) {
-        return seconds * 1000L;
-    }
+    public static long secondsToMillis(long seconds) { return seconds * 1000L; }
+    public static long minutesToMillis(long minutes) { return minutes * 60 * 1000L; }
+    public static long minutesToSeconds(long minutes) { return minutes * 60; }
+    public static int millisToMinutes(long millis) { return (int) ((millis / 1000) / 60); }
+    public static int millisToSeconds(long millis) { return (int) (millis / 1000); }
 
-    public static long minutesToMillis(long minutes) {
-        return minutes * 60 * 1000L;
-    }
-
-    public static long minutesToSeconds(long minutes) {
-        return minutes * 60;
-    }
-
-    public static int millisToMinutes(long millis) {
-        return (int) ((millis / 1000) / 60);
-    }
-
-    public static int millisToSeconds(long millis) {
-        return (int) (millis / 1000);
-    }
-
+    /** 1500000ms -> [25, 0], 65000ms -> [1, 5] */
     public static int[] getMinutesAndSeconds(long millis) {
         long totalSeconds = millis / 1000;
         int minutes = (int) (totalSeconds / 60);
