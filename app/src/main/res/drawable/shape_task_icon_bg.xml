@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    shape_task_icon_bg.xml — Rounded square chip behind the task icon inside
+    the current task card. Colour matches the prototype's green tint:
+    rgba(160, 243, 153, 0.30).
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#4DA0F399" />
+    <corners android:radius="12dp" />
+</shape>

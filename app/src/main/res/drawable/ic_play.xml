@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+    ic_play.xml â€” Play / Start icon
+    Converted from ic_play.svg (40Ã—48 viewBox).
+    scaleY="-1" corrects the Figma upside-down coordinate export.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="48dp"
+    android:viewportWidth="40.02"
+    android:viewportHeight="48">
+        <path
+            android:fillColor="@android:color/white"
+            android:pathData="M13.3433,12.3333V35.6667L31.6767,24L13.3433,12.3333ZM16.6767,18.4167L25.4267,24L16.6767,29.5833V18.4167Z" />
+</vector>
+
