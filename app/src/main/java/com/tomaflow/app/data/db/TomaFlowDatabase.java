@@ -4,7 +4,7 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-
+import com.tomaflow.app.data.db.dao.SettingsDao;
 import com.tomaflow.app.data.db.dao.SessionDao;
 import com.tomaflow.app.data.db.dao.TaskDao;
 import com.tomaflow.app.data.db.entity.SessionEntity;
@@ -22,7 +22,7 @@ public abstract class TomaFlowDatabase extends RoomDatabase {
 
     public abstract TaskDao taskDao();
     public abstract SessionDao sessionDao();
-    // public abstract SettingsDao settingsDao(); // TODO: create SettingsDao
+    public abstract SettingsDao settingsDao();
 
     private static volatile TomaFlowDatabase INSTANCE;
 
