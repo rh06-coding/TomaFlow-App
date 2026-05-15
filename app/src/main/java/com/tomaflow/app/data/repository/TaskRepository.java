@@ -39,4 +39,12 @@ public class TaskRepository {
     public void insert(TaskEntity task)  { mExecutor.execute(() -> mTaskDao.insert(task)); }
     public void update(TaskEntity task)  { mExecutor.execute(() -> mTaskDao.update(task)); }
     public void delete(TaskEntity task)  { mExecutor.execute(() -> mTaskDao.delete(task)); }
+
+    public LiveData<TaskEntity> getTaskById(int taskId) {
+        return mTaskDao.getTaskById(taskId);
+    }
+
+    public void deleteById(int taskId) {
+        mExecutor.execute(() -> mTaskDao.deleteById(taskId));
+    }
 }
