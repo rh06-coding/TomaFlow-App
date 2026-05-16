@@ -5,6 +5,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
+import android.media.AudioAttributes;
+import android.media.AudioFocusRequest;
+import android.media.AudioManager;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
@@ -49,10 +52,28 @@ public class TimerEngineService extends Service {
     private Handler mTickHandler;
     private Runnable mTickRunnable;
     private PowerManager.WakeLock mWakeLock;
+    private AudioManager mAudioManager;
+    private AudioFocusRequest mFocusRequest;
 
     private final IBinder mBinder = new TimerBinder();
     private volatile boolean mTickScheduled = false;
     private long mLastActivityTimeMs = 0;
+
+    private final AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = focusChange -> {
+        switch (focusChange) {
+            case AudioManager.AUDIOFOCUS_LOSS:
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                if (mTimer.isRunning()) {
+                    mTimer.pause();
+                }
+                break;
+            case AudioManager.AUDIOFOCUS_GAIN:
+                if (!mTimer.isRunning() && mTimer.getStateValue() != PomodoroTimer.State.IDLE) {
+                    mTimer.resume();
+                }
+                break;
+        }
+    };
 
     /** Class used for the client Binder. */
     public class TimerBinder extends Binder {
@@ -70,6 +91,7 @@ public class TimerEngineService extends Service {
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mSessionRepository = new SessionRepository(getApplication());
         mTickHandler = new Handler(Looper.getMainLooper());
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TomaFlow:TimerWakeLock");
@@ -148,6 +170,7 @@ public class TimerEngineService extends Service {
     public void onDestroy() {
         stopTick();
         releaseWakeLock();
+        abandonAudioFocus();
         mTimer.destroy();
         super.onDestroy();
     }
@@ -166,6 +189,31 @@ public class TimerEngineService extends Service {
         }
     }
 
+    private void requestAudioFocus() {
+        if (mFocusRequest == null) {
+            AudioAttributes playbackAttributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build();
+            mFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
+                    .setAudioAttributes(playbackAttributes)
+                    .setAcceptsDelayedFocusGain(true)
+                    .setOnAudioFocusChangeListener(mOnAudioFocusChangeListener)
+                    .build();
+        }
+
+        int res = mAudioManager.requestAudioFocus(mFocusRequest);
+        if (res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            Log.d(TAG, "Audio focus granted");
+        }
+    }
+
+    private void abandonAudioFocus() {
+        if (mFocusRequest != null) {
+            mAudioManager.abandonAudioFocusRequest(mFocusRequest);
+            Log.d(TAG, "Audio focus abandoned");
+        }
+    }
 
     private void setupTimerListener() {
         mTimer.setOnTimerEventListener(new PomodoroTimer.OnTimerEventListener() {
@@ -184,9 +232,11 @@ public class TimerEngineService extends Service {
                 if (!state.isRunning) {
                     stopTick();
                     releaseWakeLock();
+                    abandonAudioFocus();
                 } else if (!mTickScheduled) {
                     scheduleNextTick();
                     acquireWakeLock();
+                    requestAudioFocus();
                 }
 
                 updateNotification(state);
