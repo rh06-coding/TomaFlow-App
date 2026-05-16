@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -14,9 +15,10 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tomaflow.app.constants.AppConstants;
+import com.tomaflow.app.data.db.entity.SessionEntity;
+import com.tomaflow.app.data.repository.SessionRepository;
 import com.tomaflow.app.utils.NotificationHelper;
 
 /**
@@ -26,31 +28,38 @@ import com.tomaflow.app.utils.NotificationHelper;
  * Foreground services require a visible notification (Android requirement).
  *
  * Communication:
- *   UI -> Service: Intent with ACTION_COMMAND + extra COMMAND_*
- *   Service -> UI: LocalBroadcast with ACTION_TICK / ACTION_STATE_CHANGED
+ *   UI -> Service: Bound connection (TimerBinder) or Intent with ACTION_COMMAND
+ *   Service -> UI: Callback interface (OnTimerEventListener) via bound connection
  */
 public class TimerEngineService extends Service {
 
+    private static final String TAG = "TimerEngineService";
+    private static final long WAKELOCK_TIMEOUT_MS = 35 * 60 * 1000L; // 35 minutes
+    private static final long TICK_INTERVAL_MS = 1000L;
+    private static final long AUTO_STOP_CHECK_INTERVAL_MS = 60000L;
+
     // Intent action for commands FROM the UI
     public static final String ACTION_COMMAND = "com.tomaflow.TIMER_COMMAND";
-
-    // Broadcast actions sent TO the UI
-    public static final String ACTION_STATE_CHANGED = "com.tomaflow.TIMER_STATE_CHANGED";
-    public static final String ACTION_TICK = "com.tomaflow.TIMER_TICK";
-    public static final String EXTRA_TIMER_STATE = "timer_state";
 
     private PomodoroTimer mTimer;
     private TimerStateManager mStateManager;
     private NotificationHelper mNotificationHelper;
     private NotificationManager mNotificationManager;
-    private LocalBroadcastManager mBroadcastManager;
+    private SessionRepository mSessionRepository;
     private Handler mTickHandler;
     private Runnable mTickRunnable;
     private PowerManager.WakeLock mWakeLock;
 
-
+    private final IBinder mBinder = new TimerBinder();
     private volatile boolean mTickScheduled = false;
     private long mLastActivityTimeMs = 0;
+
+    /** Class used for the client Binder. */
+    public class TimerBinder extends Binder {
+        public TimerEngineService getService() {
+            return TimerEngineService.this;
+        }
+    }
 
     @Override
     public void onCreate() {
@@ -59,7 +68,7 @@ public class TimerEngineService extends Service {
         mStateManager = new TimerStateManager(this);
         mNotificationHelper = new NotificationHelper(this);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mBroadcastManager = LocalBroadcastManager.getInstance(this);
+        mSessionRepository = new SessionRepository(getApplication());
         mTickHandler = new Handler(Looper.getMainLooper());
 
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -131,7 +140,9 @@ public class TimerEngineService extends Service {
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent) { return null; }
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
 
     @Override
     public void onDestroy() {
@@ -143,15 +154,15 @@ public class TimerEngineService extends Service {
 
     private void acquireWakeLock() {
         if (mWakeLock != null && !mWakeLock.isHeld()) {
-            mWakeLock.acquire(10 * 60 * 1000L /*10 minutes safety timeout*/);
-            Log.d("TimerEngineService", "WakeLock acquired");
+            mWakeLock.acquire(WAKELOCK_TIMEOUT_MS);
+            Log.d(TAG, "WakeLock acquired");
         }
     }
 
     private void releaseWakeLock() {
         if (mWakeLock != null && mWakeLock.isHeld()) {
             mWakeLock.release();
-            Log.d("TimerEngineService", "WakeLock released");
+            Log.d(TAG, "WakeLock released");
         }
     }
 
@@ -161,14 +172,12 @@ public class TimerEngineService extends Service {
 
             @Override
             public void onTick(PomodoroTimer.TimerState state) {
-                broadcastState(ACTION_TICK, state);
                 updateNotification(state);
                 scheduleNextTick();
             }
 
             @Override
             public void onStateChanged(PomodoroTimer.TimerState state) {
-                broadcastState(ACTION_STATE_CHANGED, state);
                 mStateManager.saveState(state, mTimer.getFocusDurationMs(), 
                         mTimer.getShortBreakDurationMs(), mTimer.getLongBreakDurationMs());
 
@@ -194,13 +203,22 @@ public class TimerEngineService extends Service {
                 mNotificationHelper.showPhaseCompleteNotification(PomodoroTimer.Phase.FOCUS, sessionCount);
                 mNotificationHelper.playCompletionSound();
                 mNotificationHelper.vibrateForPhaseComplete(PomodoroTimer.Phase.FOCUS);
+
+                // Insert session into database
+                SessionEntity session = new SessionEntity();
+                session.startTime = System.currentTimeMillis() - mTimer.getFocusDurationMs();
+                session.endTime = System.currentTimeMillis();
+                session.duration = (int) (mTimer.getFocusDurationMs() / 1000);
+                session.status = "Completed";
+                mSessionRepository.insert(session);
             }
 
             @Override
             public void onBreakComplete(int sessionCount) {
-                mNotificationHelper.showPhaseCompleteNotification(PomodoroTimer.Phase.SHORT_BREAK, sessionCount);
+                PomodoroTimer.Phase phase = mTimer.getPhaseValue();
+                mNotificationHelper.showPhaseCompleteNotification(phase, sessionCount);
                 mNotificationHelper.playCompletionSound();
-                mNotificationHelper.vibrateForPhaseComplete(PomodoroTimer.Phase.SHORT_BREAK);
+                mNotificationHelper.vibrateForPhaseComplete(phase);
             }
         });
 
@@ -216,7 +234,7 @@ public class TimerEngineService extends Service {
             return;
         }
         mTickScheduled = true;
-        mTickHandler.postDelayed(mTickRunnable, 1000);
+        mTickHandler.postDelayed(mTickRunnable, TICK_INTERVAL_MS);
     }
 
     private void stopTick() {
@@ -232,25 +250,8 @@ public class TimerEngineService extends Service {
         }
     }
 
-    /** Broadcast serialized timer state to the UI via LocalBroadcastManager. */
-    private void broadcastState(String action, PomodoroTimer.TimerState state) {
-        Intent broadcast = new Intent(action);
-        broadcast.putExtra(EXTRA_TIMER_STATE, serializeTimerState(state));
-        mBroadcastManager.sendBroadcast(broadcast);
-    }
-
-    /**
-     * Serialize TimerState to a pipe-delimited string for Intent transport.
-     * Format: "STATE|PHASE|isRunning|remainingMs|sessionCount|updatedAt"
-     */
-    private String serializeTimerState(PomodoroTimer.TimerState state) {
-        return String.format("%s|%s|%b|%d|%d|%d",
-                state.state.name(),
-                state.phase.name(),
-                state.isRunning,
-                state.remainingMs,
-                state.sessionCount,
-                state.updatedAtElapsed);
+    public PomodoroTimer getTimer() {
+        return mTimer;
     }
 
     private PomodoroTimer.TimerState buildTimerState() {
@@ -282,7 +283,7 @@ public class TimerEngineService extends Service {
         if (idleTimeMs > AppConstants.SERVICE_AUTO_STOP_DELAY_MS) {
             stopSelf();
         } else {
-            mTickHandler.postDelayed(this::checkAutoStop, 60000);
+            mTickHandler.postDelayed(this::checkAutoStop, AUTO_STOP_CHECK_INTERVAL_MS);
         }
     }
 }

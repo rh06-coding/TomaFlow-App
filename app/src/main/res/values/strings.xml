@@ -69,4 +69,18 @@
     <string name="label_version">Version 1.0.0</string>
     <string name="label_built_with">Built with Material Design 3</string>
 
+    <!-- Notifications -->
+    <string name="notification_timer_title">TomaFlow</string>
+    <string name="notification_action_pause">Pause</string>
+    <string name="notification_action_resume">Resume</string>
+    <string name="notification_action_skip">Skip</string>
+    <string name="notification_focus_complete_title">Work Session Complete</string>
+    <string name="notification_break_complete_title">Break Complete</string>
+    <string name="notification_focus_complete_msg">Session %d finished! Time for a break.</string>
+    <string name="notification_break_complete_msg">Break is over. Ready to focus?</string>
+    <string name="notification_channel_timer_name">Timer</string>
+    <string name="notification_channel_timer_desc">Pomodoro timer notifications</string>
+    <string name="notification_channel_sound_name">Phase Complete</string>
+    <string name="notification_channel_sound_desc">Notifications when phase completes</string>
+
 </resources>

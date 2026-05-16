@@ -1,17 +1,16 @@
 package com.tomaflow.app.ui.timer;
 
 import android.app.Application;
-import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tomaflow.app.constants.AppConstants;
 import com.tomaflow.app.timer.PomodoroTimer;
@@ -20,22 +19,36 @@ import com.tomaflow.app.timer.TimerEngineService;
 /**
  * MVVM ViewModel bridging TimerEngineService and MainActivity.
  *
- * Receives timer state from the Service via LocalBroadcast,
- * exposes it as LiveData for the UI, and relays user commands back.
+ * Binds to TimerEngineService, implements OnTimerEventListener,
+ * and exposes timer state as LiveData for the UI.
  *
  * Flow:
- *   Service --[broadcast]--> ViewModel --[LiveData]--> MainActivity
+ *   Service --[listener]--> ViewModel --[LiveData]--> MainActivity
  *   MainActivity --[sendCommand]--> ViewModel --[Intent]--> Service
  */
-public class TimerViewModel extends AndroidViewModel {
+public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.OnTimerEventListener {
 
     private final MutableLiveData<PomodoroTimer.TimerState> mTimerState = new MutableLiveData<>();
-    private final LocalBroadcastManager mBroadcastManager;
-    private BroadcastReceiver mBroadcastReceiver;
+    private TimerEngineService mService;
+    private boolean mBound = false;
+
+    private final ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            TimerEngineService.TimerBinder binder = (TimerEngineService.TimerBinder) service;
+            mService = binder.getService();
+            mBound = true;
+            mService.getTimer().setOnTimerEventListener(TimerViewModel.this);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
 
     public TimerViewModel(@NonNull Application application) {
         super(application);
-        this.mBroadcastManager = LocalBroadcastManager.getInstance(application);
     }
 
     /** Observe this in MainActivity to receive live timer updates. */
@@ -43,36 +56,41 @@ public class TimerViewModel extends AndroidViewModel {
         return mTimerState;
     }
 
-    /** Start listening for broadcasts. Call in onStart(). */
+    /** Start listening by binding to the Service. Call in onStart(). */
     public void startListening() {
-        if (mBroadcastReceiver != null) return;
-
-        mBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                if (action == null) return;
-
-                String serialized = intent.getStringExtra(TimerEngineService.EXTRA_TIMER_STATE);
-                PomodoroTimer.TimerState state = deserializeTimerState(serialized);
-                if (state != null) {
-                    mTimerState.setValue(state);
-                }
-            }
-        };
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(TimerEngineService.ACTION_STATE_CHANGED);
-        filter.addAction(TimerEngineService.ACTION_TICK);
-        mBroadcastManager.registerReceiver(mBroadcastReceiver, filter);
+        Intent intent = new Intent(getApplication(), TimerEngineService.class);
+        getApplication().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
-    /** Stop listening. Call in onStop() to avoid leaks. */
+    /** Stop listening by unbinding. Call in onStop(). */
     public void stopListening() {
-        if (mBroadcastReceiver != null) {
-            mBroadcastManager.unregisterReceiver(mBroadcastReceiver);
-            mBroadcastReceiver = null;
+        if (mBound) {
+            if (mService != null) {
+                mService.getTimer().destroy(); // Cleanup listener
+            }
+            getApplication().unbindService(mConnection);
+            mBound = false;
         }
+    }
+
+    @Override
+    public void onTick(PomodoroTimer.TimerState state) {
+        mTimerState.postValue(state);
+    }
+
+    @Override
+    public void onStateChanged(PomodoroTimer.TimerState state) {
+        mTimerState.postValue(state);
+    }
+
+    @Override
+    public void onFocusComplete(int sessionCount) {
+        // ViewModel can handle extra logic here if needed
+    }
+
+    @Override
+    public void onBreakComplete(int sessionCount) {
+        // ViewModel can handle extra logic here if needed
     }
 
     /**
@@ -84,40 +102,12 @@ public class TimerViewModel extends AndroidViewModel {
         intent.setClass(getApplication(), TimerEngineService.class);
         intent.putExtra(AppConstants.INTENT_EXTRA_COMMAND, command);
         
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getApplication().startForegroundService(intent);
-        } else {
-            getApplication().startService(intent);
-        }
+        getApplication().startForegroundService(intent);
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
         stopListening();
-    }
-
-    /**
-     * Deserialize pipe-delimited string back to TimerState.
-     * Format: "STATE|PHASE|isRunning|remainingMs|sessionCount|updatedAt"
-     */
-    private PomodoroTimer.TimerState deserializeTimerState(String serialized) {
-        if (serialized == null || serialized.isEmpty()) return null;
-
-        String[] parts = serialized.split("\\|");
-        if (parts.length < 6) return null;
-
-        try {
-            PomodoroTimer.State state = PomodoroTimer.State.valueOf(parts[0]);
-            PomodoroTimer.Phase phase = PomodoroTimer.Phase.valueOf(parts[1]);
-            boolean isRunning = Boolean.parseBoolean(parts[2]);
-            long remainingMs = Long.parseLong(parts[3]);
-            int sessionCount = Integer.parseInt(parts[4]);
-            long updatedAt = Long.parseLong(parts[5]);
-
-            return new PomodoroTimer.TimerState(state, phase, isRunning, remainingMs, sessionCount, updatedAt);
-        } catch (Exception e) {
-            return null;
-        }
     }
 }

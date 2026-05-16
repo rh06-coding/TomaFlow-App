@@ -50,10 +50,10 @@ public class NotificationHelper {
             // Low importance — no sound, used for the persistent timer notification
             NotificationChannel timerChannel = new NotificationChannel(
                     AppConstants.NOTIFICATION_CHANNEL_TIMER,
-                    "Timer",
+                    mContext.getString(R.string.notification_channel_timer_name),
                     NotificationManager.IMPORTANCE_LOW
             );
-            timerChannel.setDescription("Pomodoro timer notifications");
+            timerChannel.setDescription(mContext.getString(R.string.notification_channel_timer_desc));
             timerChannel.enableVibration(false);
             timerChannel.setShowBadge(false);
             mNotificationManager.createNotificationChannel(timerChannel);
@@ -61,10 +61,10 @@ public class NotificationHelper {
             // High importance — sound + vibration, used for phase-complete alerts
             NotificationChannel soundChannel = new NotificationChannel(
                     AppConstants.NOTIFICATION_CHANNEL_SOUND,
-                    "Phase Complete",
+                    mContext.getString(R.string.notification_channel_sound_name),
                     NotificationManager.IMPORTANCE_HIGH
             );
-            soundChannel.setDescription("Notifications when phase completes");
+            soundChannel.setDescription(mContext.getString(R.string.notification_channel_sound_desc));
             soundChannel.enableVibration(true);
             mNotificationManager.createNotificationChannel(soundChannel);
         }
@@ -85,7 +85,7 @@ public class NotificationHelper {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, AppConstants.NOTIFICATION_CHANNEL_TIMER)
-                .setContentTitle("TomaFlow")
+                .setContentTitle(mContext.getString(R.string.notification_timer_title))
                 .setContentText(contentText)
                 .setSmallIcon(R.drawable.ic_pause) // Should be a dedicated timer icon
                 .setContentIntent(pendingIntent)
@@ -96,11 +96,11 @@ public class NotificationHelper {
 
         // Add Actions
         if (timerState.isRunning) {
-            builder.addAction(R.drawable.ic_pause, "Pause", getServicePendingIntent(AppConstants.COMMAND_PAUSE));
+            builder.addAction(R.drawable.ic_pause, mContext.getString(R.string.notification_action_pause), getServicePendingIntent(AppConstants.COMMAND_PAUSE));
         } else {
-            builder.addAction(R.drawable.ic_play, "Resume", getServicePendingIntent(AppConstants.COMMAND_RESUME));
+            builder.addAction(R.drawable.ic_play, mContext.getString(R.string.notification_action_resume), getServicePendingIntent(AppConstants.COMMAND_RESUME));
         }
-        builder.addAction(R.drawable.ic_play, "Skip", getServicePendingIntent(AppConstants.COMMAND_SKIP));
+        builder.addAction(R.drawable.ic_play, mContext.getString(R.string.notification_action_skip), getServicePendingIntent(AppConstants.COMMAND_SKIP));
 
         return builder.build();
     }
@@ -115,10 +115,12 @@ public class NotificationHelper {
 
     /** Build the one-shot notification shown when a phase completes. */
     public Notification buildPhaseCompleteNotification(Phase phase, int sessionCount) {
-        String title = phase == Phase.FOCUS ? "Work Session Complete" : "Break Complete";
+        String title = phase == Phase.FOCUS 
+                ? mContext.getString(R.string.notification_focus_complete_title) 
+                : mContext.getString(R.string.notification_break_complete_title);
         String message = phase == Phase.FOCUS 
-                ? String.format("Session %d finished! Time for a break.", sessionCount)
-                : "Break is over. Ready to focus?";
+                ? mContext.getString(R.string.notification_focus_complete_msg, sessionCount)
+                : mContext.getString(R.string.notification_break_complete_msg);
 
         Intent intent = new Intent(mContext, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);

@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -20,6 +21,7 @@ import com.tomaflow.app.timer.PomodoroTimer;
 import com.tomaflow.app.timer.TimerEngineService;
 import com.tomaflow.app.ui.timer.TimerView;
 import com.tomaflow.app.ui.timer.TimerViewModel;
+import com.tomaflow.app.utils.TimerUtils;
 
 public class MainActivity extends AppCompatActivity {
     private TimerView mTimerView;
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        startTimerService();
+        ensureTimerServiceStarted();
         mTimerViewModel.startListening();
     }
 
@@ -61,9 +63,9 @@ public class MainActivity extends AppCompatActivity {
         mTimerViewModel.stopListening();
     }
 
-    private void startTimerService() {
+    private void ensureTimerServiceStarted() {
         Intent serviceIntent = new Intent(this, TimerEngineService.class);
-        startService(serviceIntent);
+        ContextCompat.startForegroundService(this, serviceIntent);
     }
 
     private void bindViews() {
@@ -137,11 +139,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateTimerDisplay(long millisLeft) {
-        long totalSeconds = millisLeft / 1000;
-        long minutes = totalSeconds / 60;
-        long seconds = totalSeconds % 60;
-        String timeText = String.format("%02d:%02d", minutes, seconds);
-        mTvTime.setText(timeText);
+        mTvTime.setText(TimerUtils.formatMillisToMmSs(millisLeft));
     }
 
     private void updatePlayPauseIcon(PomodoroTimer.State state) {
@@ -178,10 +176,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendCommand(String command) {
-        Intent intent = new Intent(TimerEngineService.ACTION_COMMAND);
-        intent.setClass(this, TimerEngineService.class);
-        intent.putExtra(AppConstants.INTENT_EXTRA_COMMAND, command);
-        startService(intent);
+        mTimerViewModel.sendCommand(command);
     }
 
     private void setupBottomNavigation() {
