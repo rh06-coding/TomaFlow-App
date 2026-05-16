@@ -4,6 +4,7 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
+import com.tomaflow.app.constants.AppConstants;
 import com.tomaflow.app.data.db.dao.SettingsDao;
 import com.tomaflow.app.data.db.dao.SessionDao;
 import com.tomaflow.app.data.db.dao.TaskDao;
