@@ -2,9 +2,6 @@ package com.tomaflow.app.timer;
 
 import android.os.SystemClock;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 import com.tomaflow.app.constants.AppConstants;
 
 
@@ -44,13 +41,6 @@ public class PomodoroTimer {
     private long mStartElapsedMs = 0;
     private int mSessionCount = 0;
 
-    // LiveData for UI observation via ViewModel
-    private final MutableLiveData<Long> mTimeRemainingLive = new MutableLiveData<>(DEFAULT_FOCUS_MS);
-    private final MutableLiveData<State> mStateLive = new MutableLiveData<>(State.IDLE);
-    private final MutableLiveData<Phase> mPhaseLive = new MutableLiveData<>(Phase.FOCUS);
-    private final MutableLiveData<Boolean> mIsRunningLive = new MutableLiveData<>(false);
-    private final MutableLiveData<Integer> mProgressLive = new MutableLiveData<>(0);
-
     /** Callback interface for TimerEngineService to react to timer events. */
     public interface OnTimerEventListener {
         void onTick(TimerState state);
@@ -82,7 +72,7 @@ public class PomodoroTimer {
     private OnTimerEventListener mEventListener;
 
     public PomodoroTimer() {
-        updateStateLive();
+        notifyStateChanged();
     }
 
     /** Set custom durations for focus, short break, and long break. All must be > 0. */
@@ -95,7 +85,7 @@ public class PomodoroTimer {
         this.mLongBreakDurationMs = longBreakMs;
         if (mState == State.IDLE) {
             mRemainingMs = mFocusDurationMs;
-            updateStateLive();
+            notifyStateChanged();
         }
     }
 
@@ -119,7 +109,7 @@ public class PomodoroTimer {
         mPhase = Phase.FOCUS;
         mRemainingMs = focusDurationMs;
         mStartElapsedMs = SystemClock.elapsedRealtime();
-        updateStateLive();
+        notifyStateChanged();
     }
 
     /** Pause the timer. No-op if already paused or idle. */
@@ -133,7 +123,7 @@ public class PomodoroTimer {
         } else if (mState == State.RUNNING_BREAK) {
             mState = State.PAUSED_BREAK;
         }
-        updateStateLive();
+        notifyStateChanged();
     }
 
     /**
@@ -147,12 +137,11 @@ public class PomodoroTimer {
 
         if (mState == State.PAUSED_FOCUS) {
             mState = State.RUNNING_FOCUS;
-            mStartElapsedMs = SystemClock.elapsedRealtime() - (mFocusDurationMs - mRemainingMs);
         } else if (mState == State.PAUSED_BREAK) {
             mState = State.RUNNING_BREAK;
-            mStartElapsedMs = SystemClock.elapsedRealtime() - (getDurationForPhase(mPhase) - mRemainingMs);
         }
-        updateStateLive();
+        mStartElapsedMs = SystemClock.elapsedRealtime() - (getDurationForPhase(mPhase) - mRemainingMs);
+        notifyStateChanged();
     }
 
     /** Skip the current phase: focus->break, break->focus (increments session count). */
@@ -176,7 +165,7 @@ public class PomodoroTimer {
         mRemainingMs = mFocusDurationMs;
         mSessionCount = 0;
         mStartElapsedMs = 0;
-        updateStateLive();
+        notifyStateChanged();
     }
 
     /**
@@ -198,7 +187,7 @@ public class PomodoroTimer {
             mRemainingMs = 0;
             handlePhaseComplete();
         } else {
-            updateStateLive();
+            notifyStateChanged();
             if (mEventListener != null) {
                 mEventListener.onTick(buildTimerState());
             }
@@ -221,11 +210,11 @@ public class PomodoroTimer {
                 handlePhaseComplete();
             } else {
                 mStartElapsedMs = nowElapsed - (getDurationForPhase(mPhase) - mRemainingMs);
-                updateStateLive();
+                notifyStateChanged();
             }
         } else {
             mStartElapsedMs = 0;
-            updateStateLive();
+            notifyStateChanged();
         }
     }
 
@@ -258,7 +247,7 @@ public class PomodoroTimer {
         mState = State.RUNNING_BREAK;
         mRemainingMs = breakDuration;
         mStartElapsedMs = SystemClock.elapsedRealtime();
-        updateStateLive();
+        notifyStateChanged();
     }
 
     /** Transition to focus. Increments session count; enters COMPLETED if all cycles done. */
@@ -268,7 +257,7 @@ public class PomodoroTimer {
             mPhase = Phase.FOCUS;
             mRemainingMs = 0;
             mStartElapsedMs = 0;
-            updateStateLive();
+            notifyStateChanged();
             return;
         }
         
@@ -276,7 +265,7 @@ public class PomodoroTimer {
         mPhase = Phase.FOCUS;
         mRemainingMs = mFocusDurationMs;
         mStartElapsedMs = SystemClock.elapsedRealtime();
-        updateStateLive();
+        notifyStateChanged();
     }
 
     /** Returns the configured duration for the given phase. */
@@ -289,17 +278,8 @@ public class PomodoroTimer {
         }
     }
 
-    /** Push current state to all LiveData fields and notify listener. */
-    private void updateStateLive() {
-        mIsRunningLive.postValue(isRunning());
-        mStateLive.postValue(mState);
-        mPhaseLive.postValue(mPhase);
-        mTimeRemainingLive.postValue(mRemainingMs);
-
-        long totalDuration = getDurationForPhase(mPhase);
-        int progress = totalDuration > 0 ? (int) ((totalDuration - mRemainingMs) * 100 / totalDuration) : 0;
-        mProgressLive.postValue(Math.min(100, Math.max(0, progress)));
-
+    /** Push current state to listener. */
+    private void notifyStateChanged() {
         if (mEventListener != null) {
             mEventListener.onStateChanged(buildTimerState());
         }
@@ -313,13 +293,6 @@ public class PomodoroTimer {
     public boolean isRunning() {
         return mState == State.RUNNING_FOCUS || mState == State.RUNNING_BREAK;
     }
-
-    // LiveData getters for UI observation
-    public LiveData<Long> getTimeRemaining() { return mTimeRemainingLive; }
-    public LiveData<State> getState() { return mStateLive; }
-    public LiveData<Phase> getPhase() { return mPhaseLive; }
-    public LiveData<Boolean> getIsRunning() { return mIsRunningLive; }
-    public LiveData<Integer> getProgress() { return mProgressLive; }
 
     public State getStateValue() {
         return mState;
@@ -355,10 +328,6 @@ public class PomodoroTimer {
 
     public void setOnTimerEventListener(OnTimerEventListener listener) {
         this.mEventListener = listener;
-    }
-
-    public void removeOnTimerEventListener() {
-        this.mEventListener = null;
     }
 
     public void destroy() {
