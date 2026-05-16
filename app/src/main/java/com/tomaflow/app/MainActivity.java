@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
@@ -48,6 +49,23 @@ public class MainActivity extends AppCompatActivity {
         bindViews();
         setupTimerObserver();
         setupBottomNavigation();
+        setupBackPressedHandler();
+    }
+
+    private void setupBackPressedHandler() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                PomodoroTimer.TimerState state = mTimerViewModel.getTimerState().getValue();
+                if (state != null && state.isRunning) {
+                    moveTaskToBack(true);
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                    setEnabled(true);
+                }
+            }
+        });
     }
 
     @Override
