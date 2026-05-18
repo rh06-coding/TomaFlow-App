@@ -13,7 +13,6 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -83,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void ensureTimerServiceStarted() {
         Intent serviceIntent = new Intent(this, TimerEngineService.class);
-        ContextCompat.startForegroundService(this, serviceIntent);
+        startService(serviceIntent);
     }
 
     private void bindViews() {

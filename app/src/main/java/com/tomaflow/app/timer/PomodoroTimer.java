@@ -4,6 +4,9 @@ import android.os.SystemClock;
 
 import com.tomaflow.app.constants.AppConstants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class PomodoroTimer {
 
@@ -69,7 +72,7 @@ public class PomodoroTimer {
         }
     }
 
-    private OnTimerEventListener mEventListener;
+    private final List<OnTimerEventListener> mListeners = new ArrayList<>();
 
     public PomodoroTimer() {
         notifyStateChanged();
@@ -188,8 +191,9 @@ public class PomodoroTimer {
             handlePhaseComplete();
         } else {
             notifyStateChanged();
-            if (mEventListener != null) {
-                mEventListener.onTick(buildTimerState());
+            TimerState state = buildTimerState();
+            for (OnTimerEventListener listener : mListeners) {
+                listener.onTick(state);
             }
         }
     }
@@ -220,14 +224,15 @@ public class PomodoroTimer {
 
 
     private void handlePhaseComplete() {
+        TimerState state = buildTimerState();
         if (mPhase == Phase.FOCUS) {
-            if (mEventListener != null) {
-                mEventListener.onFocusComplete(mSessionCount + 1);
+            for (OnTimerEventListener listener : mListeners) {
+                listener.onFocusComplete(mSessionCount + 1);
             }
             transitionToBreak();
         } else {
-            if (mEventListener != null) {
-                mEventListener.onBreakComplete(mSessionCount);
+            for (OnTimerEventListener listener : mListeners) {
+                listener.onBreakComplete(mSessionCount);
             }
             transitionToFocus();
         }
@@ -280,8 +285,9 @@ public class PomodoroTimer {
 
     /** Push current state to listener. */
     private void notifyStateChanged() {
-        if (mEventListener != null) {
-            mEventListener.onStateChanged(buildTimerState());
+        TimerState state = buildTimerState();
+        for (OnTimerEventListener listener : mListeners) {
+            listener.onStateChanged(state);
         }
     }
 
@@ -326,11 +332,17 @@ public class PomodoroTimer {
         return mCyclesBeforeLongBreak;
     }
 
-    public void setOnTimerEventListener(OnTimerEventListener listener) {
-        this.mEventListener = listener;
+    public void addTimerEventListener(OnTimerEventListener listener) {
+        if (listener != null && !mListeners.contains(listener)) {
+            mListeners.add(listener);
+        }
+    }
+
+    public void removeTimerEventListener(OnTimerEventListener listener) {
+        mListeners.remove(listener);
     }
 
     public void destroy() {
-        mEventListener = null;
+        mListeners.clear();
     }
 }

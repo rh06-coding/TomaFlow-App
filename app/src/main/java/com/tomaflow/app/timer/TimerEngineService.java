@@ -82,6 +82,13 @@ public class TimerEngineService extends Service {
         }
     }
 
+    /**
+     * Exposes the current timer state for the bound UI to perform instant initialization.
+     */
+    public PomodoroTimer.TimerState getTimerState() {
+        return buildTimerState();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -143,7 +150,9 @@ public class TimerEngineService extends Service {
 
     private void updateForegroundStatus() {
         PomodoroTimer.TimerState state = buildTimerState();
-        if (mTimer.isRunning() || mTimer.getStateValue() != PomodoroTimer.State.IDLE) {
+        
+        if (state.state != PomodoroTimer.State.IDLE && state.state != PomodoroTimer.State.COMPLETED) {
+            // Only start/maintain foreground service if active (running or paused)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 startForeground(AppConstants.NOTIFICATION_ID_TIMER,
                         mNotificationHelper.buildTimerNotification(state),
@@ -152,10 +161,19 @@ public class TimerEngineService extends Service {
                 startForeground(AppConstants.NOTIFICATION_ID_TIMER,
                         mNotificationHelper.buildTimerNotification(state));
             }
-            acquireWakeLock();
+            
+            if (mTimer.isRunning()) {
+                acquireWakeLock();
+                requestAudioFocus();
+            } else {
+                releaseWakeLock();
+                abandonAudioFocus();
+            }
         } else {
-            stopForeground(STOP_FOREGROUND_REMOVE);
+            // If IDLE or COMPLETED, we do not need a foreground service or persistent notification
             releaseWakeLock();
+            abandonAudioFocus();
+            stopForeground(STOP_FOREGROUND_REMOVE);
             checkAutoStop();
         }
     }
@@ -216,11 +234,11 @@ public class TimerEngineService extends Service {
     }
 
     private void setupTimerListener() {
-        mTimer.setOnTimerEventListener(new PomodoroTimer.OnTimerEventListener() {
+        mTimer.addTimerEventListener(new PomodoroTimer.OnTimerEventListener() {
 
             @Override
             public void onTick(PomodoroTimer.TimerState state) {
-                updateNotification(state);
+                updateForegroundStatus();
                 scheduleNextTick();
             }
 
@@ -231,21 +249,11 @@ public class TimerEngineService extends Service {
 
                 if (!state.isRunning) {
                     stopTick();
-                    releaseWakeLock();
-                    abandonAudioFocus();
                 } else if (!mTickScheduled) {
                     scheduleNextTick();
-                    acquireWakeLock();
-                    requestAudioFocus();
                 }
 
-                updateNotification(state);
-                
-                if (state.state == PomodoroTimer.State.IDLE || state.state == PomodoroTimer.State.COMPLETED) {
-                    stopForeground(STOP_FOREGROUND_REMOVE);
-                    releaseWakeLock();
-                    checkAutoStop();
-                }
+                updateForegroundStatus();
             }
 
             @Override
@@ -290,14 +298,6 @@ public class TimerEngineService extends Service {
     private void stopTick() {
         mTickScheduled = false;
         mTickHandler.removeCallbacks(mTickRunnable);
-    }
-
-    /** Refresh the foreground notification with current timer state. */
-    private void updateNotification(PomodoroTimer.TimerState state) {
-        if (mTimer.isRunning() || mTimer.getStateValue() != PomodoroTimer.State.IDLE) {
-             mNotificationManager.notify(AppConstants.NOTIFICATION_ID_TIMER, 
-                     mNotificationHelper.buildTimerNotification(state));
-        }
     }
 
     public PomodoroTimer getTimer() {

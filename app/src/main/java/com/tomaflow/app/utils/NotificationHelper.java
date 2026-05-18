@@ -191,6 +191,7 @@ public class NotificationHelper {
      * Focus: double pulse [0, 200, 100, 200]. Break: single pulse [0, 100].
      * Silently no-ops if the device has no vibrator.
      */
+    @SuppressWarnings("deprecation")
     public void vibrateForPhaseComplete(Phase phase) {
         if (mVibrator == null || !mVibrator.hasVibrator()) {
             return;
