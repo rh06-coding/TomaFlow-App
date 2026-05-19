@@ -41,4 +41,7 @@ public interface TaskDao {
     /** Count of incomplete tasks. Used for badge on bottom navigation. */
     @Query("select count(*) from Tasks where status != 'Completed'")
     LiveData<Integer> getPendingTaskCount();
+
+    @Query("UPDATE tasks SET status = :status WHERE taskId = :taskId")
+    void updateTaskStatus(int taskId, String status);
 }
