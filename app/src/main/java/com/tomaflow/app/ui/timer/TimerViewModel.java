@@ -46,7 +46,10 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
             TimerEngineService.TimerBinder binder = (TimerEngineService.TimerBinder) service;
             mService = binder.getService();
             mBound = true;
-            mService.getTimer().setOnTimerEventListener(TimerViewModel.this);
+            mService.getTimer().addTimerEventListener(TimerViewModel.this);
+
+            // Instantly update LiveData with the current service state
+            mTimerState.postValue(mService.getTimerState());
         }
 
         @Override
@@ -83,7 +86,7 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
     public void stopListening() {
         if (mBound) {
             if (mService != null) {
-                mService.getTimer().destroy(); // Cleanup listener
+                mService.getTimer().removeTimerEventListener(this);
             }
             getApplication().unbindService(mConnection);
             mBound = false;
