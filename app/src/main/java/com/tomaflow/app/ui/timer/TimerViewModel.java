@@ -13,6 +13,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.tomaflow.app.constants.AppConstants;
+import com.tomaflow.app.data.repository.SessionRepository;
 import com.tomaflow.app.timer.PomodoroTimer;
 import com.tomaflow.app.timer.TimerEngineService;
 
@@ -29,8 +30,15 @@ import com.tomaflow.app.timer.TimerEngineService;
 public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.OnTimerEventListener {
 
     private final MutableLiveData<PomodoroTimer.TimerState> mTimerState = new MutableLiveData<>();
+
+    private final SessionRepository mSessionRepository;
+
     private TimerEngineService mService;
     private boolean mBound = false;
+
+    // Current focus session data
+    private long mFocusStartTime = 0L;
+    private Integer mCurrentTaskId = null;
 
     private final ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -52,11 +60,20 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
 
     public TimerViewModel(@NonNull Application application) {
         super(application);
+        mSessionRepository = new SessionRepository(application);
     }
 
     /** Observe this in MainActivity to receive live timer updates. */
     public LiveData<PomodoroTimer.TimerState> getTimerState() {
         return mTimerState;
+    }
+
+    /**
+     * Set the task currently attached to the timer.
+     * Pass null if the user starts a Pomodoro without selecting a task.
+     */
+    public void setCurrentTaskId(Integer taskId) {
+        mCurrentTaskId = taskId;
     }
 
     /** Start listening by binding to the Service. Call in onStart(). */
@@ -88,12 +105,13 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
 
     @Override
     public void onFocusComplete(int sessionCount) {
-        // ViewModel can handle extra logic here if needed
+        saveCurrentFocusSession("Completed");
     }
 
     @Override
     public void onBreakComplete(int sessionCount) {
-        // ViewModel can handle extra logic here if needed
+        // Break sessions are not stored for now.
+        // Week 4 only requires saving focus sessions.
     }
 
     /**
@@ -101,11 +119,36 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
      * Valid commands: COMMAND_START_FOCUS, COMMAND_PAUSE, COMMAND_RESUME, COMMAND_SKIP, COMMAND_RESET.
      */
     public void sendCommand(String command) {
+        if (AppConstants.COMMAND_START_FOCUS.equals(command)) {
+            mFocusStartTime = System.currentTimeMillis();
+        }
+
+        if (AppConstants.COMMAND_SKIP.equals(command) || AppConstants.COMMAND_RESET.equals(command)) {
+            saveCurrentFocusSession("Failed");
+        }
+
         Intent intent = new Intent(TimerEngineService.ACTION_COMMAND);
         intent.setClass(getApplication(), TimerEngineService.class);
         intent.putExtra(AppConstants.INTENT_EXTRA_COMMAND, command);
-        
+
         getApplication().startService(intent);
+    }
+
+    private void saveCurrentFocusSession(String status) {
+        if (mFocusStartTime <= 0L) {
+            return;
+        }
+
+        long endTime = System.currentTimeMillis();
+
+        mSessionRepository.saveSession(
+                mCurrentTaskId,
+                mFocusStartTime,
+                endTime,
+                status
+        );
+
+        mFocusStartTime = 0L;
     }
 
     @Override

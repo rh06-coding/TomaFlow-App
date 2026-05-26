@@ -22,8 +22,9 @@ public interface SessionDao {
     LiveData<List<SessionEntity>> getAllSessions();
 
     /** Total focus minutes for the current week (ISO week number match). */
-    @Query("select sum(duration) from Sessions " +
-           "where strftime('%W', datetime(startTime / 1000, 'unixepoch')) = strftime('%W', 'now')")
+    @Query("select cast(coalesce(sum(duration), 0) / 60 as integer) from Sessions " +
+            "where status = 'Completed' " +
+            "and strftime('%W', datetime(startTime / 1000, 'unixepoch')) = strftime('%W', 'now')")
     LiveData<Integer> getWeeklyFocusMinutes();
 
     /** Count of completed cycles this week. */
@@ -37,11 +38,12 @@ public interface SessionDao {
      * DAY_NUM: "0"=Sun through "6"=Sat.
      */
     @Query("select strftime('%w', datetime(startTime / 1000, 'unixepoch')) as DAY_NUM, " +
-           "sum(duration) as MINUTES, " +
-           "sum(case when status = 'Completed' then 1 else 0 end) as CYCLES " +
-           "from Sessions " +
-           "where strftime('%W', datetime(startTime / 1000, 'unixepoch')) = strftime('%W', 'now') " +
-           "group by DAY_NUM order by DAY_NUM asc")
+            "cast(coalesce(sum(duration), 0) / 60 as integer) as MINUTES, " +
+            "sum(case when status = 'Completed' then 1 else 0 end) as CYCLES " +
+            "from Sessions " +
+            "where status = 'Completed' " +
+            "and strftime('%W', datetime(startTime / 1000, 'unixepoch')) = strftime('%W', 'now') " +
+            "group by DAY_NUM order by DAY_NUM asc")
     LiveData<List<DailyStatRow>> getWeeklyDailyStats();
 
     /** Row type for getWeeklyDailyStats(). */
