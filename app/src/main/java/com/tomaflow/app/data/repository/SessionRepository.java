@@ -18,13 +18,12 @@ import java.util.concurrent.Executors;
  */
 public class SessionRepository {
 
-    private final SessionDao      mSessionDao;
-    private final ExecutorService mExecutor;
+    private final SessionDao mSessionDao;
+    private static final ExecutorService sExecutor = Executors.newSingleThreadExecutor();
 
     public SessionRepository(Application application) {
         TomaFlowDatabase db = TomaFlowDatabase.getInstance(application);
         mSessionDao = db.sessionDao();
-        mExecutor   = Executors.newSingleThreadExecutor();
     }
 
     // Reads
@@ -34,5 +33,5 @@ public class SessionRepository {
     public LiveData<List<SessionDao.DailyStatRow>>    getWeeklyDailyStats() { return mSessionDao.getWeeklyDailyStats(); }
 
     // Writes
-    public void insert(SessionEntity session) { mExecutor.execute(() -> mSessionDao.insert(session)); }
+    public void insert(SessionEntity session) { sExecutor.execute(() -> mSessionDao.insert(session)); }
 }

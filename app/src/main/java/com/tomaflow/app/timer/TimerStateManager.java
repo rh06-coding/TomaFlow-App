@@ -105,7 +105,10 @@ public class TimerStateManager {
         }
 
         public PomodoroTimer.TimerState toTimerState() {
-            return new PomodoroTimer.TimerState(state, phase, isRunning, remainingMs, sessionCount, updatedAtElapsed);
+            return new PomodoroTimer.TimerState(state, phase, isRunning, remainingMs, 
+                    phase == PomodoroTimer.Phase.FOCUS ? focusDurationMs : 
+                    (phase == PomodoroTimer.Phase.SHORT_BREAK ? shortBreakDurationMs : longBreakDurationMs),
+                    sessionCount, updatedAtElapsed);
         }
     }
 }
