@@ -186,9 +186,10 @@ public class TimerEngineService extends Service {
 
     @Override
     public void onDestroy() {
-        stopTick();
+        mTickHandler.removeCallbacksAndMessages(null);
         releaseWakeLock();
         abandonAudioFocus();
+        mNotificationHelper.release();
         mTimer.destroy();
         super.onDestroy();
     }
@@ -310,6 +311,8 @@ public class TimerEngineService extends Service {
                 mTimer.getPhaseValue(),
                 mTimer.isRunning(),
                 mTimer.getRemainingMs(),
+                mTimer.getPhaseValue() == PomodoroTimer.Phase.FOCUS ? mTimer.getFocusDurationMs() :
+                        (mTimer.getPhaseValue() == PomodoroTimer.Phase.SHORT_BREAK ? mTimer.getShortBreakDurationMs() : mTimer.getLongBreakDurationMs()),
                 mTimer.getSessionCount(),
                 SystemClock.elapsedRealtime()
         );

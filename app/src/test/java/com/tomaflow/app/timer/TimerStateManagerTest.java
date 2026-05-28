@@ -55,6 +55,7 @@ public class TimerStateManagerTest {
                 PomodoroTimer.Phase.FOCUS,
                 true,
                 1200000,
+                1500000,
                 1,
                 50000
         );
@@ -80,6 +81,7 @@ public class TimerStateManagerTest {
                 PomodoroTimer.Phase.SHORT_BREAK,
                 false,
                 180000,
+                300000,
                 3,
                 120000
         );
@@ -102,6 +104,7 @@ public class TimerStateManagerTest {
                 PomodoroTimer.Phase.LONG_BREAK,
                 true,
                 600000,
+                900000,
                 4,
                 200000
         );
@@ -125,6 +128,7 @@ public class TimerStateManagerTest {
                 PomodoroTimer.Phase.FOCUS,
                 true,
                 800000,
+                1500000,
                 2,
                 30000
         );
@@ -148,6 +152,7 @@ public class TimerStateManagerTest {
                 PomodoroTimer.Phase.FOCUS,
                 true,
                 900000,
+                1500000,
                 2,
                 75000
         );
@@ -173,6 +178,7 @@ public class TimerStateManagerTest {
                 PomodoroTimer.Phase.FOCUS,
                 true,
                 1000000,
+                1500000,
                 1,
                 10000
         );
@@ -181,6 +187,7 @@ public class TimerStateManagerTest {
                 PomodoroTimer.Phase.LONG_BREAK,
                 false,
                 500000,
+                900000,
                 4,
                 99000
         );

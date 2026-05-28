@@ -4,8 +4,8 @@ import android.os.SystemClock;
 
 import com.tomaflow.app.constants.AppConstants;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class PomodoroTimer {
@@ -58,21 +58,23 @@ public class PomodoroTimer {
         public final Phase phase;
         public final boolean isRunning;
         public final long remainingMs;
+        public final long totalDurationMs;
         public final int sessionCount;
         public final long updatedAtElapsed;
 
         public TimerState(State state, Phase phase, boolean isRunning, long remainingMs,
-                         int sessionCount, long updatedAtElapsed) {
+                         long totalDurationMs, int sessionCount, long updatedAtElapsed) {
             this.state = state;
             this.phase = phase;
             this.isRunning = isRunning;
             this.remainingMs = remainingMs;
+            this.totalDurationMs = totalDurationMs;
             this.sessionCount = sessionCount;
             this.updatedAtElapsed = updatedAtElapsed;
         }
     }
 
-    private final List<OnTimerEventListener> mListeners = new ArrayList<>();
+    private final List<OnTimerEventListener> mListeners = new CopyOnWriteArrayList<>();
 
     public PomodoroTimer() {
         notifyStateChanged();
@@ -292,8 +294,8 @@ public class PomodoroTimer {
     }
 
     private TimerState buildTimerState() {
-        return new TimerState(mState, mPhase, isRunning(), mRemainingMs, mSessionCount,
-                SystemClock.elapsedRealtime());
+        return new TimerState(mState, mPhase, isRunning(), mRemainingMs,
+                getDurationForPhase(mPhase), mSessionCount, SystemClock.elapsedRealtime());
     }
 
     public boolean isRunning() {

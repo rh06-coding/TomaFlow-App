@@ -19,12 +19,11 @@ import java.util.concurrent.Executors;
 public class SessionRepository {
 
     private final SessionDao mSessionDao;
-    private final ExecutorService mExecutor;
+    private static final ExecutorService sExecutor = Executors.newSingleThreadExecutor();
 
     public SessionRepository(Application application) {
         TomaFlowDatabase db = TomaFlowDatabase.getInstance(application);
         mSessionDao = db.sessionDao();
-        mExecutor = Executors.newSingleThreadExecutor();
     }
 
     // Reads
@@ -46,7 +45,7 @@ public class SessionRepository {
 
     // Writes
     public void insert(SessionEntity session) {
-        mExecutor.execute(() -> mSessionDao.insert(session));
+        sExecutor.execute(() -> mSessionDao.insert(session));
     }
 
 

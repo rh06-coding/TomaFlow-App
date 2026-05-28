@@ -169,9 +169,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateProgress(PomodoroTimer.TimerState timerState) {
-        long duration = timerState.phase == PomodoroTimer.Phase.FOCUS
-                ? AppConstants.TIMER_WORK_DURATION_MS
-                : AppConstants.TIMER_SHORT_BREAK_MS;
+        long duration = timerState.totalDurationMs;
         float progress = duration > 0 ? 1f - ((float) timerState.remainingMs / duration) : 0f;
         mTimerView.setProgress(Math.max(0, Math.min(1, progress)));
     }
