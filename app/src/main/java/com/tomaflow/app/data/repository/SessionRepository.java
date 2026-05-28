@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 
 /**
  * Single source of truth for session data.
- * Called by MainActivity to persist sessions, and by StatsActivity for weekly charts.
+ * Called by timer flow to persist sessions, and by StatsActivity for weekly charts.
  */
 public class SessionRepository {
 
@@ -27,11 +27,47 @@ public class SessionRepository {
     }
 
     // Reads
-    public LiveData<List<SessionEntity>>              getAllSessions()       { return mSessionDao.getAllSessions(); }
-    public LiveData<Integer>                          getWeeklyMinutes()    { return mSessionDao.getWeeklyFocusMinutes(); }
-    public LiveData<Integer>                          getWeeklyCycles()     { return mSessionDao.getWeeklyCompletedCycles(); }
-    public LiveData<List<SessionDao.DailyStatRow>>    getWeeklyDailyStats() { return mSessionDao.getWeeklyDailyStats(); }
+    public LiveData<List<SessionEntity>> getAllSessions() {
+        return mSessionDao.getAllSessions();
+    }
+
+    public LiveData<Integer> getWeeklyMinutes() {
+        return mSessionDao.getWeeklyFocusMinutes();
+    }
+
+    public LiveData<Integer> getWeeklyCycles() {
+        return mSessionDao.getWeeklyCompletedCycles();
+    }
+
+    public LiveData<List<SessionDao.DailyStatRow>> getWeeklyDailyStats() {
+        return mSessionDao.getWeeklyDailyStats();
+    }
 
     // Writes
-    public void insert(SessionEntity session) { sExecutor.execute(() -> mSessionDao.insert(session)); }
+    public void insert(SessionEntity session) {
+        sExecutor.execute(() -> mSessionDao.insert(session));
+    }
+
+
+    /**
+     * Save a completed or failed focus session.
+     *
+     * @param taskId nullable task id, because user may start timer without selecting a task
+     * @param startTime session start time in milliseconds
+     * @param endTime session end time in milliseconds
+     * @param status "Completed" or "Failed"
+     */
+    public void saveSession(Integer taskId, long startTime, long endTime, String status) {
+        int durationSeconds = (int) Math.max(0, (endTime - startTime) / 1000L);
+
+        SessionEntity session = new SessionEntity();
+        session.userId = 0; // Reserved for cloud/Firebase user later
+        session.taskId = taskId;
+        session.startTime = startTime;
+        session.endTime = endTime;
+        session.duration = durationSeconds;
+        session.status = status;
+
+        insert(session);
+    }
 }
