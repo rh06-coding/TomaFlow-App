@@ -1,5 +1,8 @@
 package com.tomaflow.app.data.db.dao;
-
+/**
+ * DAO thao tác với bảng Settings.
+ * Dùng để đọc và cập nhật cài đặt Pomodoro local.
+ */
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -18,6 +21,8 @@ public interface SettingsDao {
     @Update
     void update(SettingsEntity settings);
 
+
+    // Hiện tại app dùng một bản cài đặt local chung.
     @Query("SELECT * FROM Settings LIMIT 1")
     LiveData<SettingsEntity> getSettings();
 

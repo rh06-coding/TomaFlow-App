@@ -4,7 +4,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 /**
- * User preferences for timer durations and sound. Prepared for Room-based settings.
+ * Bảng lưu cài đặt Pomodoro local của app.
  */
 @Entity(tableName = "Settings")
 public class SettingsEntity {
@@ -14,11 +14,23 @@ public class SettingsEntity {
 
     public int userId;
 
-    public int workDuration = 25;       // Focus duration in minutes
-    public int shortBreak = 5;          // Short break in minutes
-    public int longBreak = 15;          // Long break in minutes
-    public int longBreakInterval = 4;   // Cycles before a long break
-
-    public String focusMusic = "rain_sound"; // Background sound asset name
+    public int workDuration;// Thời gian focus, tính bằng phút.
+    public int shortBreak;  // Thời gian nghỉ ngắn, tính bằng phút.
+    public int longBreak; // Thời gian nghỉ dài, tính bằng phút.
+    public int longBreakInterval;
+    public boolean focusMusic;
     public long createdAt;
+
+    public SettingsEntity() {
+    }
+
+    public SettingsEntity(int workDuration, int shortBreak, int longBreak, int longBreakInterval) {
+        this.userId = 0;
+        this.workDuration = workDuration;
+        this.shortBreak = shortBreak;
+        this.longBreak = longBreak;
+        this.longBreakInterval = longBreakInterval;
+        this.focusMusic = false;
+        this.createdAt = System.currentTimeMillis();
+    }
 }

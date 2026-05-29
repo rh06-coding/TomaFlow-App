@@ -12,7 +12,10 @@ import com.tomaflow.app.data.db.entity.TaskEntity;
 
 import java.util.List;
 
-/** Room DAO for the Tasks table. All reads return LiveData for automatic UI updates. */
+/**
+ * DAO thao tác với bảng Tasks.
+ * Dùng cho CRUD task và các query lọc task.
+ */
 @Dao
 public interface TaskDao {
 
@@ -31,17 +34,27 @@ public interface TaskDao {
     @Query("select * from Tasks order by createdAt desc")
     LiveData<List<TaskEntity>> getAllTasks();
 
-    /** Pending + InProgress tasks. Used when selecting a task for a Pomodoro session. */
+    // Lấy các task chưa hoàn thành để hiển thị hoặc chọn khi focus.
     @Query("select * from Tasks where status != 'Completed' order by createdAt desc")
     LiveData<List<TaskEntity>> getPendingTasks();
 
     @Query("select * from Tasks where taskId = :taskId limit 1")
     LiveData<TaskEntity> getTaskById(long taskId);
 
-    /** Count of incomplete tasks. Used for badge on bottom navigation. */
+    // Đếm số task chưa hoàn thành.
     @Query("select count(*) from Tasks where status != 'Completed'")
     LiveData<Integer> getPendingTaskCount();
 
+
+    // Cập nhật trạng thái task sau khi user hoàn thành hoặc chỉnh task.
     @Query("UPDATE tasks SET status = :status WHERE taskId = :taskId")
     void updateTaskStatus(int taskId, String status);
+
+
+    // Lọc các task có chứa tag được truyền vào.
+    @Query("select * from Tasks where tags like '%' || :tag || '%' order by createdAt desc")
+    LiveData<List<TaskEntity>> getTasksByTag(String tag);
+
+    @Query("update Tasks set tags = :tags, updatedAt = :updatedAt where taskId = :taskId")
+    void updateTags(int taskId, String tags, long updatedAt);
 }

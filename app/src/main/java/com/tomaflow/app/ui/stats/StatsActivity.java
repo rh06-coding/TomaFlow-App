@@ -1,5 +1,9 @@
 package com.tomaflow.app.ui.stats;
-
+/**
+ * Màn hình thống kê.
+ * Sẽ hiển thị tổng thời gian focus và số phiên Pomodoro theo tuần.
+ * // TODO: Quan sát query thống kê từ SessionRepository và vẽ biểu đồ.
+ */
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
