@@ -4,7 +4,8 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 /**
- * One completed Pomodoro session record. Used for stats and history.
+ * Bảng lưu lịch sử Pomodoro.
+ * Mỗi dòng là một phiên focus đã hoàn thành hoặc bị hủy.
  */
 @Entity(tableName = "Sessions")
 public class SessionEntity {
@@ -13,10 +14,10 @@ public class SessionEntity {
     public int sessionId;
 
     public int userId;           // Reserved for Firebase sync
-    public Integer taskId;       // Nullable — user may not pick a task
+    public Integer taskId;       // Có thể null nếu user chạy timer mà không chọn task.
 
     public long startTime;       // System.currentTimeMillis()
     public long endTime;
-    public int duration;         // Actual duration in seconds (may differ from 25min if skipped)
+    public int duration;         // Thời lượng focus thực tế, tính bằng giây.
     public String status;        // "Completed" or "Failed"
 }

@@ -13,15 +13,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Single source of truth for task data.
- * Reads return LiveData (Room handles background threading).
- * Writes are dispatched to a single-thread ExecutorService.
- *
+ * Repository quản lý dữ liệu task.
+ * ViewModel gọi Repository thay vì gọi trực tiếp TaskDao.
  * Flow: UI -> ViewModel -> Repository -> TaskDao -> Room -> SQLite
  */
 public class TaskRepository {
 
     private final TaskDao        mTaskDao;
+
+    // Chạy các thao tác ghi database ở background thread.
     private final ExecutorService mExecutor;
 
     public TaskRepository(Application application) {
@@ -35,7 +35,7 @@ public class TaskRepository {
     public LiveData<List<TaskEntity>> getPendingTasks() { return mTaskDao.getPendingTasks(); }
     public LiveData<Integer>          getPendingCount() { return mTaskDao.getPendingTaskCount(); }
 
-    // Writes (background thread via ExecutorService)
+    // Ghi dữ liệu task thông qua TaskDao.
     public void insert(TaskEntity task)  { mExecutor.execute(() -> mTaskDao.insert(task)); }
     public void update(TaskEntity task)  { mExecutor.execute(() -> mTaskDao.update(task)); }
     public void delete(TaskEntity task)  { mExecutor.execute(() -> mTaskDao.delete(task)); }
@@ -46,5 +46,23 @@ public class TaskRepository {
 
     public void deleteById(int taskId) {
         mExecutor.execute(() -> mTaskDao.deleteById(taskId));
+    }
+
+    public void markTaskCompleted(int taskId) {
+        mExecutor.execute(() -> mTaskDao.updateTaskStatus(taskId, "Completed"));
+    }
+
+    public void markTaskPending(int taskId) {
+        mExecutor.execute(() -> mTaskDao.updateTaskStatus(taskId, "Pending"));
+    }
+
+
+    // Cập nhật tag cho task và thời gian chỉnh sửa.
+    public LiveData<List<TaskEntity>> getTasksByTag(String tag) {
+        return mTaskDao.getTasksByTag(tag);
+    }
+
+    public void updateTags(int taskId, String tags) {
+        mExecutor.execute(() -> mTaskDao.updateTags(taskId, tags, System.currentTimeMillis()));
     }
 }

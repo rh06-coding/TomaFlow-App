@@ -18,14 +18,8 @@ import com.tomaflow.app.timer.PomodoroTimer;
 import com.tomaflow.app.timer.TimerEngineService;
 
 /**
- * MVVM ViewModel bridging TimerEngineService and MainActivity.
- *
- * Binds to TimerEngineService, implements OnTimerEventListener,
- * and exposes timer state as LiveData for the UI.
- *
- * Flow:
- *   Service --[listener]--> ViewModel --[LiveData]--> MainActivity
- *   MainActivity --[sendCommand]--> ViewModel --[Intent]--> Service
+ * ViewModel cho màn hình Pomodoro timer.
+ * Lắng nghe TimerEngineService và lưu session khi focus kết thúc.
  */
 public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.OnTimerEventListener {
 
@@ -36,9 +30,8 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
     private TimerEngineService mService;
     private boolean mBound = false;
 
-    // Current focus session data
-    private long mFocusStartTime = 0L;
-    private Integer mCurrentTaskId = null;
+    private long mFocusStartTime = 0L;// Lưu thời điểm bắt đầu focus để tính duration thực tế.
+    private Integer mCurrentTaskId = null;// Task đang được focus; null nếu user không chọn task.
 
     private final ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -103,6 +96,8 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
         mTimerState.postValue(state);
     }
 
+
+    // Khi focus hoàn thành, lưu session với trạng thái Completed.
     @Override
     public void onFocusComplete(int sessionCount) {
         saveCurrentFocusSession("Completed");
@@ -134,6 +129,8 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
         getApplication().startService(intent);
     }
 
+
+    // Lưu đầy đủ taskId, duration, status, startTime và endTime.
     private void saveCurrentFocusSession(String status) {
         if (mFocusStartTime <= 0L) {
             return;

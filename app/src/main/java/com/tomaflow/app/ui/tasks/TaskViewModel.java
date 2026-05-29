@@ -13,7 +13,8 @@ import com.tomaflow.app.data.repository.UserRepository;
 import java.util.List;
 
 /**
- * ViewModel cho màn hình quản lý công việc.
+ * ViewModel cho màn hình task.
+ * Cung cấp dữ liệu task cho UI và gọi TaskRepository để xử lý database.
  *
  * UI chỉ nên gọi ViewModel, không gọi trực tiếp Repository/DAO.
  * Sau này nếu đổi Room sang Cloud Database thì ưu tiên sửa Repository,
@@ -62,11 +63,20 @@ public class TaskViewModel extends AndroidViewModel {
         taskRepository.deleteById(taskId);
     }
 
+    // Lấy user hiện tại thông qua UserRepository để dễ đổi sang cloud/auth sau này.
     public String getCurrentUserId() {
         return userRepository.getCurrentUserId();
     }
 
     public boolean isLoggedIn() {
         return userRepository.isLoggedIn();
+    }
+
+    public LiveData<List<TaskEntity>> getTasksByTag(String tag) {
+        return taskRepository.getTasksByTag(tag);
+    }
+
+    public void updateTags(int taskId, String tags) {
+        taskRepository.updateTags(taskId, tags);
     }
 }

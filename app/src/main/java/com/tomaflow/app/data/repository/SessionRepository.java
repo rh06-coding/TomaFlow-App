@@ -13,8 +13,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Single source of truth for session data.
- * Called by timer flow to persist sessions, and by StatsActivity for weekly charts.
+ * Repository quản lý dữ liệu Pomodoro session.
+ * Cung cấp dữ liệu cho thống kê và lưu session từ timer.
  */
 public class SessionRepository {
 
@@ -43,7 +43,7 @@ public class SessionRepository {
         return mSessionDao.getWeeklyDailyStats();
     }
 
-    // Writes
+    // Lưu session ở background thread để tránh chặn UI.
     public void insert(SessionEntity session) {
         sExecutor.execute(() -> mSessionDao.insert(session));
     }
@@ -57,6 +57,8 @@ public class SessionRepository {
      * @param endTime session end time in milliseconds
      * @param status "Completed" or "Failed"
      */
+
+    // Tạo bản ghi session đầy đủ từ thời điểm bắt đầu/kết thúc timer.
     public void saveSession(Integer taskId, long startTime, long endTime, String status) {
         int durationSeconds = (int) Math.max(0, (endTime - startTime) / 1000L);
 

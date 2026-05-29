@@ -1,18 +1,14 @@
 package com.tomaflow.app.data.repository;
 
 /**
- * Repository quản lý thông tin user hiện tại.
- *
- * Hiện tại app chưa có cloud auth nên dùng user giả lập.
- * Sau này nếu chuyển sang Firebase/Auth/API thì chỉ sửa bên trong class này,
- * các ViewModel và UI bên ngoài không cần đổi nhiều.
+ * Repository user tạm thời khi app chưa có đăng nhập.
+ * Sau này có thể đổi sang Firebase/Auth/API mà ít ảnh hưởng UI.
  */
 public class UserRepository {
 
     private static volatile UserRepository INSTANCE;
 
-    // User tạm thời cho giai đoạn local/offline.
-    // Sau này có Firebase thì thay bằng FirebaseAuth.getInstance().getCurrentUser().getUid()
+    // User id giả lập cho giai đoạn app chạy local.
     private static final String DEFAULT_USER_ID = "local_user";
 
     private UserRepository() {
