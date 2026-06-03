@@ -23,6 +23,7 @@
     <string name="reg_sub">Create an account to architect your focus.</string>
     <string name="reg_name">Full name</string>
     <string name="reg_password">Password (8+ characters)</string>
+    <string name="reg_confirm_password">Confirm password</string>
     <string name="reg_submit">Create account</string>
     <string name="reg_terms">By continuing you agree to TomaFlow\'s Terms and Privacy Policy.</string>
     <string name="reg_have">Already have an account?</string>
