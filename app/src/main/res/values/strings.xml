@@ -16,6 +16,7 @@
     <string name="auth_password">Password</string>
     <string name="auth_forgot">Forgot password?</string>
     <string name="auth_signin">Sign In</string>
+    <string name="auth_google">Sign in with Google</string>
     <string name="auth_no_account">New to TomaFlow?</string>
     <string name="auth_create">Create an account</string>
 
