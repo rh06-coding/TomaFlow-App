@@ -20,16 +20,16 @@
         <!-- ── Auth Flow ────────────────────────── -->
         <activity
             android:exported="true"
-            android:name=".ui.auth.LoginActivity" />
-
-        <activity
-            android:exported="true"
-            android:name=".ui.auth.RegisterActivity">
+            android:name=".ui.auth.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:exported="false"
+            android:name=".ui.auth.RegisterActivity" />
 
         <!-- ── Main / Focus screen ────────────────────── -->
         <activity
