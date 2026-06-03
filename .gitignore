@@ -40,3 +40,5 @@ Icon?
 Thumbs.db
 * text=auto eol=lf
 /docs
+
+app/google-services.json
