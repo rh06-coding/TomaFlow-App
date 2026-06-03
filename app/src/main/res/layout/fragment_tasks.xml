@@ -57,11 +57,13 @@
                     android:textAppearance="@style/TextAppearance.Toma.Display"
                     android:textSize="30sp" />
                 <LinearLayout
+                    android:id="@+id/ll_slots"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="end"
                     android:orientation="vertical">
                     <TextView
+                        android:id="@+id/tv_slots_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="04"
@@ -83,6 +85,7 @@
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal">
                 <LinearLayout
+                    android:id="@+id/card_est_pomos"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -93,6 +96,7 @@
                     <ImageView android:layout_width="22dp" android:layout_height="22dp"
                         android:src="@drawable/ic_tomato" />
                     <TextView
+                        android:id="@+id/tv_est_pomos_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="36dp"
@@ -107,6 +111,7 @@
                         android:textAppearance="@style/TextAppearance.Toma.Label" />
                 </LinearLayout>
                 <LinearLayout
+                    android:id="@+id/card_completion_rate"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -117,6 +122,7 @@
                     <ImageView android:layout_width="22dp" android:layout_height="22dp"
                         android:src="@drawable/ic_check" app:tint="@color/toma_on_primary" />
                     <TextView
+                        android:id="@+id/tv_completion_rate_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="36dp"
@@ -149,6 +155,7 @@
                     android:text="@string/tasks_active"
                     android:textAppearance="@style/TextAppearance.Toma.Title" />
                 <TextView
+                    android:id="@+id/tv_active_count_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_pill_muted"
@@ -180,6 +187,7 @@
                     android:textAppearance="@style/TextAppearance.Toma.Title"
                     android:textColor="@color/toma_text_muted" />
                 <TextView
+                    android:id="@+id/tv_done_count_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_pill_muted"

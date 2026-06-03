@@ -14,14 +14,17 @@
         android:paddingTop="20dp"
         android:paddingBottom="32dp">
 
-        <!-- Header -->
         <LinearLayout
+            android:id="@+id/header_stats"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical">
-            <ImageView android:layout_width="28dp" android:layout_height="28dp"
+            <ImageView
+                android:id="@+id/btn_menu"
+                android:layout_width="28dp" android:layout_height="28dp"
                 android:src="@drawable/ic_menu" app:tint="@color/toma_text" />
             <TextView
+                android:id="@+id/tv_app_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -29,13 +32,16 @@
                 android:text="@string/app_name"
                 android:textAppearance="@style/TextAppearance.Toma.Brand" />
             <TextView
+                android:id="@+id/tv_screen_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:text="Stats"
                 android:textColor="@color/toma_primary"
                 android:textStyle="bold" />
-            <View android:layout_width="36dp" android:layout_height="36dp"
+            <View
+                android:id="@+id/iv_avatar"
+                android:layout_width="36dp" android:layout_height="36dp"
                 android:background="@drawable/bg_avatar_circle" />
         </LinearLayout>
 
@@ -88,6 +94,7 @@
 
         <!-- Total Focus Time -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_total_focus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp">
@@ -104,6 +111,7 @@
                     android:text="@string/stats_total"
                     android:textAppearance="@style/TextAppearance.Toma.Label" />
                 <TextView
+                    android:id="@+id/tv_total_focus_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -116,6 +124,7 @@
 
         <!-- Pomodoros Completed (primary) -->
         <LinearLayout
+            android:id="@+id/card_pomos_completed"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -135,6 +144,7 @@
                 android:textAllCaps="true"
                 android:textStyle="bold" />
             <TextView
+                android:id="@+id/tv_pomos_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -146,6 +156,7 @@
 
         <!-- Best day -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_best_day"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp">
@@ -162,6 +173,7 @@
                     android:text="@string/stats_best"
                     android:textAppearance="@style/TextAppearance.Toma.Label" />
                 <TextView
+                    android:id="@+id/tv_best_day_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
