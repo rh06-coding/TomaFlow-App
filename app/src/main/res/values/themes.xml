@@ -94,7 +94,7 @@
     </style>
 
     <!-- Input field -->
-    <style name="Widget.Toma.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+    <style name="Widget.Toma.TextInputLayout" parent="Widget.Material3.TextInputLayout.FilledBox">
         <item name="boxBackgroundMode">filled</item>
         <item name="boxBackgroundColor">@color/toma_surface</item>
         <item name="boxCornerRadiusTopStart">18dp</item>
