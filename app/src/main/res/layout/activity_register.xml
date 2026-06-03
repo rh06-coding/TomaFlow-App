@@ -77,6 +77,23 @@
             app:endIconMode="password_toggle"
             style="@style/Widget.Toma.TextInputLayout">
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_password"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:inputType="textPassword" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="@string/reg_confirm_password"
+            app:startIconDrawable="@drawable/ic_lock"
+            app:startIconTint="@color/toma_text_muted"
+            app:endIconMode="password_toggle"
+            style="@style/Widget.Toma.TextInputLayout">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_confirm_password"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:inputType="textPassword" />
