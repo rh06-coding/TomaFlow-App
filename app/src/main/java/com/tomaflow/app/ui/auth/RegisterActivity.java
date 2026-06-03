@@ -2,32 +2,82 @@ package com.tomaflow.app.ui.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.widget.EditText;
+import java.util.Objects;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.tomaflow.app.MainActivity;
 import com.tomaflow.app.R;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private EditText mEdtName, mEdtEmail, mEdtPassword, mEdtConfirm;
+    private MaterialButton mBtnCreate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Auth gate — skip register if already authenticated
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_register);
 
-        MaterialButton btnCreate = findViewById(R.id.btn_create);
+        mEdtName     = findViewById(R.id.et_name);
+        mEdtEmail    = findViewById(R.id.et_email);
+        mEdtPassword = findViewById(R.id.et_password);
+        mEdtConfirm  = findViewById(R.id.et_confirm_password);
+        mBtnCreate   = findViewById(R.id.btn_create);
         TextView btnSignIn = findViewById(R.id.btn_signin);
 
-        btnCreate.setOnClickListener(v -> {
-            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        });
+        mBtnCreate.setOnClickListener(v -> register());
 
         btnSignIn.setOnClickListener(v -> {
-            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
         });
+    }
+
+    private void register() {
+        String name    = mEdtName.getText().toString().trim();
+        String email   = mEdtEmail.getText().toString().trim();
+        String pass    = mEdtPassword.getText().toString().trim();
+        String confirm = mEdtConfirm.getText().toString().trim();
+
+        if (TextUtils.isEmpty(name))  { mEdtName.setError("Bắt buộc"); return; }
+        if (TextUtils.isEmpty(email)) { mEdtEmail.setError("Bắt buộc"); return; }
+        if (pass.length() < 8)        { mEdtPassword.setError("Tối thiểu 8 ký tự"); return; }
+        if (!Objects.equals(pass, confirm))    { mEdtConfirm.setError("Mật khẩu không khớp"); return; }
+
+        mBtnCreate.setEnabled(false);
+        FirebaseAuth.getInstance()
+            .createUserWithEmailAndPassword(email, pass)
+            .addOnSuccessListener(result -> {
+                // Set display name
+                if (result.getUser() != null) {
+                    UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
+                        .setDisplayName(name).build();
+                    result.getUser().updateProfile(profile);
+                }
+                // Sign out so user must log in
+                FirebaseAuth.getInstance().signOut();
+                Toast.makeText(this, "Đăng ký thành công! Hãy đăng nhập.", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+            })
+            .addOnFailureListener(e -> {
+                mBtnCreate.setEnabled(true);
+                Toast.makeText(this, "Đăng ký thất bại: " + e.getMessage(),
+                    Toast.LENGTH_LONG).show();
+            });
     }
 }
