@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/toma_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="32dp">
+
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_menu"
+                app:tint="@color/toma_text" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="@string/app_name"
+                android:textAppearance="@style/TextAppearance.Toma.Brand"
+                android:textSize="18sp"
+                android:drawableStart="@drawable/ic_tomato"
+                android:drawablePadding="6dp" />
+            <View
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_avatar_circle" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="@string/focus_current"
+            android:textAppearance="@style/TextAppearance.Toma.Label"
+            android:textColor="@color/toma_primary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:text="@string/focus_title"
+            android:textAppearance="@style/TextAppearance.Toma.Display"
+            android:textSize="32sp" />
+
+        <!-- Timer ring -->
+        <FrameLayout
+            android:layout_width="280dp"
+            android:layout_height="280dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/bg_timer_ring">
+
+            <com.tomaflow.app.ui.timer.TimerView
+                android:id="@+id/timer_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/focus_time"
+                    android:textColor="@color/toma_text"
+                    android:textSize="64sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/tv_session_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="@string/focus_phase"
+                    android:textAppearance="@style/TextAppearance.Toma.Label"
+                    android:drawableStart="@drawable/ic_tomato"
+                    android:drawablePadding="6dp" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- Controls -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="36dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <ImageButton
+                android:id="@+id/btn_reset"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_reset"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/toma_text"
+                android:contentDescription="Reset" />
+            <FrameLayout
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginHorizontal="36dp"
+                android:background="@drawable/bg_play_button">
+                <ImageButton
+                    android:id="@+id/btn_play_pause"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_play"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="@color/toma_on_primary"
+                    android:contentDescription="Play" />
+            </FrameLayout>
+            <ImageButton
+                android:id="@+id/btn_skip"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_skip"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/toma_text"
+                android:contentDescription="Skip" />
+        </LinearLayout>
+
+        <!-- Current task card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card_current_task"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_icon_chip_success">
+                    <ImageView
+                        android:id="@+id/iv_task_icon"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_check"
+                        app:tint="@color/toma_success" />
+                </FrameLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tv_task_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Design System Review"
+                        android:textColor="@color/toma_text"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/tv_task_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Part of Project Sanctuary"
+                        android:textColor="@color/toma_text_muted" />
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/toma_primary" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

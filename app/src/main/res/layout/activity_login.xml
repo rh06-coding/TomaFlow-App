@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/toma_background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="56dp"
+        android:paddingBottom="32dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textAppearance="@style/TextAppearance.Toma.Brand"
+            android:textSize="20sp"
+            android:drawableStart="@drawable/ic_tomato"
+            android:drawablePadding="6dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:text="@string/auth_welcome"
+            android:textAppearance="@style/TextAppearance.Toma.Display"
+            android:textSize="36sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="@string/auth_welcome_sub"
+            android:textAppearance="@style/TextAppearance.Toma.Body" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:hint="@string/auth_email"
+            app:startIconDrawable="@drawable/ic_email"
+            app:startIconTint="@color/toma_text_muted"
+            style="@style/Widget.Toma.TextInputLayout">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/toma_text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="@string/auth_password"
+            app:startIconDrawable="@drawable/ic_lock"
+            app:startIconTint="@color/toma_text_muted"
+            app:endIconMode="password_toggle"
+            style="@style/Widget.Toma.TextInputLayout">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_password"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:inputType="textPassword"
+                android:textColor="@color/toma_text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/btn_forgot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_gravity="end"
+            android:text="@string/auth_forgot"
+            android:textColor="@color/toma_primary"
+            android:textStyle="bold" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_signin"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/auth_signin"
+            style="@style/Widget.Toma.Button.Primary" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_google"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/auth_google"
+            app:icon="@drawable/ic_cloud"
+            app:iconGravity="textStart"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/auth_no_account"
+                android:textColor="@color/toma_text_muted" />
+            <TextView
+                android:id="@+id/btn_create"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="@string/auth_create"
+                android:textColor="@color/toma_primary"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
