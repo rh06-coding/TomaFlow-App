@@ -1,5 +1,7 @@
 package com.tomaflow.app.data.remote;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.tomaflow.app.data.db.entity.TaskEntity;
@@ -12,6 +14,7 @@ import java.util.Map;
  */
 public class FirestoreTaskRemoteDataSource {
 
+    private static final String TAG = "FirestoreSync";
     private final FirebaseFirestore firestore;
 
     public FirestoreTaskRemoteDataSource() {
@@ -34,12 +37,18 @@ public class FirestoreTaskRemoteDataSource {
         data.put("createdAt", task.createdAt);
         data.put("updatedAt", task.updatedAt);
 
-        // Lưu task theo từng user để sau này đổi sang Firebase Auth dễ hơn.
+        // Lưu task theo user đang đăng nhập.
         firestore.collection("users")
                 .document(userId)
                 .collection("tasks")
                 .document(String.valueOf(task.taskId))
-                .set(data, SetOptions.merge());
+                .set(data, SetOptions.merge())
+                .addOnSuccessListener(unused ->
+                        Log.d(TAG, "Upload task success: " + task.taskId)
+                )
+                .addOnFailureListener(e ->
+                        Log.e(TAG, "Upload task failed: " + task.taskId, e)
+                );
     }
 
     public void deleteTask(String userId, int taskId) {
@@ -51,6 +60,12 @@ public class FirestoreTaskRemoteDataSource {
                 .document(userId)
                 .collection("tasks")
                 .document(String.valueOf(taskId))
-                .delete();
+                .delete()
+                .addOnSuccessListener(unused ->
+                        Log.d(TAG, "Delete task success: " + taskId)
+                )
+                .addOnFailureListener(e ->
+                        Log.e(TAG, "Delete task failed: " + taskId, e)
+                );
     }
 }
