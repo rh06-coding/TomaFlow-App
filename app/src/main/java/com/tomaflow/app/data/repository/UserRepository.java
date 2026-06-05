@@ -1,17 +1,18 @@
 package com.tomaflow.app.data.repository;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 /**
- * Repository user tạm thời khi app chưa có đăng nhập.
- * Sau này có thể đổi sang Firebase/Auth/API mà ít ảnh hưởng UI.
+ * Repository quản lý user hiện tại từ Firebase Auth.
  */
 public class UserRepository {
 
     private static volatile UserRepository INSTANCE;
-
-    // User id giả lập cho giai đoạn app chạy local.
-    private static final String DEFAULT_USER_ID = "local_user";
+    private final FirebaseAuth firebaseAuth;
 
     private UserRepository() {
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     public static UserRepository getInstance() {
@@ -22,20 +23,19 @@ public class UserRepository {
                 }
             }
         }
-
         return INSTANCE;
     }
 
     public String getCurrentUserId() {
-        return DEFAULT_USER_ID;
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        return user != null ? user.getUid() : null;
     }
 
     public boolean isLoggedIn() {
-        return true;
+        return firebaseAuth.getCurrentUser() != null;
     }
 
     public void signOut() {
-        // Tạm thời chưa làm gì.
-        // Sau này nếu dùng Firebase thì gọi FirebaseAuth.getInstance().signOut()
+        firebaseAuth.signOut();
     }
 }

@@ -41,20 +41,23 @@ public interface TaskDao {
     @Query("select * from Tasks where taskId = :taskId limit 1")
     LiveData<TaskEntity> getTaskById(long taskId);
 
+    // Lấy task đồng bộ trong background thread để sync Firestore.
+    @Query("select * from Tasks where taskId = :taskId limit 1")
+    TaskEntity getTaskByIdSync(int taskId);
+
     // Đếm số task chưa hoàn thành.
     @Query("select count(*) from Tasks where status != 'Completed'")
     LiveData<Integer> getPendingTaskCount();
 
-
-    // Cập nhật trạng thái task sau khi user hoàn thành hoặc chỉnh task.
-    @Query("UPDATE tasks SET status = :status WHERE taskId = :taskId")
-    void updateTaskStatus(int taskId, String status);
-
+    // Cập nhật trạng thái task và thời gian chỉnh sửa.
+    @Query("update Tasks set status = :status, updatedAt = :updatedAt where taskId = :taskId")
+    void updateTaskStatus(int taskId, String status, long updatedAt);
 
     // Lọc các task có chứa tag được truyền vào.
     @Query("select * from Tasks where tags like '%' || :tag || '%' order by createdAt desc")
     LiveData<List<TaskEntity>> getTasksByTag(String tag);
 
+    // Cập nhật tag cho task và thời gian chỉnh sửa.
     @Query("update Tasks set tags = :tags, updatedAt = :updatedAt where taskId = :taskId")
     void updateTags(int taskId, String tags, long updatedAt);
 }
