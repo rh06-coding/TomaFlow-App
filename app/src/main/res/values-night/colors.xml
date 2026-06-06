@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand -->
+    <color name="toma_primary">#FF4D6A</color> <!-- Lighter red for dark mode -->
+    <color name="toma_primary_dark">#D62846</color>
+    <color name="toma_primary_soft">#3D1B1F</color> <!-- Deep muted red/brown -->
+    <color name="toma_on_primary">#FFFFFF</color>
+
+    <!-- Surfaces -->
+    <color name="toma_background">#0F0F14</color> <!-- Deep navy/black -->
+    <color name="toma_surface">#1C1C26</color> <!-- Dark gray/blue for cards -->
+    <color name="toma_surface_muted">#252533</color>
+
+    <!-- Text -->
+    <color name="toma_text">#E2E2E9</color> <!-- Near white -->
+    <color name="toma_text_muted">#9A9AAB</color> <!-- Medium gray -->
+
+    <!-- Accents -->
+    <color name="toma_success">#52C485</color>
+    <color name="toma_success_soft">#1B2E24</color>
+    <color name="toma_info">#60A5FA</color>
+    <color name="toma_info_soft">#1E293B</color>
+
+    <color name="toma_divider">#2A2A3A</color>
+</resources>

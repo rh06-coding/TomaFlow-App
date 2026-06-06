@@ -44,6 +44,8 @@ public class FocusFragment extends Fragment {
         setupTimerObserver();
     }
 
+    private boolean isTaskCompleted = false;
+
     private void bindViews(View v) {
         mTimerView      = v.findViewById(R.id.timer_view);
         mTvTime         = v.findViewById(R.id.tv_time);
@@ -52,11 +54,28 @@ public class FocusFragment extends Fragment {
         ImageButton btnReset = v.findViewById(R.id.btn_reset);
         ImageButton btnSkip = v.findViewById(R.id.btn_skip);
         CardView cardCurrentTask = v.findViewById(R.id.card_current_task);
+        
+        View btnCompleteTask = v.findViewById(R.id.btn_complete_task);
+        TextView tvTaskTitle = v.findViewById(R.id.tv_task_title);
 
         mBtnPlayPause.setOnClickListener(v1 -> onPlayPauseClicked());
         btnReset.setOnClickListener(v1 -> onResetClicked());
         btnSkip.setOnClickListener(v1 -> onSkipClicked());
         cardCurrentTask.setOnClickListener(v1 -> onTaskCardClicked());
+
+        btnCompleteTask.setOnClickListener(v1 -> {
+            isTaskCompleted = !isTaskCompleted;
+            if (isTaskCompleted) {
+                tvTaskTitle.setPaintFlags(tvTaskTitle.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
+                tvTaskTitle.setTextColor(getResources().getColor(R.color.toma_text_muted, null));
+                btnCompleteTask.setAlpha(0.5f);
+                android.widget.Toast.makeText(getContext(), "Tuyệt vời! Task đã hoàn thành.", android.widget.Toast.LENGTH_SHORT).show();
+            } else {
+                tvTaskTitle.setPaintFlags(tvTaskTitle.getPaintFlags() & (~android.graphics.Paint.STRIKE_THRU_TEXT_FLAG));
+                tvTaskTitle.setTextColor(getResources().getColor(R.color.toma_text, null));
+                btnCompleteTask.setAlpha(1.0f);
+            }
+        });
     }
 
     private void setupTimerObserver() {
