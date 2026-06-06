@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.TomaFlow" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/toma_primary</item>
+        <item name="colorOnPrimary">@color/toma_on_primary</item>
+        <item name="colorPrimaryContainer">@color/toma_primary_soft</item>
+        <item name="colorOnPrimaryContainer">@color/toma_primary</item>
+        <item name="colorSecondary">@color/toma_info</item>
+        <item name="colorSurface">@color/toma_surface</item>
+        <item name="android:colorBackground">@color/toma_background</item>
+        <item name="android:statusBarColor">@color/toma_background</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:navigationBarColor">@color/toma_background</item>
+        <item name="android:textColorPrimary">@color/toma_text</item>
+        <item name="android:textColorSecondary">@color/toma_text_muted</item>
+    </style>
+
+</resources>

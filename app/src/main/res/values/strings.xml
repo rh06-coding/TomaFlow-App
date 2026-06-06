@@ -79,6 +79,9 @@
     <string name="settings_sanctuary">Focus Sanctuary</string>
     <string name="settings_sanctuary_desc">Your workspace is tuned for peak cognitive performance.</string>
 
+    <string name="settings_dark_mode">Dark Mode</string>
+    <string name="settings_dark_mode_desc">Switch between light and dark themes.</string>
+
     <string name="nav_rewards">REWARDS</string>
     <string name="notification_channel_timer_name">Pomodoro Timer</string>
     <string name="notification_channel_timer_desc">Shows the current timer and controls</string>
@@ -95,4 +98,5 @@
 
     <string name="placeholder_task_title">No Active Task</string>
     <string name="placeholder_task_subtitle">Select a task to start focusing</string>
+    <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID_HERE</string>
 </resources>
