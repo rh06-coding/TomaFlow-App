@@ -31,7 +31,7 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
     private boolean mBound = false;
 
     private long mFocusStartTime = 0L;// Lưu thời điểm bắt đầu focus để tính duration thực tế.
-    private Integer mCurrentTaskId = null;// Task đang được focus; null nếu user không chọn task.
+    private String mCurrentTaskId = null;// Task đang được focus; null nếu user không chọn task.
 
     private final ServiceConnection mConnection = new ServiceConnection() {
         @Override
@@ -65,7 +65,7 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
      * Set the task currently attached to the timer.
      * Pass null if the user starts a Pomodoro without selecting a task.
      */
-    public void setCurrentTaskId(Integer taskId) {
+    public void setCurrentTaskId(String taskId) {
         mCurrentTaskId = taskId;
     }
 

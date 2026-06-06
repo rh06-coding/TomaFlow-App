@@ -14,7 +14,7 @@ public class SessionEntity {
     public int sessionId;
 
     public int userId;           // Reserved for Firebase sync
-    public Integer taskId;       // Có thể null nếu user chạy timer mà không chọn task.
+    public String taskId;        // Có thể null nếu user chạy timer mà không chọn task.
 
     public long startTime;       // System.currentTimeMillis()
     public long endTime;

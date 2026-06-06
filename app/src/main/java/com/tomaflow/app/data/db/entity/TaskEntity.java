@@ -1,7 +1,10 @@
 package com.tomaflow.app.data.db.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import java.util.UUID;
 
 /**
  * Bảng lưu công việc local.
@@ -10,10 +13,11 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "Tasks")
 public class TaskEntity {
 
-    @PrimaryKey(autoGenerate = true)
-    public int taskId;
+    @PrimaryKey
+    @NonNull
+    public String taskId;
 
-    public int userId;           // Reserved for future Firebase sync
+    public String userId;        // Firebase UID
 
     public String title;
     public String description;
@@ -27,11 +31,14 @@ public class TaskEntity {
 
     // Danh sách tag của task, lưu dạng chuỗi: "study,urgent".
     public String tags;
+
     public TaskEntity() {
+        this.taskId = UUID.randomUUID().toString();
     }
 
     public TaskEntity(String title, String description, int estPomodoros) {
-        this.userId = 0;
+        this();
+        this.userId = "";
         this.title = title;
         this.description = description;
         this.estPomodoros = estPomodoros;

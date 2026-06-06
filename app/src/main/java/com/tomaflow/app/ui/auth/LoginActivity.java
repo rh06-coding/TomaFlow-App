@@ -7,7 +7,7 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.tomaflow.app.data.repository.TaskRepository;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -136,6 +136,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goToMain() {
+        // Kéo task từ Firestore về Room sau khi user đã đăng nhập.
+        TaskRepository taskRepository = new TaskRepository(getApplication());
+        taskRepository.syncTasksFromFirestore();
+
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
