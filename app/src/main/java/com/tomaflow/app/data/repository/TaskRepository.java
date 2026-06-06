@@ -1,6 +1,7 @@
 package com.tomaflow.app.data.repository;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
@@ -19,6 +20,8 @@ import java.util.concurrent.Executors;
  * Flow: UI -> ViewModel -> Repository -> TaskDao -> Room -> SQLite/Firestore
  */
 public class TaskRepository {
+
+    private static final String TAG = "TaskRepository";
 
     private final TaskDao mTaskDao;
 
@@ -49,7 +52,7 @@ public class TaskRepository {
         return mTaskDao.getPendingTaskCount();
     }
 
-    public LiveData<TaskEntity> getTaskById(int taskId) {
+    public LiveData<TaskEntity> getTaskById(String taskId) {
         return mTaskDao.getTaskById(taskId);
     }
 
@@ -75,12 +78,13 @@ public class TaskRepository {
                 task.tags = "";
             }
 
-            long generatedId = mTaskDao.insert(task);
-            task.taskId = (int) generatedId;
+            task.userId = mUserRepository.getCurrentUserId();
+
+            mTaskDao.insert(task);
 
             // Sau khi lưu local thành công thì đồng bộ lên Firestore.
             mRemoteDataSource.uploadTask(
-                    mUserRepository.getCurrentUserId(),
+                    task.userId,
                     task
             );
         });
@@ -116,7 +120,7 @@ public class TaskRepository {
         });
     }
 
-    public void deleteById(int taskId) {
+    public void deleteById(String taskId) {
         mExecutor.execute(() -> {
             mTaskDao.deleteById(taskId);
 
@@ -128,15 +132,15 @@ public class TaskRepository {
         });
     }
 
-    public void markTaskCompleted(int taskId) {
+    public void markTaskCompleted(String taskId) {
         updateTaskStatus(taskId, "Completed");
     }
 
-    public void markTaskPending(int taskId) {
+    public void markTaskPending(String taskId) {
         updateTaskStatus(taskId, "Pending");
     }
 
-    public void updateTags(int taskId, String tags) {
+    public void updateTags(String taskId, String tags) {
         mExecutor.execute(() -> {
             long now = System.currentTimeMillis();
             String safeTags = tags == null ? "" : tags;
@@ -153,7 +157,7 @@ public class TaskRepository {
         });
     }
 
-    private void updateTaskStatus(int taskId, String status) {
+    private void updateTaskStatus(String taskId, String status) {
         mExecutor.execute(() -> {
             long now = System.currentTimeMillis();
 
@@ -166,6 +170,49 @@ public class TaskRepository {
                     mUserRepository.getCurrentUserId(),
                     task
             );
+        });
+    }
+
+    /**
+     * Kéo task từ Firestore về Room sau khi user đăng nhập hoặc mở màn Task.
+     */
+    public void syncTasksFromFirestore() {
+        String userId = mUserRepository.getCurrentUserId();
+
+        if (userId == null || userId.isEmpty()) {
+            Log.d(TAG, "Skip sync because user is not logged in");
+            return;
+        }
+
+        mRemoteDataSource.fetchTasks(userId, new FirestoreTaskRemoteDataSource.TaskFetchCallback() {
+            @Override
+            public void onSuccess(List<TaskEntity> tasks) {
+                mExecutor.execute(() -> {
+                    for (TaskEntity task : tasks) {
+                        if (task.taskId.isEmpty()) {
+                            continue;
+                        }
+
+                        if (task.tags == null) {
+                            task.tags = "";
+                        }
+
+                        if (task.status == null || task.status.isEmpty()) {
+                            task.status = "Pending";
+                        }
+
+                        // REPLACE giúp task từ Firestore ghi đè task local nếu trùng taskId.
+                        mTaskDao.insert(task);
+                    }
+
+                    Log.d(TAG, "Synced tasks from Firestore to Room: " + tasks.size());
+                });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e(TAG, "Sync tasks from Firestore failed", e);
+            }
         });
     }
 }

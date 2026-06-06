@@ -15,10 +15,6 @@ import java.util.List;
 /**
  * ViewModel cho màn hình task.
  * Cung cấp dữ liệu task cho UI và gọi TaskRepository để xử lý database.
- *
- * UI chỉ nên gọi ViewModel, không gọi trực tiếp Repository/DAO.
- * Sau này nếu đổi Room sang Cloud Database thì ưu tiên sửa Repository,
- * hạn chế sửa UI.
  */
 public class TaskViewModel extends AndroidViewModel {
 
@@ -43,7 +39,7 @@ public class TaskViewModel extends AndroidViewModel {
         return taskRepository.getPendingCount();
     }
 
-    public LiveData<TaskEntity> getTaskById(int taskId) {
+    public LiveData<TaskEntity> getTaskById(String taskId) {
         return taskRepository.getTaskById(taskId);
     }
 
@@ -59,11 +55,18 @@ public class TaskViewModel extends AndroidViewModel {
         taskRepository.delete(task);
     }
 
-    public void deleteById(int taskId) {
+    public void deleteById(String taskId) {
         taskRepository.deleteById(taskId);
     }
 
-    // Lấy user hiện tại thông qua UserRepository để dễ đổi sang cloud/auth sau này.
+    public void markTaskCompleted(String taskId) {
+        taskRepository.markTaskCompleted(taskId);
+    }
+
+    public void markTaskPending(String taskId) {
+        taskRepository.markTaskPending(taskId);
+    }
+
     public String getCurrentUserId() {
         return userRepository.getCurrentUserId();
     }
@@ -76,7 +79,14 @@ public class TaskViewModel extends AndroidViewModel {
         return taskRepository.getTasksByTag(tag);
     }
 
-    public void updateTags(int taskId, String tags) {
+    public void updateTags(String taskId, String tags) {
         taskRepository.updateTags(taskId, tags);
+    }
+
+    /**
+     * Kéo task từ Firestore về Room.
+     */
+    public void syncTasksFromFirestore() {
+        taskRepository.syncTasksFromFirestore();
     }
 }

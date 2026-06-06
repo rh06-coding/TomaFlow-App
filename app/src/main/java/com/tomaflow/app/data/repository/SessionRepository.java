@@ -59,7 +59,7 @@ public class SessionRepository {
      */
 
     // Tạo bản ghi session đầy đủ từ thời điểm bắt đầu/kết thúc timer.
-    public void saveSession(Integer taskId, long startTime, long endTime, String status) {
+    public void saveSession(String taskId, long startTime, long endTime, String status) {
         int durationSeconds = (int) Math.max(0, (endTime - startTime) / 1000L);
 
         SessionEntity session = new SessionEntity();
