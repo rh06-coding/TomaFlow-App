@@ -143,6 +143,15 @@ public class FocusFragment extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mTimerView = null;
+        mTvTime = null;
+        mTvSessionLabel = null;
+        mBtnPlayPause = null;
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         mTimerViewModel.startListening();
