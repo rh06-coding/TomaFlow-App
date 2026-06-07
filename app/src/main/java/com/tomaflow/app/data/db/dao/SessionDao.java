@@ -11,37 +11,41 @@ import com.tomaflow.app.data.db.entity.SessionEntity;
 
 import java.util.List;
 
-/** Room DAO for the Sessions table. Provides history and weekly aggregation queries. */
+/**
+ * DAO thao tác với bảng Sessions.
+ * Dùng để lưu lịch sử Pomodoro và đọc thống kê theo tuần.
+ */
 @Dao
 public interface SessionDao {
 
+    // Lưu một phiên Pomodoro đã hoàn thành hoặc bị hủy.
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(SessionEntity session);
 
     @Query("select * from Sessions order by startTime desc")
     LiveData<List<SessionEntity>> getAllSessions();
 
-    /** Total focus minutes for the current week (ISO week number match). */
-    @Query("select sum(duration) from Sessions " +
-           "where strftime('%W', datetime(startTime / 1000, 'unixepoch')) = strftime('%W', 'now')")
+    // Tổng số phút focus đã hoàn thành trong tuần hiện tại.
+    @Query("select cast(coalesce(sum(duration), 0) / 60 as integer) from Sessions " +
+            "where status = 'Completed' " +
+            "and strftime('%W', datetime(startTime / 1000, 'unixepoch')) = strftime('%W', 'now')")
     LiveData<Integer> getWeeklyFocusMinutes();
 
-    /** Count of completed cycles this week. */
+    // Số phiên Pomodoro hoàn thành trong tuần hiện tại.
     @Query("select count(*) from Sessions " +
            "where status = 'Completed' " +
            "and strftime('%W', datetime(startTime / 1000, 'unixepoch')) = strftime('%W', 'now')")
     LiveData<Integer> getWeeklyCompletedCycles();
 
-    /**
-     * Per-day breakdown for the current week. Used for the bar chart in StatsActivity.
-     * DAY_NUM: "0"=Sun through "6"=Sat.
-     */
+
+    // Thống kê focus theo từng ngày trong tuần để vẽ biểu đồ.
     @Query("select strftime('%w', datetime(startTime / 1000, 'unixepoch')) as DAY_NUM, " +
-           "sum(duration) as MINUTES, " +
-           "sum(case when status = 'Completed' then 1 else 0 end) as CYCLES " +
-           "from Sessions " +
-           "where strftime('%W', datetime(startTime / 1000, 'unixepoch')) = strftime('%W', 'now') " +
-           "group by DAY_NUM order by DAY_NUM asc")
+            "cast(coalesce(sum(duration), 0) / 60 as integer) as MINUTES, " +
+            "sum(case when status = 'Completed' then 1 else 0 end) as CYCLES " +
+            "from Sessions " +
+            "where status = 'Completed' " +
+            "and strftime('%W', datetime(startTime / 1000, 'unixepoch')) = strftime('%W', 'now') " +
+            "group by DAY_NUM order by DAY_NUM asc")
     LiveData<List<DailyStatRow>> getWeeklyDailyStats();
 
     /** Row type for getWeeklyDailyStats(). */

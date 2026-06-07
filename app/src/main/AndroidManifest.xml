@@ -4,28 +4,40 @@
     Declares the single-Activity entry point for TomaFlow.
     Permissions and additional components will be added as features are built.
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tomaflow.app">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Foreground service permission for a persistent timer notification (future) -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:label="@string/app_name"
         android:theme="@style/Theme.TomaFlow">
 
-        <!-- ── Main / Focus screen ────────────────────── -->
+        <!-- ── Auth Flow ────────────────────────── -->
         <activity
             android:exported="true"
-            android:name=".MainActivity">
+            android:name=".ui.auth.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:exported="false"
+            android:name=".ui.auth.RegisterActivity" />
+
+        <!-- ── Main / Focus screen ────────────────────── -->
+        <activity
+            android:exported="false"
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout" />
 
         <!-- ── Tasks screen (stub — to be implemented) ── -->
         <activity

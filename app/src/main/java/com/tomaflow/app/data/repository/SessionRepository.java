@@ -13,26 +13,63 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Single source of truth for session data.
- * Called by MainActivity to persist sessions, and by StatsActivity for weekly charts.
+ * Repository quản lý dữ liệu Pomodoro session.
+ * Cung cấp dữ liệu cho thống kê và lưu session từ timer.
  */
 public class SessionRepository {
 
-    private final SessionDao      mSessionDao;
-    private final ExecutorService mExecutor;
+    private final SessionDao mSessionDao;
+    private static final ExecutorService sExecutor = Executors.newSingleThreadExecutor();
 
     public SessionRepository(Application application) {
         TomaFlowDatabase db = TomaFlowDatabase.getInstance(application);
         mSessionDao = db.sessionDao();
-        mExecutor   = Executors.newSingleThreadExecutor();
     }
 
     // Reads
-    public LiveData<List<SessionEntity>>              getAllSessions()       { return mSessionDao.getAllSessions(); }
-    public LiveData<Integer>                          getWeeklyMinutes()    { return mSessionDao.getWeeklyFocusMinutes(); }
-    public LiveData<Integer>                          getWeeklyCycles()     { return mSessionDao.getWeeklyCompletedCycles(); }
-    public LiveData<List<SessionDao.DailyStatRow>>    getWeeklyDailyStats() { return mSessionDao.getWeeklyDailyStats(); }
+    public LiveData<List<SessionEntity>> getAllSessions() {
+        return mSessionDao.getAllSessions();
+    }
 
-    // Writes
-    public void insert(SessionEntity session) { mExecutor.execute(() -> mSessionDao.insert(session)); }
+    public LiveData<Integer> getWeeklyMinutes() {
+        return mSessionDao.getWeeklyFocusMinutes();
+    }
+
+    public LiveData<Integer> getWeeklyCycles() {
+        return mSessionDao.getWeeklyCompletedCycles();
+    }
+
+    public LiveData<List<SessionDao.DailyStatRow>> getWeeklyDailyStats() {
+        return mSessionDao.getWeeklyDailyStats();
+    }
+
+    // Lưu session ở background thread để tránh chặn UI.
+    public void insert(SessionEntity session) {
+        sExecutor.execute(() -> mSessionDao.insert(session));
+    }
+
+
+    /**
+     * Save a completed or failed focus session.
+     *
+     * @param taskId nullable task id, because user may start timer without selecting a task
+     * @param startTime session start time in milliseconds
+     * @param endTime session end time in milliseconds
+     * @param status "Completed" or "Failed"
+     */
+
+    // Tạo bản ghi session đầy đủ từ thời điểm bắt đầu/kết thúc timer.
+    public void saveSession(String taskId, long startTime, long endTime, String status) {
+        int durationSeconds = (int) Math.max(0, (endTime - startTime) / 1000L);
+
+        SessionEntity session = new SessionEntity();
+        session.userId = 0; // Reserved for cloud/Firebase user later
+        session.taskId = taskId;
+        session.startTime = startTime;
+        session.endTime = endTime;
+        session.duration = durationSeconds;
+        session.status = status;
+
+        insert(session);
+    }
 }

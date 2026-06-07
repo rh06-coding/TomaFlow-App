@@ -1,72 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    strings.xml — All user-visible text for TomaFlow.
-    Extract strings here instead of hardcoding them in layouts/Java for
-    easy future localisation.
--->
 <resources>
-
-    <!-- App -->
     <string name="app_name">TomaFlow</string>
 
-    <!-- Home / Focus screen -->
-    <string name="label_current_session">Current Session</string>
-    <string name="title_focus_time">Focus Time</string>
-    <string name="label_deep_work">Deep Work</string>
+    <!-- Bottom nav -->
+    <string name="nav_focus">FOCUS</string>
+    <string name="nav_tasks">TASKS</string>
+    <string name="nav_stats">STATS</string>
+    <string name="nav_profile">PROFILE</string>
+    <string name="nav_settings">SETTINGS</string>
 
-    <!-- Timer controls -->
-    <string name="cd_reset_timer">Reset timer</string>
-    <string name="cd_start_pause_timer">Start or pause timer</string>
-    <string name="cd_skip_timer">Skip session</string>
+    <!-- Auth -->
+    <string name="auth_welcome">Welcome\nBack.</string>
+    <string name="auth_welcome_sub">Sign in to continue your focus journey.</string>
+    <string name="auth_email">Email address</string>
+    <string name="auth_password">Password</string>
+    <string name="auth_forgot">Forgot password?</string>
+    <string name="auth_signin">Sign In</string>
+    <string name="auth_google">Sign in with Google</string>
+    <string name="auth_no_account">New to TomaFlow?</string>
+    <string name="auth_create">Create an account</string>
 
-    <!-- Task card -->
-    <string name="cd_task_icon">Task category icon</string>
-    <string name="placeholder_task_title">Design System Review</string>
-    <string name="placeholder_task_subtitle">Part of Project Sanctuary</string>
+    <string name="reg_title">Start your\nflow.</string>
+    <string name="reg_sub">Create an account to architect your focus.</string>
+    <string name="reg_name">Full name</string>
+    <string name="reg_password">Password (8+ characters)</string>
+    <string name="reg_confirm_password">Confirm password</string>
+    <string name="reg_submit">Create account</string>
+    <string name="reg_terms">By continuing you agree to TomaFlow\'s Terms and Privacy Policy.</string>
+    <string name="reg_have">Already have an account?</string>
+    <string name="reg_signin">Sign in</string>
 
-    <!-- Toast messages -->
-    <string name="session_skipped">Session skipped</string>
-    <string name="session_complete">Great job! Session complete 🎉</string>
-    <string name="navigate_tasks_hint">Opening Tasks…</string>
+    <!-- Focus -->
+    <string name="focus_current">CURRENT SESSION</string>
+    <string name="focus_title">Focus Time</string>
+    <string name="focus_time">25:00</string>
+    <string name="focus_phase">DEEP WORK</string>
 
-    <!-- Bottom navigation labels -->
-    <string name="nav_focus">Focus</string>
-    <string name="nav_tasks">Tasks</string>
-    <string name="nav_stats">Stats</string>
-    <string name="nav_rewards">Rewards</string>
-    <string name="nav_settings">Settings</string>
+    <!-- Tasks -->
+    <string name="tasks_current">CURRENT FOCUS</string>
+    <string name="tasks_title">Task\nArchitecture</string>
+    <string name="tasks_slots">ACTIVE SLOTS</string>
+    <string name="tasks_est">EST. POMODOROS</string>
+    <string name="tasks_completion">COMPLETION RATE</string>
+    <string name="tasks_active">Active To-Do</string>
+    <string name="tasks_completed">Completed</string>
 
-    <!-- Tasks screen -->
-    <string name="label_my_tasks">My Tasks</string>
-    <string name="title_todo_list">To-Do List</string>
-    <string name="hint_add_task">Add a new task…</string>
+    <!-- Stats -->
+    <string name="stats_performance">YOUR PERFORMANCE</string>
+    <string name="stats_title">Weekly Flow</string>
+    <string name="stats_total">TOTAL FOCUS TIME</string>
+    <string name="stats_pomos">POMODOROS COMPLETED</string>
+    <string name="stats_best">BEST DAY</string>
+    <string name="stats_intensity">Daily Focus\nIntensity</string>
+    <string name="stats_insights">FLOW INSIGHTS</string>
+    <string name="stats_peak">Peak Performance Detected</string>
+    <string name="stats_peak_desc">Your focus levels are 24% higher between 9:00 AM and 11:30 AM. Consider scheduling deep work during this window.</string>
 
-    <!-- Stats screen -->
-    <string name="label_weekly_progress">Weekly Progress</string>
-    <string name="title_statistics">Statistics</string>
-    <string name="label_total_hours">Total Hours</string>
-    <string name="label_total_cycles">Total Cycles</string>
-    <string name="label_focus_hours_chart">Focus Hours</string>
-    <string name="label_cycles_chart">Pomodoro Cycles</string>
+    <!-- Profile -->
+    <string name="profile_role">SENIOR FOCUS ARCHITECT</string>
+    <string name="profile_badges">Earned Badges</string>
+    <string name="profile_view_all">VIEW ALL</string>
+    <string name="profile_cloud">Cloud Sync</string>
+    <string name="profile_cloud_time">LAST: 2M AGO</string>
+    <string name="profile_logout">Log Out</string>
 
-    <!-- Rewards screen -->
-    <string name="label_achievements">Achievements</string>
-    <string name="title_rewards">Rewards</string>
-    <string name="label_collected_rewards">Collected Rewards</string>
-    <string name="label_user_level">Focus Master</string>
-    <string name="label_user_level_detail">Level 8 • 127 hours</string>
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_header">Timer Preferences</string>
+    <string name="settings_sub">Customize your focus cycles to match your rhythm.</string>
+    <string name="settings_focus">Focus</string>
+    <string name="settings_short">Short Break</string>
+    <string name="settings_long">Long Break</string>
+    <string name="settings_deep">DEEP WORK SYSTEM</string>
+    <string name="settings_strict">Strict Mode</string>
+    <string name="settings_strict_desc">Prevents pausing during active sessions.</string>
+    <string name="settings_notify">Notifications</string>
+    <string name="settings_notify_desc">Sound and haptic alerts for phase shifts.</string>
+    <string name="settings_sanctuary">Focus Sanctuary</string>
+    <string name="settings_sanctuary_desc">Your workspace is tuned for peak cognitive performance.</string>
 
-    <!-- Settings screen -->
-    <string name="label_preferences">Preferences</string>
-    <string name="title_settings">Settings</string>
-    <string name="label_work_duration">Work Duration</string>
-    <string name="label_break_duration">Break Duration</string>
-    <string name="label_sound_notifications">Sound Notifications</string>
-    <string name="desc_sound_notifications">Play sound when timer ends</string>
-    <string name="label_strict_mode">Strict Mode</string>
-    <string name="desc_strict_mode">Block distracting apps during focus</string>
-    <string name="label_about">About TomaFlow</string>
-    <string name="label_version">Version 1.0.0</string>
-    <string name="label_built_with">Built with Material Design 3</string>
+    <string name="settings_dark_mode">Dark Mode</string>
+    <string name="settings_dark_mode_desc">Switch between light and dark themes.</string>
 
+    <string name="nav_rewards">REWARDS</string>
+    <string name="notification_channel_timer_name">Pomodoro Timer</string>
+    <string name="notification_channel_timer_desc">Shows the current timer and controls</string>
+    <string name="notification_channel_sound_name">Timer Alerts</string>
+    <string name="notification_channel_sound_desc">Plays sound when a phase is complete</string>
+    <string name="notification_timer_title">TomaFlow Timer</string>
+    <string name="notification_action_pause">Pause</string>
+    <string name="notification_action_resume">Resume</string>
+    <string name="notification_action_skip">Skip</string>
+    <string name="notification_focus_complete_title">Focus Complete!</string>
+    <string name="notification_break_complete_title">Break Complete!</string>
+    <string name="notification_focus_complete_msg">Focus session %1$d complete. Time for a break!</string>
+    <string name="notification_break_complete_msg">Break complete. Ready to focus?</string>
+
+    <string name="placeholder_task_title">No Active Task</string>
+    <string name="placeholder_task_subtitle">Select a task to start focusing</string>
+    <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID_HERE</string>
 </resources>
