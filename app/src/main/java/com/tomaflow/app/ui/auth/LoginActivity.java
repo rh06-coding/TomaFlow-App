@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(getApplicationContext(), gso);
 
         // Auth gate — skip login if already authenticated
         if (mAuth.getCurrentUser() != null) {
