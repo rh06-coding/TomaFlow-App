@@ -52,6 +52,10 @@
     <string name="stats_pomos">POMODOROS COMPLETED</string>
     <string name="stats_best">BEST DAY</string>
     <string name="stats_intensity">Daily Focus\nIntensity</string>
+    <string name="stats_breakdown">Session Breakdown</string>
+    <string name="stats_no_data">No sessions yet</string>
+    <string name="stats_completed">Completed</string>
+    <string name="stats_failed">Failed</string>
     <string name="stats_insights">FLOW INSIGHTS</string>
     <string name="stats_peak">Peak Performance Detected</string>
     <string name="stats_peak_desc">Your focus levels are 24% higher between 9:00 AM and 11:30 AM. Consider scheduling deep work during this window.</string>

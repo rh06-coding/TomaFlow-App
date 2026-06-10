@@ -219,26 +219,34 @@
                     android:textColor="@color/toma_success" />
             </LinearLayout>
 
-            <!-- chart canvas placeholder for MPAndroidChart / custom view -->
-            <FrameLayout
-                android:id="@+id/chart_container"
+            <!-- Weekly focus minutes per day -->
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/bar_chart"
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
+                android:layout_height="180dp"
                 android:layout_marginTop="20dp" />
+        </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+        <!-- Session breakdown (Completed vs Failed) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_card_muted"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:weightSum="7">
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="MON" android:textAppearance="@style/TextAppearance.Toma.Label"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="TUE" android:textAppearance="@style/TextAppearance.Toma.Label"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="WED" android:textColor="@color/toma_text" android:textStyle="bold" android:textSize="10sp"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="THU" android:textAppearance="@style/TextAppearance.Toma.Label"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="FRI" android:textAppearance="@style/TextAppearance.Toma.Label"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="SAT" android:textAppearance="@style/TextAppearance.Toma.Label"/>
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="SUN" android:textAppearance="@style/TextAppearance.Toma.Label"/>
-            </LinearLayout>
+                android:text="@string/stats_breakdown"
+                android:textAppearance="@style/TextAppearance.Toma.Title" />
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pie_chart"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_marginTop="12dp" />
         </LinearLayout>
 
         <TextView
