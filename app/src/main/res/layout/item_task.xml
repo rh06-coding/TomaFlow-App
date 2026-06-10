@@ -19,7 +19,7 @@
             android:id="@+id/cb_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/toma_primary_soft" />
+            android:buttonTint="@color/toma_primary" />
 
         <LinearLayout
             android:layout_width="0dp"

@@ -71,6 +71,12 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
 
     /** Start listening by binding to the Service. Call in onStart(). */
     public void startListening() {
+        if (mBound && mService != null) {
+            // Already bound (e.g. returning from another screen): re-pull the current
+            // state so a settings change made while away is reflected immediately.
+            mTimerState.postValue(mService.getTimerState());
+            return;
+        }
         Intent intent = new Intent(getApplication(), TimerEngineService.class);
         getApplication().bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }

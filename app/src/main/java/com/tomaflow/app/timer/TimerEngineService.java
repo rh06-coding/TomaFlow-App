@@ -46,6 +46,7 @@ public class TimerEngineService extends Service {
 
     private PomodoroTimer mTimer;
     private TimerStateManager mStateManager;
+    private SettingsManager mSettingsManager;
     private NotificationHelper mNotificationHelper;
     private NotificationManager mNotificationManager;
     private SessionRepository mSessionRepository;
@@ -59,16 +60,23 @@ public class TimerEngineService extends Service {
     private volatile boolean mTickScheduled = false;
     private long mLastActivityTimeMs = 0;
 
+    // Distinguishes a pause caused by audio focus loss (e.g. incoming call) from a
+    // user-initiated pause, so only the former auto-resumes on AUDIOFOCUS_GAIN.
+    private boolean mPausedByAudioFocusLoss = false;
+
     private final AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = focusChange -> {
         switch (focusChange) {
             case AudioManager.AUDIOFOCUS_LOSS:
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
                 if (mTimer.isRunning()) {
+                    mPausedByAudioFocusLoss = true;
                     mTimer.pause();
                 }
                 break;
             case AudioManager.AUDIOFOCUS_GAIN:
-                if (!mTimer.isRunning() && mTimer.getStateValue() != PomodoroTimer.State.IDLE) {
+                if (mPausedByAudioFocusLoss && !mTimer.isRunning()
+                        && mTimer.getStateValue() != PomodoroTimer.State.IDLE) {
+                    mPausedByAudioFocusLoss = false;
                     mTimer.resume();
                 }
                 break;
@@ -84,8 +92,15 @@ public class TimerEngineService extends Service {
 
     /**
      * Exposes the current timer state for the bound UI to perform instant initialization.
+     * While IDLE, re-syncs durations from settings first so the pre-Start display
+     * reflects any change the user made in Settings since the service was created.
      */
     public PomodoroTimer.TimerState getTimerState() {
+        if (mTimer.getStateValue() == PomodoroTimer.State.IDLE) {
+            mTimer.setDurations(mSettingsManager.getFocusDurationMs(),
+                    mSettingsManager.getShortBreakDurationMs(),
+                    mSettingsManager.getLongBreakDurationMs());
+        }
         return buildTimerState();
     }
 
@@ -94,6 +109,7 @@ public class TimerEngineService extends Service {
         super.onCreate();
         mTimer = new PomodoroTimer();
         mStateManager = new TimerStateManager(this);
+        mSettingsManager = new SettingsManager(this);
         mNotificationHelper = new NotificationHelper(this);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mSessionRepository = new SessionRepository(getApplication());
@@ -129,20 +145,36 @@ public class TimerEngineService extends Service {
         String command = intent.getStringExtra(AppConstants.INTENT_EXTRA_COMMAND);
         if (command == null) return;
 
+        // Any explicit user command overrides an audio-focus-initiated pause
+        mPausedByAudioFocusLoss = false;
+
         switch (command) {
             case AppConstants.COMMAND_START_FOCUS:
-                mTimer.startFocus(AppConstants.TIMER_WORK_DURATION_MS);
+                long focusMs = mSettingsManager.getFocusDurationMs();
+                if (!mTimer.isRunning()) {
+                    // Fresh session: pull all phase durations from the settings source
+                    // of truth (user value, else AppConstants) so stale persisted
+                    // timer state can't override the configured values.
+                    mTimer.setDurations(focusMs,
+                            mSettingsManager.getShortBreakDurationMs(),
+                            mSettingsManager.getLongBreakDurationMs());
+                }
+                mNotificationHelper.cancelPhaseCompleteNotification();
+                mTimer.startFocus(focusMs);
                 break;
             case AppConstants.COMMAND_PAUSE:
                 mTimer.pause();
                 break;
             case AppConstants.COMMAND_RESUME:
+                mNotificationHelper.cancelPhaseCompleteNotification();
                 mTimer.resume();
                 break;
             case AppConstants.COMMAND_SKIP:
+                mNotificationHelper.cancelPhaseCompleteNotification();
                 mTimer.skip();
                 break;
             case AppConstants.COMMAND_RESET:
+                mNotificationHelper.cancelPhaseCompleteNotification();
                 mTimer.reset();
                 break;
         }
@@ -167,10 +199,16 @@ public class TimerEngineService extends Service {
                 requestAudioFocus();
             } else {
                 releaseWakeLock();
-                abandonAudioFocus();
+                // Keep the focus request alive when the pause was caused by focus
+                // loss — abandoning it here would prevent AUDIOFOCUS_GAIN from ever
+                // arriving, breaking auto-resume after a call ends.
+                if (!mPausedByAudioFocusLoss) {
+                    abandonAudioFocus();
+                }
             }
         } else {
             // If IDLE or COMPLETED, we do not need a foreground service or persistent notification
+            mPausedByAudioFocusLoss = false;
             releaseWakeLock();
             abandonAudioFocus();
             stopForeground(STOP_FOREGROUND_REMOVE);
@@ -321,10 +359,19 @@ public class TimerEngineService extends Service {
     /** Restore timer state from SharedPreferences in case the service was killed. */
     private void restoreState() {
         TimerStateManager.RestoredState restored = mStateManager.restoreState();
-        mTimer.setDurations(restored.focusDurationMs, restored.shortBreakDurationMs, restored.longBreakDurationMs);
 
         if (restored.state != PomodoroTimer.State.IDLE) {
-             mTimer.restoreFromState(restored.toTimerState());
+            // Active (running/paused) session: keep its own persisted durations so a
+            // mid-session settings change doesn't retroactively alter the running phase.
+            mTimer.setDurations(restored.focusDurationMs, restored.shortBreakDurationMs, restored.longBreakDurationMs);
+            mTimer.restoreFromState(restored.toTimerState());
+        } else {
+            // IDLE: seed from the settings source of truth (user value, else
+            // AppConstants) so the initial display before Start reflects the
+            // configured durations, not the compile-time defaults.
+            mTimer.setDurations(mSettingsManager.getFocusDurationMs(),
+                    mSettingsManager.getShortBreakDurationMs(),
+                    mSettingsManager.getLongBreakDurationMs());
         }
     }
 

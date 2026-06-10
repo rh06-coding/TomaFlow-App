@@ -49,7 +49,7 @@ public class SessionRepositoryTest {
         // Arrange
         SessionEntity session = new SessionEntity();
         session.userId = 1;
-        session.taskId = 123; // Integer type
+        session.taskId = "123";
         session.startTime = System.currentTimeMillis();
         session.endTime = session.startTime + 1500000; // 25 minutes
         session.duration = 1500; // 25 minutes in seconds
@@ -186,7 +186,7 @@ public class SessionRepositoryTest {
         // Arrange
         SessionEntity session = new SessionEntity();
         session.userId = 1;
-        session.taskId = 456;
+        session.taskId = "456";
         session.startTime = System.currentTimeMillis();
         session.endTime = session.startTime + 1500000;
         session.duration = 1500;
