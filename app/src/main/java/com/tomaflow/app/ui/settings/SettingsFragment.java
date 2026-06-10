@@ -66,7 +66,6 @@ public class SettingsFragment extends Fragment {
         int minutes = (int) (durationMs / 60000L);
         label.setText(formatMinutes(minutes));
         slider.setValue(snapToSlider(slider, minutes));
-        // Label tracks the slider live; the chosen value is saved on each change.
         slider.addOnChangeListener((s, value, fromUser) -> {
             label.setText(formatMinutes((int) value));
             if (fromUser) {

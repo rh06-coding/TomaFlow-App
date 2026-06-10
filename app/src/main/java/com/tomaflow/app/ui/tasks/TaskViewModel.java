@@ -12,10 +12,6 @@ import com.tomaflow.app.data.repository.UserRepository;
 
 import java.util.List;
 
-/**
- * ViewModel cho màn hình task.
- * Cung cấp dữ liệu task cho UI và gọi TaskRepository để xử lý database.
- */
 public class TaskViewModel extends AndroidViewModel {
 
     private final TaskRepository taskRepository;
@@ -83,9 +79,6 @@ public class TaskViewModel extends AndroidViewModel {
         taskRepository.updateTags(taskId, tags);
     }
 
-    /**
-     * Kéo task từ Firestore về Room.
-     */
     public void syncTasksFromFirestore() {
         taskRepository.syncTasksFromFirestore();
     }

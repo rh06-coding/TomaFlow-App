@@ -6,7 +6,6 @@ import com.tomaflow.app.timer.PomodoroTimer.Phase;
 
 import java.util.Locale;
 
-/** Utility methods for time formatting, progress calculation, and unit conversion. */
 public final class TimerUtils {
 
     private TimerUtils() {}
@@ -45,13 +44,12 @@ public final class TimerUtils {
         return phase.getDisplayName();
     }
 
-    /** Progress as integer percent (0-100). */
     public static int calculateProgressPercent(long elapsedMs, long totalMs) {
         if (totalMs <= 0) return 0;
         return Math.min(100, (int) ((elapsedMs * 100L) / totalMs));
     }
 
-    /** Progress as float (0.0-1.0) for ProgressBar. */
+    /** for ProgressBar. */
     public static float calculateProgressFloat(long elapsedMs, long totalMs) {
         if (totalMs <= 0) return 0f;
         return Math.min(1f, (float) elapsedMs / totalMs);

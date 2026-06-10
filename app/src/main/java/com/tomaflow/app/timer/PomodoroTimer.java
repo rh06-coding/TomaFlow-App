@@ -10,7 +10,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class PomodoroTimer {
 
-    /** Current phase of the Pomodoro cycle. */
     public enum Phase {
         FOCUS("Focus"),
         SHORT_BREAK("Short Break"),
@@ -22,7 +21,6 @@ public class PomodoroTimer {
         public String getDisplayName() { return displayName; }
     }
 
-    /** Timer state — tracks pause/running/completed status. */
     public enum State {
         IDLE, RUNNING_FOCUS, PAUSED_FOCUS, RUNNING_BREAK, PAUSED_BREAK, COMPLETED
     }
@@ -44,7 +42,6 @@ public class PomodoroTimer {
     private long mStartElapsedMs = 0;
     private int mSessionCount = 0;
 
-    /** Callback interface for TimerEngineService to react to timer events. */
     public interface OnTimerEventListener {
         void onTick(TimerState state);
         void onStateChanged(TimerState state);
@@ -80,7 +77,6 @@ public class PomodoroTimer {
         notifyStateChanged();
     }
 
-    /** Set custom durations for focus, short break, and long break. All must be > 0. */
     public void setDurations(long focusMs, long shortBreakMs, long longBreakMs) {
         if (focusMs <= 0 || shortBreakMs <= 0 || longBreakMs <= 0) {
             throw new IllegalArgumentException("Durations must be positive");
@@ -99,7 +95,6 @@ public class PomodoroTimer {
         this.mCyclesBeforeLongBreak = cycles;
     }
 
-    /** Start a focus session. No-op if already running. */
     public void startFocus(long focusDurationMs) {
         if (focusDurationMs <= 0) {
             throw new IllegalArgumentException("Duration must be positive");
@@ -117,7 +112,6 @@ public class PomodoroTimer {
         notifyStateChanged();
     }
 
-    /** Pause the timer. No-op if already paused or idle. */
     public void pause() {
         if (mState == State.PAUSED_FOCUS || mState == State.PAUSED_BREAK || mState == State.IDLE) {
             return;
@@ -149,7 +143,6 @@ public class PomodoroTimer {
         notifyStateChanged();
     }
 
-    /** Skip the current phase: focus->break, break->focus (increments session count). */
     public void skip() {
         if (mState == State.IDLE || mState == State.COMPLETED) {
             return;
@@ -163,7 +156,6 @@ public class PomodoroTimer {
         }
     }
 
-    /** Reset to IDLE. Clears session count and remaining time. */
     public void reset() {
         mState = State.IDLE;
         mPhase = Phase.FOCUS;
@@ -257,7 +249,6 @@ public class PomodoroTimer {
         notifyStateChanged();
     }
 
-    /** Transition to focus. Increments session count; enters COMPLETED if all cycles done. */
     private void transitionToFocus() {
         if (mSessionCount >= mTargetSessions) {
             mState = State.COMPLETED;
@@ -275,7 +266,6 @@ public class PomodoroTimer {
         notifyStateChanged();
     }
 
-    /** Returns the configured duration for the given phase. */
     private long getDurationForPhase(Phase phase) {
         switch (phase) {
             case SHORT_BREAK: return mShortBreakDurationMs;
@@ -285,7 +275,6 @@ public class PomodoroTimer {
         }
     }
 
-    /** Push current state to listener. */
     private void notifyStateChanged() {
         TimerState state = buildTimerState();
         for (OnTimerEventListener listener : mListeners) {

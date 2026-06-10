@@ -34,16 +34,12 @@ import com.tomaflow.app.R;
  */
 public class TimerView extends View {
 
-    // -------------------------------------------------------------------------
-    // Default values (overridable via XML attrs)
-    // -------------------------------------------------------------------------
+
     private static final int   DEFAULT_TRACK_COLOR    = 0xFFFFDAD6; // #FFDAD6
     private static final int   DEFAULT_PROGRESS_COLOR = 0xFFAF101A; // #AF101A
     private static final float DEFAULT_STROKE_WIDTH_DP = 12f;
 
-    // -------------------------------------------------------------------------
-    // Drawing state
-    // -------------------------------------------------------------------------
+
     private final Paint mTrackPaint    = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mProgressPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RectF mArcBounds     = new RectF();
@@ -51,9 +47,7 @@ public class TimerView extends View {
     /** Progress in [0, 1]. 0 = empty, 1 = full circle. */
     private float mProgress = 0f;
 
-    // -------------------------------------------------------------------------
-    // Constructors
-    // -------------------------------------------------------------------------
+
 
     public TimerView(@NonNull Context context) {
         super(context);
@@ -70,9 +64,7 @@ public class TimerView extends View {
         init(context, attrs);
     }
 
-    // -------------------------------------------------------------------------
-    // Init
-    // -------------------------------------------------------------------------
+
 
     private void init(@NonNull Context context, @Nullable AttributeSet attrs) {
         int trackColor    = DEFAULT_TRACK_COLOR;
@@ -103,9 +95,7 @@ public class TimerView extends View {
         mProgressPaint.setStrokeCap(Paint.Cap.ROUND);
     }
 
-    // -------------------------------------------------------------------------
-    // Measurement
-    // -------------------------------------------------------------------------
+
 
     @Override
     protected void onSizeChanged(int w, int h, int oldW, int oldH) {
@@ -114,15 +104,12 @@ public class TimerView extends View {
         mArcBounds.set(halfStroke, halfStroke, w - halfStroke, h - halfStroke);
     }
 
-    // -------------------------------------------------------------------------
-    // Drawing
-    // -------------------------------------------------------------------------
+
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
 
-        // Full track
         canvas.drawArc(mArcBounds, -90f, 360f, false, mTrackPaint);
 
         // Progress arc (clockwise from top)
@@ -132,9 +119,7 @@ public class TimerView extends View {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
+
 
     /**
      * Sets the progress of the arc.
@@ -151,9 +136,7 @@ public class TimerView extends View {
         return mProgress;
     }
 
-    // -------------------------------------------------------------------------
-    // Helpers
-    // -------------------------------------------------------------------------
+
 
     private float dpToPx(float dp) {
         return dp * getResources().getDisplayMetrics().density;
