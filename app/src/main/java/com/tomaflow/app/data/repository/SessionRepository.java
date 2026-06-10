@@ -43,6 +43,14 @@ public class SessionRepository {
         return mSessionDao.getWeeklyDailyStats();
     }
 
+    public LiveData<List<SessionDao.DailyStatRow>> getDailyStatsSince(long sinceMillis) {
+        return mSessionDao.getDailyStatsSince(sinceMillis);
+    }
+
+    public LiveData<List<SessionEntity>> getSessionsSince(long sinceMillis) {
+        return mSessionDao.getSessionsSince(sinceMillis);
+    }
+
     // Lưu session ở background thread để tránh chặn UI.
     public void insert(SessionEntity session) {
         sExecutor.execute(() -> mSessionDao.insert(session));

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -24,6 +25,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.tomaflow.app.R;
 import com.tomaflow.app.data.db.dao.SessionDao;
 import com.tomaflow.app.data.db.entity.SessionEntity;
@@ -35,6 +37,10 @@ import java.util.Locale;
 
 public class StatsFragment extends Fragment {
 
+    private static final long DAY_MS = 24L * 60L * 60L * 1000L;
+    private static final int RANGE_WEEK_DAYS = 7;
+    private static final int RANGE_MONTH_DAYS = 30;
+
     private SessionRepository mSessionRepository;
 
     private BarChart mBarChart;
@@ -42,6 +48,11 @@ public class StatsFragment extends Fragment {
     private TextView mTvTotalFocus;
     private TextView mTvPomos;
     private TextView mTvBestDay;
+
+    // Current range's LiveData sources, observed against the view lifecycle.
+    // Re-created when the user switches range; old observers are detached first.
+    private LiveData<List<SessionDao.DailyStatRow>> mDailyStats;
+    private LiveData<List<SessionEntity>> mSessions;
 
     @Nullable
     @Override
@@ -64,8 +75,44 @@ public class StatsFragment extends Fragment {
         configureBarChart();
         configurePieChart();
 
-        mSessionRepository.getWeeklyDailyStats().observe(getViewLifecycleOwner(), this::renderWeeklyStats);
-        mSessionRepository.getAllSessions().observe(getViewLifecycleOwner(), this::renderSessionBreakdown);
+        MaterialButtonToggleGroup rangeToggle = view.findViewById(R.id.range_toggle);
+        rangeToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (!isChecked) return;
+            highlightActiveRange(view, checkedId);
+            observeRange(checkedId == R.id.btn_month ? RANGE_MONTH_DAYS : RANGE_WEEK_DAYS);
+        });
+
+        // Default to WEEK
+        rangeToggle.check(R.id.btn_week);
+        highlightActiveRange(view, R.id.btn_week);
+        observeRange(RANGE_WEEK_DAYS);
+    }
+
+    private void highlightActiveRange(View view, int checkedId) {
+        int active = ContextCompat.getColor(requireContext(), R.color.toma_primary);
+        int inactive = ContextCompat.getColor(requireContext(), R.color.toma_text_muted);
+        ((TextView) view.findViewById(R.id.btn_week))
+                .setTextColor(checkedId == R.id.btn_week ? active : inactive);
+        ((TextView) view.findViewById(R.id.btn_month))
+                .setTextColor(checkedId == R.id.btn_month ? active : inactive);
+    }
+
+    /** Point both charts at the last {@code days} of data, replacing any prior observers. */
+    private void observeRange(int days) {
+        long since = System.currentTimeMillis() - (long) days * DAY_MS;
+
+        if (mDailyStats != null) {
+            mDailyStats.removeObservers(getViewLifecycleOwner());
+        }
+        if (mSessions != null) {
+            mSessions.removeObservers(getViewLifecycleOwner());
+        }
+
+        mDailyStats = mSessionRepository.getDailyStatsSince(since);
+        mSessions = mSessionRepository.getSessionsSince(since);
+
+        mDailyStats.observe(getViewLifecycleOwner(), this::renderWeeklyStats);
+        mSessions.observe(getViewLifecycleOwner(), this::renderSessionBreakdown);
     }
 
     private void configureBarChart() {
