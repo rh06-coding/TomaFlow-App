@@ -24,8 +24,6 @@ import com.tomaflow.app.timer.PomodoroTimer.TimerState;
 import com.tomaflow.app.timer.TimerEngineService;
 
 /**
- * Manages notifications, completion sound, and vibration.
- *
  * Two notification channels:
  *   - TIMER_CHANNEL (LOW): persistent countdown notification for foreground service
  *   - SOUND_CHANNEL (HIGH): phase-complete notification with sound + vibration
@@ -45,7 +43,7 @@ public class NotificationHelper {
         createNotificationChannels();
     }
 
-    /** Create the two channels. Required on Android 8.0+ (API 26). */
+    /** Required on Android 8.0+ (API 26). */
     private void createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Low importance — no sound, used for the persistent timer notification
@@ -71,10 +69,7 @@ public class NotificationHelper {
         }
     }
 
-    /**
-     * Build the persistent foreground notification showing countdown.
-     * Ongoing = true (can't swipe away), auto-cancel = false.
-     */
+    /** Ongoing = true (can't swipe away), auto-cancel = false. */
     public Notification buildTimerNotification(TimerState timerState) {
         String timeStr = TimerUtils.formatMillisToMmSs(timerState.remainingMs);
         String phaseLabel = TimerUtils.getPhaseLabel(timerState.phase);
@@ -95,7 +90,6 @@ public class NotificationHelper {
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setPriority(NotificationCompat.PRIORITY_LOW);
 
-        // Add Actions
         if (timerState.isRunning) {
             builder.addAction(R.drawable.ic_pause, mContext.getString(R.string.notification_action_pause), getServicePendingIntent(AppConstants.COMMAND_PAUSE));
         } else {
@@ -114,7 +108,6 @@ public class NotificationHelper {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
-    /** Build the one-shot notification shown when a phase completes. */
     public Notification buildPhaseCompleteNotification(Phase phase, int sessionCount) {
         String title = phase == Phase.FOCUS 
                 ? mContext.getString(R.string.notification_focus_complete_title) 
@@ -139,7 +132,7 @@ public class NotificationHelper {
                 .build();
     }
 
-    /** Show the phase-complete notification. Replaces any previous one (same ID). */
+    /** Replaces any previous one (same ID). */
     public void showPhaseCompleteNotification(Phase phase, int sessionCount) {
         Notification notification = buildPhaseCompleteNotification(phase, sessionCount);
         mNotificationManager.notify(AppConstants.NOTIFICATION_ID_PHASE_COMPLETE, notification);
@@ -198,7 +191,6 @@ public class NotificationHelper {
                 }
                 mMediaPlayer.release();
             } catch (Exception e) {
-                // Ignore release errors
             }
             mMediaPlayer = null;
         }
@@ -233,7 +225,6 @@ public class NotificationHelper {
         }
     }
 
-    /** Release all held resources. Call from TimerEngineService.onDestroy(). */
     public void release() {
         releaseMediaPlayer();
     }

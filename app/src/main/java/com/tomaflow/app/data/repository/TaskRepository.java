@@ -15,8 +15,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Repository quản lý dữ liệu task.
- * ViewModel gọi Repository thay vì gọi trực tiếp TaskDao.
  * Flow: UI -> ViewModel -> Repository -> TaskDao -> Room -> SQLite/Firestore
  */
 public class TaskRepository {
@@ -25,7 +23,6 @@ public class TaskRepository {
 
     private final TaskDao mTaskDao;
 
-    // Chạy các thao tác ghi database ở background thread.
     private final ExecutorService mExecutor;
 
     private final UserRepository mUserRepository;
@@ -82,7 +79,6 @@ public class TaskRepository {
 
             mTaskDao.insert(task);
 
-            // Sau khi lưu local thành công thì đồng bộ lên Firestore.
             mRemoteDataSource.uploadTask(
                     task.userId,
                     task
@@ -100,7 +96,6 @@ public class TaskRepository {
 
             mTaskDao.update(task);
 
-            // Cập nhật bản mới nhất lên Firestore.
             mRemoteDataSource.uploadTask(
                     mUserRepository.getCurrentUserId(),
                     task
@@ -112,7 +107,6 @@ public class TaskRepository {
         mExecutor.execute(() -> {
             mTaskDao.delete(task);
 
-            // Xóa task tương ứng trên Firestore.
             mRemoteDataSource.deleteTask(
                     mUserRepository.getCurrentUserId(),
                     task.taskId
@@ -124,7 +118,6 @@ public class TaskRepository {
         mExecutor.execute(() -> {
             mTaskDao.deleteById(taskId);
 
-            // Xóa task tương ứng trên Firestore.
             mRemoteDataSource.deleteTask(
                     mUserRepository.getCurrentUserId(),
                     taskId

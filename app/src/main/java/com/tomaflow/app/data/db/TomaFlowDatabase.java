@@ -1,7 +1,4 @@
-/**
- * Database Room dùng để lưu dữ liệu local của app.
- * Gồm các bảng Tasks, Sessions và Settings.
- */
+
 
 package com.tomaflow.app.data.db;
 
@@ -41,7 +38,6 @@ public abstract class TomaFlowDatabase extends RoomDatabase {
     private static volatile TomaFlowDatabase INSTANCE;
 
 
-    // Tạo duy nhất một instance database để dùng chung trong toàn app.
     public static TomaFlowDatabase getInstance(final Context context) {
         if (INSTANCE == null) {
             synchronized (TomaFlowDatabase.class) {

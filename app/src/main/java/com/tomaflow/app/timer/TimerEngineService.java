@@ -41,7 +41,6 @@ public class TimerEngineService extends Service {
     private static final long TICK_INTERVAL_MS = 1000L;
     private static final long AUTO_STOP_CHECK_INTERVAL_MS = 60000L;
 
-    // Intent action for commands FROM the UI
     public static final String ACTION_COMMAND = "com.tomaflow.TIMER_COMMAND";
 
     private PomodoroTimer mTimer;
@@ -83,7 +82,6 @@ public class TimerEngineService extends Service {
         }
     };
 
-    /** Class used for the client Binder. */
     public class TimerBinder extends Binder {
         public TimerEngineService getService() {
             return TimerEngineService.this;
@@ -123,10 +121,7 @@ public class TimerEngineService extends Service {
         restoreState();
     }
 
-    /**
-     * Handles incoming intents from the UI layer.
-     * Returns START_STICKY so the system restarts this service if killed.
-     */
+    /** Returns START_STICKY so the system restarts this service if killed. */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mLastActivityTimeMs = System.currentTimeMillis();
@@ -140,7 +135,6 @@ public class TimerEngineService extends Service {
         return START_STICKY;
     }
 
-    /** Dispatch command string to the appropriate PomodoroTimer method. */
     private void handleCommand(Intent intent) {
         String command = intent.getStringExtra(AppConstants.INTENT_EXTRA_COMMAND);
         if (command == null) return;
@@ -207,7 +201,6 @@ public class TimerEngineService extends Service {
                 }
             }
         } else {
-            // If IDLE or COMPLETED, we do not need a foreground service or persistent notification
             mPausedByAudioFocusLoss = false;
             releaseWakeLock();
             abandonAudioFocus();
@@ -301,7 +294,6 @@ public class TimerEngineService extends Service {
                 mNotificationHelper.playCompletionSound();
                 mNotificationHelper.vibrateForPhaseComplete(PomodoroTimer.Phase.FOCUS);
 
-                // Insert session into database
                 SessionEntity session = new SessionEntity();
                 session.startTime = System.currentTimeMillis() - mTimer.getFocusDurationMs();
                 session.endTime = System.currentTimeMillis();
@@ -325,7 +317,6 @@ public class TimerEngineService extends Service {
         };
     }
 
-    /** Post the next tick() call after 1 second. Skips if already scheduled. */
     private void scheduleNextTick() {
         if (mTickScheduled || !mTimer.isRunning()) {
             return;
@@ -356,7 +347,6 @@ public class TimerEngineService extends Service {
         );
     }
 
-    /** Restore timer state from SharedPreferences in case the service was killed. */
     private void restoreState() {
         TimerStateManager.RestoredState restored = mStateManager.restoreState();
 
@@ -375,7 +365,6 @@ public class TimerEngineService extends Service {
         }
     }
 
-    /** Stop the service if idle for longer than SERVICE_AUTO_STOP_DELAY_MS. */
     private void checkAutoStop() {
         if (mTimer.isRunning()) return;
         

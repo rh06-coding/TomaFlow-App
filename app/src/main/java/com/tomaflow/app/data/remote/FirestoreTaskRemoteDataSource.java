@@ -12,9 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Đồng bộ dữ liệu Task giữa Room local và Firestore.
- */
+
 public class FirestoreTaskRemoteDataSource {
 
     private static final String TAG = "FirestoreSync";
@@ -25,18 +23,14 @@ public class FirestoreTaskRemoteDataSource {
         firestore = FirebaseFirestore.getInstance();
     }
 
-    /**
-     * Callback dùng khi lấy task từ Firestore về Room.
-     */
+
     public interface TaskFetchCallback {
         void onSuccess(List<TaskEntity> tasks);
 
         void onFailure(Exception e);
     }
 
-    /**
-     * Đẩy task từ Room local lên Firestore.
-     */
+
     public void uploadTask(String userId, TaskEntity task) {
         if (userId == null || userId.isEmpty() || task == null || task.taskId.isEmpty()) {
             return;
@@ -53,7 +47,6 @@ public class FirestoreTaskRemoteDataSource {
         data.put("createdAt", task.createdAt);
         data.put("updatedAt", task.updatedAt);
 
-        // Lưu task theo user đang đăng nhập.
         firestore.collection("users")
                 .document(userId)
                 .collection("tasks")
@@ -67,9 +60,7 @@ public class FirestoreTaskRemoteDataSource {
                 );
     }
 
-    /**
-     * Xóa task tương ứng trên Firestore.
-     */
+
     public void deleteTask(String userId, String taskId) {
         if (userId == null || userId.isEmpty() || taskId == null || taskId.isEmpty()) {
             return;
@@ -88,9 +79,7 @@ public class FirestoreTaskRemoteDataSource {
                 );
     }
 
-    /**
-     * Kéo toàn bộ task của user từ Firestore về để lưu lại vào Room.
-     */
+
     public void fetchTasks(String userId, TaskFetchCallback callback) {
         if (userId == null || userId.isEmpty()) {
             return;

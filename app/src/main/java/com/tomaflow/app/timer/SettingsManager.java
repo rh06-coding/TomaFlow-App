@@ -5,14 +5,6 @@ import android.content.SharedPreferences;
 
 import com.tomaflow.app.constants.AppConstants;
 
-/**
- * Single source of truth for user-configurable timer durations.
- *
- * Each getter returns the user-set value when one exists, otherwise the
- * {@link AppConstants} default — so "AppConstant || user-set" is resolved here.
- * Values are stored as whole minutes (matching the {@code *_MIN} pref keys and
- * the Settings sliders) and exposed to the timer as milliseconds.
- */
 public class SettingsManager {
 
     private final SharedPreferences mPrefs;
@@ -46,7 +38,6 @@ public class SettingsManager {
         putMinutes(AppConstants.PREF_LONG_BREAK_MIN, minutes);
     }
 
-    /** Stored minutes → ms, or the AppConstants default when nothing is saved. */
     private long resolveMs(String key, long defaultMs) {
         int minutes = mPrefs.getInt(key, 0);
         return minutes > 0 ? minutes * 60_000L : defaultMs;

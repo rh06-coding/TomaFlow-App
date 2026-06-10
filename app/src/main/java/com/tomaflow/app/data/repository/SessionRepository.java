@@ -12,10 +12,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Repository quản lý dữ liệu Pomodoro session.
- * Cung cấp dữ liệu cho thống kê và lưu session từ timer.
- */
+
 public class SessionRepository {
 
     private final SessionDao mSessionDao;
@@ -26,7 +23,6 @@ public class SessionRepository {
         mSessionDao = db.sessionDao();
     }
 
-    // Reads
     public LiveData<List<SessionEntity>> getAllSessions() {
         return mSessionDao.getAllSessions();
     }
@@ -51,7 +47,6 @@ public class SessionRepository {
         return mSessionDao.getSessionsSince(sinceMillis);
     }
 
-    // Lưu session ở background thread để tránh chặn UI.
     public void insert(SessionEntity session) {
         sExecutor.execute(() -> mSessionDao.insert(session));
     }
@@ -66,7 +61,6 @@ public class SessionRepository {
      * @param status "Completed" or "Failed"
      */
 
-    // Tạo bản ghi session đầy đủ từ thời điểm bắt đầu/kết thúc timer.
     public void saveSession(String taskId, long startTime, long endTime, String status) {
         int durationSeconds = (int) Math.max(0, (endTime - startTime) / 1000L);
 

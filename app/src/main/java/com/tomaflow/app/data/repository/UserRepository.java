@@ -3,9 +3,7 @@ package com.tomaflow.app.data.repository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-/**
- * Repository quản lý user hiện tại từ Firebase Auth.
- */
+
 public class UserRepository {
 
     private static volatile UserRepository INSTANCE;

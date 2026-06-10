@@ -62,7 +62,6 @@ public class RegisterActivity extends AppCompatActivity {
         FirebaseAuth.getInstance()
             .createUserWithEmailAndPassword(email, pass)
             .addOnSuccessListener(result -> {
-                // Set display name
                 if (result.getUser() != null) {
                     UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
                         .setDisplayName(name).build();

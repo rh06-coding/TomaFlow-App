@@ -82,7 +82,6 @@ public class StatsFragment extends Fragment {
             observeRange(checkedId == R.id.btn_month ? RANGE_MONTH_DAYS : RANGE_WEEK_DAYS);
         });
 
-        // Default to WEEK
         rangeToggle.check(R.id.btn_week);
         highlightActiveRange(view, R.id.btn_week);
         observeRange(RANGE_WEEK_DAYS);

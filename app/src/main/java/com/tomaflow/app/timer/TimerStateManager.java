@@ -66,7 +66,6 @@ public class TimerStateManager {
         );
     }
 
-    /** Clear all saved timer data. */
     public void clearSavedState() {
         mPrefs.edit()
                 .remove(PREF_STATE)
@@ -81,7 +80,6 @@ public class TimerStateManager {
                 .apply();
     }
 
-    /** Immutable data class holding restored timer state. */
     public static class RestoredState {
         public final PomodoroTimer.State state;
         public final PomodoroTimer.Phase phase;
