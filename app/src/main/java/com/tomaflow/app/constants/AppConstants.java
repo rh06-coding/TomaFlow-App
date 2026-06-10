@@ -6,7 +6,7 @@ public final class AppConstants {
     private AppConstants() {}
 
     // Timer defaults
-    public static final long TIMER_WORK_DURATION_MS = 25 * 60 * 1000L;    // 25 min
+    public static final long TIMER_WORK_DURATION_MS = 25 * 60 * 1000L;   // 25 min
     public static final long TIMER_SHORT_BREAK_MS = 5 * 60 * 1000L;      // 5 min
     public static final long TIMER_LONG_BREAK_MS = 15 * 60 * 1000L;      // 15 min
     public static final int TIMER_CYCLES_BEFORE_LONG_BREAK = 4;

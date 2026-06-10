@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -145,6 +146,15 @@ public class NotificationHelper {
     }
 
     /**
+     * Dismiss the phase-complete notification. Called when the user moves into a new
+     * active phase (Start/Resume/Skip/Reset) so it doesn't linger next to the
+     * persistent timer notification.
+     */
+    public void cancelPhaseCompleteNotification() {
+        mNotificationManager.cancel(AppConstants.NOTIFICATION_ID_PHASE_COMPLETE);
+    }
+
+    /**
      * Play a completion sound. Tries res/raw/session_complete first,
      * falls back to the system default notification sound.
      * MediaPlayer auto-releases via OnCompletionListener.
@@ -153,14 +163,22 @@ public class NotificationHelper {
         try {
             releaseMediaPlayer();
 
+            // Play on the notification stream, not the media stream — the default
+            // MediaPlayer.create() attributes (USAGE_MEDIA) made the sound depend on
+            // media volume, which is often low even when ringer volume is maxed.
+            AudioAttributes attributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build();
+
             int soundResId = mContext.getResources().getIdentifier(
                     "session_complete", "raw", mContext.getPackageName());
 
             if (soundResId != 0) {
-                mMediaPlayer = MediaPlayer.create(mContext, soundResId);
+                mMediaPlayer = MediaPlayer.create(mContext, soundResId, attributes, 0);
             } else {
                 Uri defaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                mMediaPlayer = MediaPlayer.create(mContext, defaultSound);
+                mMediaPlayer = MediaPlayer.create(mContext, defaultSound, null, attributes, 0);
             }
 
             if (mMediaPlayer != null) {

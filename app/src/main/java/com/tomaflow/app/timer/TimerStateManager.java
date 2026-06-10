@@ -73,6 +73,9 @@ public class TimerStateManager {
                 .remove(PREF_PHASE)
                 .remove(PREF_REMAINING_MS)
                 .remove(PREF_SESSION_COUNT)
+                .remove(PREF_FOCUS_DURATION)
+                .remove(PREF_SHORT_BREAK_DURATION)
+                .remove(PREF_LONG_BREAK_DURATION)
                 .remove(PREF_UPDATED_AT_ELAPSED)
                 .remove(PREF_IS_RUNNING)
                 .apply();
