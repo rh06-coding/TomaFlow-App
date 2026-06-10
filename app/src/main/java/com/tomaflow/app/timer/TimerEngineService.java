@@ -46,6 +46,7 @@ public class TimerEngineService extends Service {
 
     private PomodoroTimer mTimer;
     private TimerStateManager mStateManager;
+    private SettingsManager mSettingsManager;
     private NotificationHelper mNotificationHelper;
     private NotificationManager mNotificationManager;
     private SessionRepository mSessionRepository;
@@ -91,8 +92,15 @@ public class TimerEngineService extends Service {
 
     /**
      * Exposes the current timer state for the bound UI to perform instant initialization.
+     * While IDLE, re-syncs durations from settings first so the pre-Start display
+     * reflects any change the user made in Settings since the service was created.
      */
     public PomodoroTimer.TimerState getTimerState() {
+        if (mTimer.getStateValue() == PomodoroTimer.State.IDLE) {
+            mTimer.setDurations(mSettingsManager.getFocusDurationMs(),
+                    mSettingsManager.getShortBreakDurationMs(),
+                    mSettingsManager.getLongBreakDurationMs());
+        }
         return buildTimerState();
     }
 
@@ -101,6 +109,7 @@ public class TimerEngineService extends Service {
         super.onCreate();
         mTimer = new PomodoroTimer();
         mStateManager = new TimerStateManager(this);
+        mSettingsManager = new SettingsManager(this);
         mNotificationHelper = new NotificationHelper(this);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mSessionRepository = new SessionRepository(getApplication());
@@ -141,15 +150,17 @@ public class TimerEngineService extends Service {
 
         switch (command) {
             case AppConstants.COMMAND_START_FOCUS:
+                long focusMs = mSettingsManager.getFocusDurationMs();
                 if (!mTimer.isRunning()) {
-                    // Fresh session: reset all phase durations from the source of truth
-                    // so stale persisted values can't override AppConstants
-                    mTimer.setDurations(AppConstants.TIMER_WORK_DURATION_MS,
-                            AppConstants.TIMER_SHORT_BREAK_MS,
-                            AppConstants.TIMER_LONG_BREAK_MS);
+                    // Fresh session: pull all phase durations from the settings source
+                    // of truth (user value, else AppConstants) so stale persisted
+                    // timer state can't override the configured values.
+                    mTimer.setDurations(focusMs,
+                            mSettingsManager.getShortBreakDurationMs(),
+                            mSettingsManager.getLongBreakDurationMs());
                 }
                 mNotificationHelper.cancelPhaseCompleteNotification();
-                mTimer.startFocus(AppConstants.TIMER_WORK_DURATION_MS);
+                mTimer.startFocus(focusMs);
                 break;
             case AppConstants.COMMAND_PAUSE:
                 mTimer.pause();
@@ -349,13 +360,18 @@ public class TimerEngineService extends Service {
     private void restoreState() {
         TimerStateManager.RestoredState restored = mStateManager.restoreState();
 
-        // Only adopt persisted durations for a genuinely active (running/paused)
-        // session. When IDLE, PomodoroTimer's AppConstants defaults stay in effect —
-        // otherwise stale persisted durations override the configured values and the
-        // initial display shows the old duration until Start is pressed.
         if (restored.state != PomodoroTimer.State.IDLE) {
+            // Active (running/paused) session: keep its own persisted durations so a
+            // mid-session settings change doesn't retroactively alter the running phase.
             mTimer.setDurations(restored.focusDurationMs, restored.shortBreakDurationMs, restored.longBreakDurationMs);
             mTimer.restoreFromState(restored.toTimerState());
+        } else {
+            // IDLE: seed from the settings source of truth (user value, else
+            // AppConstants) so the initial display before Start reflects the
+            // configured durations, not the compile-time defaults.
+            mTimer.setDurations(mSettingsManager.getFocusDurationMs(),
+                    mSettingsManager.getShortBreakDurationMs(),
+                    mSettingsManager.getLongBreakDurationMs());
         }
     }
 
