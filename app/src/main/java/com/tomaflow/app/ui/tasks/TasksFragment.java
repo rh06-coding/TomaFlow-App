@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,8 +33,10 @@ public class TasksFragment extends Fragment {
     private TextView tvDoneCountLabel;
     private TaskAdapter activeAdapter;
     private TaskAdapter doneAdapter;
-    private List<TaskEntity> activeTasks = new ArrayList<>();
-    private List<TaskEntity> doneTasks = new ArrayList<>();
+    private final List<TaskEntity> activeTasks = new ArrayList<>();
+    private final List<TaskEntity> doneTasks = new ArrayList<>();
+
+    private TaskViewModel mTaskViewModel;
 
     @Nullable
     @Override
@@ -45,19 +48,10 @@ public class TasksFragment extends Fragment {
         tvActiveCountLabel = view.findViewById(R.id.tv_active_count_label);
         tvDoneCountLabel = view.findViewById(R.id.tv_done_count_label);
 
-        // Khởi tạo dữ liệu mẫu (mock data) cho màn demo
-        if (activeTasks.isEmpty() && doneTasks.isEmpty()) {
-            activeTasks.add(new TaskEntity("Finalize Design Tokens", "Establish secondary color mappings", 4));
-            activeTasks.add(new TaskEntity("Update README", "Add new screenshots", 2));
-            activeTasks.add(new TaskEntity("Fix Navigation Bug", "Issue #42", 1));
-
-            TaskEntity completedTask = new TaskEntity("Setup Project", "Init git and base gradle", 1);
-            completedTask.status = "Completed";
-            doneTasks.add(completedTask);
-        }
+        mTaskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 
         setupRecyclerViews();
-        updateCounts();
+        observeTasks();
 
         FloatingActionButton fabAdd = view.findViewById(R.id.fab_add);
         fabAdd.setOnClickListener(v -> showAddTaskDialog());
@@ -68,37 +62,39 @@ public class TasksFragment extends Fragment {
     private void setupRecyclerViews() {
         activeAdapter = new TaskAdapter(activeTasks, (task, isChecked) -> {
             if (isChecked) {
-                task.status = "Completed";
-                activeTasks.remove(task);
-                doneTasks.add(0, task);
-            } else {
-                task.status = "Pending";
-                doneTasks.remove(task);
-                activeTasks.add(task);
+                mTaskViewModel.markTaskCompleted(task.taskId);
             }
-            activeAdapter.notifyDataSetChanged();
-            doneAdapter.notifyDataSetChanged();
-            updateCounts();
         });
         rvActive.setLayoutManager(new LinearLayoutManager(getContext()));
         rvActive.setAdapter(activeAdapter);
 
         doneAdapter = new TaskAdapter(doneTasks, (task, isChecked) -> {
             if (!isChecked) {
-                task.status = "Pending";
-                doneTasks.remove(task);
-                activeTasks.add(task);
-            } else {
-                task.status = "Completed";
-                activeTasks.remove(task);
-                doneTasks.add(0, task);
+                mTaskViewModel.markTaskPending(task.taskId);
+            }
+        });
+        rvDone.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvDone.setAdapter(doneAdapter);
+    }
+
+    /** Drive both lists from Room. Status changes re-emit and rebuild the split. */
+    private void observeTasks() {
+        mTaskViewModel.getAllTasks().observe(getViewLifecycleOwner(), tasks -> {
+            activeTasks.clear();
+            doneTasks.clear();
+            if (tasks != null) {
+                for (TaskEntity task : tasks) {
+                    if ("Completed".equals(task.status)) {
+                        doneTasks.add(task);
+                    } else {
+                        activeTasks.add(task);
+                    }
+                }
             }
             activeAdapter.notifyDataSetChanged();
             doneAdapter.notifyDataSetChanged();
             updateCounts();
         });
-        rvDone.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvDone.setAdapter(doneAdapter);
     }
 
     private void updateCounts() {
@@ -143,10 +139,9 @@ public class TasksFragment extends Fragment {
             }
 
             TaskEntity newTask = new TaskEntity(title, note, count[0]);
-            activeTasks.add(0, newTask);
-            activeAdapter.notifyItemInserted(0);
+            // Persist through Room (and Firestore). The LiveData observer rebuilds the list.
+            mTaskViewModel.insert(newTask);
             rvActive.scrollToPosition(0);
-            updateCounts();
 
             dialog.dismiss();
         });
