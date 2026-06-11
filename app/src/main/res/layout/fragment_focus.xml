@@ -138,6 +138,34 @@
                 android:contentDescription="Skip" />
         </LinearLayout>
 
+        <!-- Tomato Growth Widget -->
+        <LinearLayout
+            android:id="@+id/layout_tomato_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <com.tomaflow.app.ui.timer.TomatoGrowthView
+                android:id="@+id/tomato_growth_view"
+                android:layout_width="110dp"
+                android:layout_height="110dp" />
+
+            <TextView
+                android:id="@+id/tv_tomato_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Your tomato is growing..."
+                android:textColor="@color/toma_text_muted"
+                android:textSize="12sp"
+                android:fontFamily="sans-serif-medium"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+
         <!-- Current task card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_current_task"

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cây có lá — giai đoạn 2 (40–60%) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="80dp"
+    android:height="80dp"
+    android:viewportWidth="80"
+    android:viewportHeight="80">
+
+    <!-- Đất -->
+    <path
+        android:fillColor="#8B6914"
+        android:pathData="M10,62 Q40,55 70,62 L70,72 Q40,70 10,72 Z" />
+    <path
+        android:fillColor="#A0782A"
+        android:pathData="M10,58 Q40,52 70,58 Q40,65 10,58 Z" />
+    <!-- Thân cây -->
+    <path
+        android:strokeColor="#2E7D32"
+        android:strokeWidth="3.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:pathData="M40,58 L40,28" />
+    <!-- Cành trái -->
+    <path
+        android:strokeColor="#388E3C"
+        android:strokeWidth="2.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:pathData="M40,42 Q30,36 25,30" />
+    <!-- Cành phải -->
+    <path
+        android:strokeColor="#388E3C"
+        android:strokeWidth="2.5"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:pathData="M40,38 Q50,32 55,26" />
+    <!-- Lá trái lớn -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M25,30 Q16,22 18,14 Q28,20 25,30 Z" />
+    <!-- Lá phải lớn -->
+    <path
+        android:fillColor="#66BB6A"
+        android:pathData="M55,26 Q64,18 62,10 Q52,16 55,26 Z" />
+    <!-- Lá đỉnh -->
+    <path
+        android:fillColor="#81C784"
+        android:pathData="M40,28 Q34,18 38,10 Q44,18 40,28 Z" />
+</vector>
