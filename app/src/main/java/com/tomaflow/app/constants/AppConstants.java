@@ -39,6 +39,9 @@ public final class AppConstants {
     public static final String COMMAND_RESUME = "com.tomaflow.app.COMMAND_RESUME";
     public static final String COMMAND_SKIP = "com.tomaflow.app.COMMAND_SKIP";
     public static final String COMMAND_RESET = "com.tomaflow.app.COMMAND_RESET";
+    /** Debug only: set timer speed multiplier (1/2/4/8/16). */
+    public static final String COMMAND_SET_SPEED    = "com.tomaflow.app.COMMAND_SET_SPEED";
+    public static final String INTENT_EXTRA_SPEED   = "timer_speed";
 
     public static final String DATABASE_NAME = "tomaflow.db";
     public static final int DATABASE_VERSION = 1;

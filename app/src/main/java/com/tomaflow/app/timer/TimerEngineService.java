@@ -171,6 +171,10 @@ public class TimerEngineService extends Service {
                 mNotificationHelper.cancelPhaseCompleteNotification();
                 mTimer.reset();
                 break;
+            case AppConstants.COMMAND_SET_SPEED:
+                int speed = intent.getIntExtra(AppConstants.INTENT_EXTRA_SPEED, 1);
+                mTimer.setSpeedMultiplier(speed);
+                break;
         }
     }
 

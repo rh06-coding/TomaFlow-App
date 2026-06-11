@@ -18,6 +18,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
+
 import com.tomaflow.app.R;
 import com.tomaflow.app.constants.AppConstants;
 import com.tomaflow.app.timer.PomodoroTimer;
@@ -104,6 +106,19 @@ public class FocusFragment extends Fragment {
                 tvTaskTitle.setTextColor(getResources().getColor(R.color.toma_text, null));
                 btnCompleteTask.setAlpha(1.0f);
             }
+        });
+
+        // ── Speed Toggle (debug) ───────────────────────────────────────────────
+        MaterialButtonToggleGroup speedToggle = v.findViewById(R.id.speed_toggle);
+        speedToggle.check(R.id.btn_speed_1x); // default 1x
+        speedToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (!isChecked) return;
+            int speed = 1;
+            if      (checkedId == R.id.btn_speed_2x)  speed = 2;
+            else if (checkedId == R.id.btn_speed_4x)  speed = 4;
+            else if (checkedId == R.id.btn_speed_8x)  speed = 8;
+            else if (checkedId == R.id.btn_speed_16x) speed = 16;
+            mTimerViewModel.setTimerSpeed(speed);
         });
     }
 
