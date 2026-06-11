@@ -30,7 +30,8 @@ import com.tomaflow.app.R;
  *       app:progressColor="@color/color_primary"
  *       app:strokeWidth="12dp" />
  *
- * Call {@link #setProgress(float)} with a value in [0, 1] to update the arc.
+ * Call {@link #setProgress(float)} with a value in [0, 1] to update the arc instantly.
+ * Call {@link #animateTo(float, long)} to animate smoothly to a target progress.
  */
 public class TimerView extends View {
 
@@ -46,6 +47,9 @@ public class TimerView extends View {
 
     /** Progress in [0, 1]. 0 = empty, 1 = full circle. */
     private float mProgress = 0f;
+
+    /** Animator cho smooth progress — cancel + restart mỗi khi animateTo() được gọi. */
+    private android.animation.ValueAnimator mProgressAnimator;
 
 
 
@@ -122,12 +126,64 @@ public class TimerView extends View {
 
 
     /**
-     * Sets the progress of the arc.
+     * Sets the progress instantly without animation.
+     * Dùng khi reset timer (progress = 0) hoặc khởi tạo ban đầu.
      *
      * @param progress A value in [0.0, 1.0] where 0 = no progress and 1 = complete.
      */
     public void setProgress(float progress) {
+        cancelAnimator();
         mProgress = Math.max(0f, Math.min(1f, progress));
+        invalidate();
+    }
+
+    /**
+     * Animate progress từ giá trị hiện tại đến {@code targetProgress} trong {@code durationMs} ms.
+     * Dùng LinearInterpolator để khớp chính xác với tốc độ đếm ngược của timer.
+     * Mỗi lần gọi sẽ cancel animator cũ và tạo mới từ vị trí hiện tại.
+     *
+     * @param targetProgress Giá trị đích trong [0.0, 1.0].
+     * @param durationMs     Thời lượng animation tính bằng milliseconds.
+     */
+    public void animateTo(float targetProgress, long durationMs) {
+        float target = Math.max(0f, Math.min(1f, targetProgress));
+
+        cancelAnimator();
+
+        mProgressAnimator = android.animation.ValueAnimator.ofFloat(mProgress, target);
+        mProgressAnimator.setDuration(durationMs);
+        mProgressAnimator.setInterpolator(new android.view.animation.LinearInterpolator());
+        mProgressAnimator.addUpdateListener(animation -> {
+            mProgress = (float) animation.getAnimatedValue();
+            invalidate();
+        });
+        mProgressAnimator.start();
+    }
+
+    /**
+     * Đổi màu progress arc với animation ArgbEvaluator.
+     * Dùng khi chuyển pha Work ↔ Break.
+     *
+     * @param fromColor  Màu bắt đầu (ARGB int).
+     * @param toColor    Màu đích (ARGB int).
+     * @param durationMs Thời lượng animation.
+     */
+    public void animateProgressColor(int fromColor, int toColor, long durationMs) {
+        android.animation.ValueAnimator colorAnimator =
+                android.animation.ValueAnimator.ofObject(
+                        new android.animation.ArgbEvaluator(), fromColor, toColor);
+        colorAnimator.setDuration(durationMs);
+        colorAnimator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+        colorAnimator.addUpdateListener(animation -> {
+            mProgressPaint.setColor((int) animation.getAnimatedValue());
+            invalidate();
+        });
+        colorAnimator.start();
+    }
+
+    /** Set màu arc ngay lập tức, không animation. */
+    public void setProgressColor(int color) {
+        mProgressPaint.setColor(color);
         invalidate();
     }
 
@@ -136,7 +192,17 @@ public class TimerView extends View {
         return mProgress;
     }
 
+    private void cancelAnimator() {
+        if (mProgressAnimator != null && mProgressAnimator.isRunning()) {
+            mProgressAnimator.cancel();
+        }
+    }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        cancelAnimator();
+    }
 
     private float dpToPx(float dp) {
         return dp * getResources().getDisplayMetrics().density;
