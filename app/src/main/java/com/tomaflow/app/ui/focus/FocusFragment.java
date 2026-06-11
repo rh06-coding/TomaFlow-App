@@ -1,15 +1,20 @@
 package com.tomaflow.app.ui.focus;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -23,11 +28,25 @@ import java.util.Locale;
 
 public class FocusFragment extends Fragment {
 
-    private TimerViewModel mTimerViewModel;
-    private TimerView mTimerView;
-    private TextView mTvTime;
-    private TextView mTvSessionLabel;
-    private ImageButton mBtnPlayPause;
+    // ── Animation constants ───────────────────────────────────────────────────
+    private static final long   PHASE_ANIM_MS        = 400L;
+    private static final long   PROGRESS_TICK_MS     = 1100L;
+    private static final int    COLOR_FOCUS_ARC      = 0xFFC8324A; // toma_primary
+    private static final int    COLOR_SHORT_BREAK_ARC = 0xFF3FA66B; // toma_success
+    private static final int    COLOR_LONG_BREAK_ARC  = 0xFF3B82F6; // toma_info
+    private static final int    COLOR_FOCUS_BG       = 0xFFF8F5FA; // toma_background
+    private static final int    COLOR_SHORT_BREAK_BG  = 0xFFEDF7F1;
+    private static final int    COLOR_LONG_BREAK_BG   = 0xFFEAF3FD;
+
+    private TimerViewModel        mTimerViewModel;
+    private TimerView             mTimerView;
+    private TextView              mTvTime;
+    private TextView              mTvSessionLabel;
+    private ImageButton           mBtnPlayPause;
+    private View                  mRootScrollView;
+
+    /** Pha trước đó — để phát hiện khi nào pha thay đổi. */
+    private PomodoroTimer.Phase   mPreviousPhase = null;
 
     @Nullable
     @Override
@@ -47,14 +66,15 @@ public class FocusFragment extends Fragment {
     private boolean isTaskCompleted = false;
 
     private void bindViews(View v) {
+        mRootScrollView = v;
         mTimerView      = v.findViewById(R.id.timer_view);
         mTvTime         = v.findViewById(R.id.tv_time);
         mTvSessionLabel = v.findViewById(R.id.tv_session_label);
         mBtnPlayPause   = v.findViewById(R.id.btn_play_pause);
-        ImageButton btnReset = v.findViewById(R.id.btn_reset);
-        ImageButton btnSkip = v.findViewById(R.id.btn_skip);
+        ImageButton btnReset     = v.findViewById(R.id.btn_reset);
+        ImageButton btnSkip      = v.findViewById(R.id.btn_skip);
         CardView cardCurrentTask = v.findViewById(R.id.card_current_task);
-        
+
         View btnCompleteTask = v.findViewById(R.id.btn_complete_task);
         TextView tvTaskTitle = v.findViewById(R.id.tv_task_title);
 
@@ -130,16 +150,81 @@ public class FocusFragment extends Fragment {
 
     private void updateProgress(PomodoroTimer.TimerState state) {
         if (mTimerView == null) return;
-        float progress = 0;
+        float progress = 0f;
         if (state.totalDurationMs > 0) {
             progress = (float) (state.totalDurationMs - state.remainingMs) / state.totalDurationMs;
         }
-        mTimerView.setProgress(progress);
+        if (state.state == PomodoroTimer.State.IDLE || state.state == PomodoroTimer.State.COMPLETED) {
+            // Reset: set ngay, không animate
+            mTimerView.setProgress(progress);
+        } else {
+            // Đang chạy: animate mượt mà đến target, duration hơi dài hơn 1 tick một chút
+            mTimerView.animateTo(progress, PROGRESS_TICK_MS);
+        }
     }
 
     private void updateSessionLabel(PomodoroTimer.TimerState state) {
         if (mTvSessionLabel == null) return;
-        mTvSessionLabel.setText(state.phase.getDisplayName());
+
+        PomodoroTimer.Phase currentPhase = state.phase;
+
+        // Chỉ trigger animation khi pha thực sự thay đổi
+        if (mPreviousPhase != null && mPreviousPhase != currentPhase) {
+            animatePhaseTransition(mPreviousPhase, currentPhase);
+        }
+        mPreviousPhase = currentPhase;
+
+        // Fade text label khi đổi pha
+        mTvSessionLabel.animate()
+                .alpha(0f)
+                .setDuration(150)
+                .withEndAction(() -> {
+                    mTvSessionLabel.setText(currentPhase.getDisplayName());
+                    mTvSessionLabel.animate().alpha(1f).setDuration(150).start();
+                })
+                .start();
+    }
+
+    /**
+     * Animate màu nền màn hình và màu arc khi chuyển pha.
+     */
+    private void animatePhaseTransition(PomodoroTimer.Phase from, PomodoroTimer.Phase to) {
+        int fromArc = arcColorForPhase(from);
+        int toArc   = arcColorForPhase(to);
+        int fromBg  = bgColorForPhase(from);
+        int toBg    = bgColorForPhase(to);
+
+        // Arc color animation (qua TimerView)
+        if (mTimerView != null) {
+            mTimerView.animateProgressColor(fromArc, toArc, PHASE_ANIM_MS);
+        }
+
+        // Background color animation
+        if (mRootScrollView != null) {
+            ValueAnimator bgAnimator = ValueAnimator.ofObject(
+                    new ArgbEvaluator(), fromBg, toBg);
+            bgAnimator.setDuration(PHASE_ANIM_MS);
+            bgAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+            bgAnimator.addUpdateListener(anim ->
+                    mRootScrollView.setBackgroundColor((int) anim.getAnimatedValue()));
+            bgAnimator.start();
+        }
+    }
+
+    private int arcColorForPhase(PomodoroTimer.Phase phase) {
+        switch (phase) {
+            case SHORT_BREAK: return COLOR_SHORT_BREAK_ARC;
+            case LONG_BREAK:  return COLOR_LONG_BREAK_ARC;
+            default:          return COLOR_FOCUS_ARC;
+        }
+    }
+
+    private int bgColorForPhase(PomodoroTimer.Phase phase) {
+        switch (phase) {
+            case SHORT_BREAK: return COLOR_SHORT_BREAK_BG;
+            case LONG_BREAK:  return COLOR_LONG_BREAK_BG;
+            default:          return COLOR_FOCUS_BG;
+        }
     }
 
     @Override
