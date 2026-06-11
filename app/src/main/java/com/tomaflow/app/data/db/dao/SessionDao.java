@@ -64,8 +64,8 @@ public interface SessionDao {
 
     /** Row type for getWeeklyDailyStats(). */
     class DailyStatRow {
-        @ColumnInfo(name = "DAY_NUM")  public String dayNum;   // "0"–"6"
-        @ColumnInfo(name = "MINUTES")  public int minutes;
-        @ColumnInfo(name = "CYCLES")   public int cycles;
+        @ColumnInfo(name = "DAY_NUM")      public String dayNum;        // "0"–"6"
+        @ColumnInfo(name = "MINUTES")      public int minutes;           // focus minutes
+        @ColumnInfo(name = "CYCLES")       public int cycles;
     }
 }

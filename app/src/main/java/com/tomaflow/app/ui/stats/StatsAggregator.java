@@ -36,6 +36,24 @@ public final class StatsAggregator {
         return result;
     }
 
+    /**
+     * Break minutes per weekday (estimated: cycles × shortBreakMinutes).
+     */
+    public static float[] breakMinutesByDay(List<SessionDao.DailyStatRow> rows, int shortBreakMinutes) {
+        float[] result = new float[DAYS_IN_WEEK];
+        if (rows == null) {
+            return result;
+        }
+        for (SessionDao.DailyStatRow row : rows) {
+            int day = parseDay(row.dayNum);
+            if (day >= 0 && day < DAYS_IN_WEEK) {
+                result[day] += row.cycles * shortBreakMinutes;
+            }
+        }
+        return result;
+    }
+
+
     public static int totalMinutes(List<SessionDao.DailyStatRow> rows) {
         if (rows == null) {
             return 0;

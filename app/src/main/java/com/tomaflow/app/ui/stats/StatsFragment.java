@@ -121,7 +121,9 @@ public class StatsFragment extends Fragment {
         mBarChart.setScaleEnabled(false);
         mBarChart.setFitBars(true);
         mBarChart.getAxisRight().setEnabled(false);
-        mBarChart.getLegend().setEnabled(false);
+        mBarChart.getLegend().setEnabled(true);
+        mBarChart.getLegend().setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.toma_text));
 
         int textColor = ContextCompat.getColor(requireContext(), R.color.toma_text_muted);
 
@@ -130,7 +132,10 @@ public class StatsFragment extends Fragment {
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
         xAxis.setTextColor(textColor);
+        xAxis.setCenterAxisLabels(true);  // căn giữa label giữa 2 cột
         xAxis.setValueFormatter(new IndexAxisValueFormatter(StatsAggregator.DAY_LABELS));
+        xAxis.setAxisMinimum(0f);
+        xAxis.setAxisMaximum(StatsAggregator.DAYS_IN_WEEK);
 
         mBarChart.getAxisLeft().setAxisMinimum(0f);
         mBarChart.getAxisLeft().setTextColor(textColor);
@@ -152,32 +157,54 @@ public class StatsFragment extends Fragment {
     }
 
     private void renderWeeklyStats(@Nullable List<SessionDao.DailyStatRow> rows) {
-        float[] minutesByDay = StatsAggregator.minutesByDay(rows);
+        com.tomaflow.app.timer.SettingsManager settings = new com.tomaflow.app.timer.SettingsManager(requireContext());
+        int shortBreakMinutes = (int) (settings.getShortBreakDurationMs() / 60000L);
+
+        float[] focusByDay = StatsAggregator.minutesByDay(rows);
+        float[] breakByDay = StatsAggregator.breakMinutesByDay(rows, shortBreakMinutes);
         int totalMinutes = StatsAggregator.totalMinutes(rows);
-        int totalCycles = StatsAggregator.totalCycles(rows);
-        int bestDay = StatsAggregator.bestDayIndex(minutesByDay);
+        int totalCycles  = StatsAggregator.totalCycles(rows);
+        int bestDay      = StatsAggregator.bestDayIndex(focusByDay);
 
         mTvTotalFocus.setText(formatDuration(totalMinutes));
         mTvPomos.setText(String.valueOf(totalCycles));
         if (bestDay >= 0) {
             mTvBestDay.setText(String.format(Locale.getDefault(), "%s %.1fh",
-                    StatsAggregator.DAY_LABELS[bestDay], minutesByDay[bestDay] / 60f));
+                    StatsAggregator.DAY_LABELS[bestDay], focusByDay[bestDay] / 60f));
         } else {
             mTvBestDay.setText("—");
         }
 
-        List<BarEntry> entries = new ArrayList<>();
+        // ── Grouped Bar Chart: Focus (red) + Break (green) ──
+        List<BarEntry> focusEntries = new ArrayList<>();
+        List<BarEntry> breakEntries = new ArrayList<>();
         for (int i = 0; i < StatsAggregator.DAYS_IN_WEEK; i++) {
-            entries.add(new BarEntry(i, minutesByDay[i]));
+            focusEntries.add(new BarEntry(i, focusByDay[i]));
+            breakEntries.add(new BarEntry(i, breakByDay[i]));
         }
 
-        BarDataSet dataSet = new BarDataSet(entries, getString(R.string.stats_total));
-        dataSet.setColor(ContextCompat.getColor(requireContext(), R.color.toma_primary));
-        dataSet.setDrawValues(false);
+        BarDataSet focusSet = new BarDataSet(focusEntries, "Focus");
+        focusSet.setColor(ContextCompat.getColor(requireContext(), R.color.toma_primary));
+        focusSet.setDrawValues(false);
 
-        BarData data = new BarData(dataSet);
-        data.setBarWidth(0.6f);
+        BarDataSet breakSet = new BarDataSet(breakEntries, "Break");
+        breakSet.setColor(ContextCompat.getColor(requireContext(), R.color.toma_success));
+        breakSet.setDrawValues(false);
+
+        float groupSpace  = 0.2f;   // khoảng cách giữa các ngày
+        float barSpace    = 0.04f;  // khoảng cách giữa 2 cột trong một ngày
+        float barWidth    = 0.36f;  // (2 * 0.36) + (2 * 0.04) + 0.2 = 1.0
+
+        BarData data = new BarData(focusSet, breakSet);
+        data.setBarWidth(barWidth);
         mBarChart.setData(data);
+
+        // Group cần gọi sau setData
+        mBarChart.groupBars(0f, groupSpace, barSpace);
+        mBarChart.getXAxis().setAxisMinimum(0f);
+        mBarChart.getXAxis().setAxisMaximum(StatsAggregator.DAYS_IN_WEEK);
+        mBarChart.getXAxis().setCenterAxisLabels(true);
+        mBarChart.setVisibleXRangeMaximum(StatsAggregator.DAYS_IN_WEEK);
         mBarChart.invalidate();
     }
 
