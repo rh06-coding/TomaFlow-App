@@ -18,11 +18,14 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
+
 import com.tomaflow.app.R;
 import com.tomaflow.app.constants.AppConstants;
 import com.tomaflow.app.timer.PomodoroTimer;
 import com.tomaflow.app.ui.timer.TimerView;
 import com.tomaflow.app.ui.timer.TimerViewModel;
+import com.tomaflow.app.ui.timer.TomatoGrowthView;
 
 import java.util.Locale;
 
@@ -44,9 +47,14 @@ public class FocusFragment extends Fragment {
     private TextView              mTvSessionLabel;
     private ImageButton           mBtnPlayPause;
     private View                  mRootScrollView;
+    private TomatoGrowthView      mTomatoGrowthView;
+    private View                  mTomatoWidget;
+    private TextView              mTvTomatoStatus;
 
     /** Pha trước đó — để phát hiện khi nào pha thay đổi. */
-    private PomodoroTimer.Phase   mPreviousPhase = null;
+    private PomodoroTimer.Phase   mPreviousPhase  = null;
+    /** Trạng thái running trước — để phát hiện khi bắt đầu/dừng. */
+    private boolean               mPreviousRunning = false;
 
     @Nullable
     @Override
@@ -66,11 +74,14 @@ public class FocusFragment extends Fragment {
     private boolean isTaskCompleted = false;
 
     private void bindViews(View v) {
-        mRootScrollView = v;
-        mTimerView      = v.findViewById(R.id.timer_view);
-        mTvTime         = v.findViewById(R.id.tv_time);
-        mTvSessionLabel = v.findViewById(R.id.tv_session_label);
-        mBtnPlayPause   = v.findViewById(R.id.btn_play_pause);
+        mRootScrollView   = v;
+        mTimerView        = v.findViewById(R.id.timer_view);
+        mTvTime           = v.findViewById(R.id.tv_time);
+        mTvSessionLabel   = v.findViewById(R.id.tv_session_label);
+        mBtnPlayPause     = v.findViewById(R.id.btn_play_pause);
+        mTomatoGrowthView = v.findViewById(R.id.tomato_growth_view);
+        mTomatoWidget     = v.findViewById(R.id.layout_tomato_widget);
+        mTvTomatoStatus   = v.findViewById(R.id.tv_tomato_status);
         ImageButton btnReset     = v.findViewById(R.id.btn_reset);
         ImageButton btnSkip      = v.findViewById(R.id.btn_skip);
         CardView cardCurrentTask = v.findViewById(R.id.card_current_task);
@@ -96,6 +107,19 @@ public class FocusFragment extends Fragment {
                 btnCompleteTask.setAlpha(1.0f);
             }
         });
+
+        // ── Speed Toggle (debug) ───────────────────────────────────────────────
+        MaterialButtonToggleGroup speedToggle = v.findViewById(R.id.speed_toggle);
+        speedToggle.check(R.id.btn_speed_1x); // default 1x
+        speedToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (!isChecked) return;
+            int speed = 1;
+            if      (checkedId == R.id.btn_speed_2x)  speed = 2;
+            else if (checkedId == R.id.btn_speed_4x)  speed = 4;
+            else if (checkedId == R.id.btn_speed_8x)  speed = 8;
+            else if (checkedId == R.id.btn_speed_16x) speed = 16;
+            mTimerViewModel.setTimerSpeed(speed);
+        });
     }
 
     private void setupTimerObserver() {
@@ -105,6 +129,7 @@ public class FocusFragment extends Fragment {
             updatePlayPauseIcon(state.state);
             updateProgress(state);
             updateSessionLabel(state);
+            updateTomatoGrowth(state);
         });
     }
 
@@ -124,10 +149,20 @@ public class FocusFragment extends Fragment {
     }
 
     private void onResetClicked() {
+        // Nếu đang chạy Focus thì cây héo
+        PomodoroTimer.TimerState cur = mTimerViewModel.getTimerState().getValue();
+        if (cur != null && cur.isRunning && cur.phase == PomodoroTimer.Phase.FOCUS) {
+            wiltTomato();
+        }
         mTimerViewModel.sendCommand(AppConstants.COMMAND_RESET);
     }
 
     private void onSkipClicked() {
+        // Nếu đang chạy Focus thì cây héo (skip = bỏ dở)
+        PomodoroTimer.TimerState cur = mTimerViewModel.getTimerState().getValue();
+        if (cur != null && cur.isRunning && cur.phase == PomodoroTimer.Phase.FOCUS) {
+            wiltTomato();
+        }
         mTimerViewModel.sendCommand(AppConstants.COMMAND_SKIP);
     }
 
@@ -161,6 +196,91 @@ public class FocusFragment extends Fragment {
             // Đang chạy: animate mượt mà đến target, duration hơi dài hơn 1 tick một chút
             mTimerView.animateTo(progress, PROGRESS_TICK_MS);
         }
+    }
+
+    // ── Tomato Growth ─────────────────────────────────────────────────────────
+
+    private void updateTomatoGrowth(PomodoroTimer.TimerState state) {
+        if (mTomatoGrowthView == null || mTomatoWidget == null) return;
+
+        boolean isRunningFocus = state.isRunning && state.phase == PomodoroTimer.Phase.FOCUS;
+        boolean justStarted    = isRunningFocus && !mPreviousRunning;
+        boolean justCompleted  = state.state == PomodoroTimer.State.COMPLETED;
+        boolean isIdle         = state.state == PomodoroTimer.State.IDLE;
+
+        mPreviousRunning = isRunningFocus;
+
+        if (isIdle) {
+            // Reset về ẩn
+            hideTomatoWidget();
+            mTomatoGrowthView.reset();
+            return;
+        }
+
+        if (isRunningFocus || state.state == PomodoroTimer.State.PAUSED_FOCUS) {
+            // Hiện widget và cập nhật stage
+            if (mTomatoWidget.getVisibility() != View.VISIBLE) {
+                showTomatoWidget();
+            }
+            float progress = 0f;
+            if (state.totalDurationMs > 0) {
+                progress = (float)(state.totalDurationMs - state.remainingMs) / state.totalDurationMs;
+            }
+            mTomatoGrowthView.setProgress(progress);
+            // Cập nhật label
+            updateTomatoLabel(progress);
+        }
+
+        if (justCompleted) {
+            // Quả chín hoàn toàn + celebrate
+            mTomatoGrowthView.setProgress(1f);
+            mTomatoGrowthView.celebrateComplete();
+            if (mTvTomatoStatus != null) {
+                mTvTomatoStatus.setText("🍅 Pomodoro hoàn thành!");
+            }
+        }
+    }
+
+    private void updateTomatoLabel(float progress) {
+        if (mTvTomatoStatus == null) return;
+        String label;
+        if (progress < 0.20f)      label = "Hạt giống vừa được gieo...";
+        else if (progress < 0.40f) label = "Mầm xanh đang nhú lên!";
+        else if (progress < 0.60f) label = "Cây đang lớn mạnh...";
+        else if (progress < 0.80f) label = "Hoa nở rồi, sắp có quả!";
+        else                       label = "Cà chua sắp chín rồi! 🍅";
+        mTvTomatoStatus.setText(label);
+    }
+
+    private void wiltTomato() {
+        if (mTomatoGrowthView == null) return;
+        mTomatoGrowthView.showDead();
+        if (mTvTomatoStatus != null) mTvTomatoStatus.setText("Cây đã chết... 😢 Hãy cố lần sau!");
+        // Ẩn widget sau 2 giây
+        if (mTomatoWidget != null) {
+            mTomatoWidget.postDelayed(this::hideTomatoWidget, 2500);
+        }
+    }
+
+    private void showTomatoWidget() {
+        if (mTomatoWidget == null) return;
+        mTomatoWidget.setVisibility(View.VISIBLE);
+        mTomatoWidget.setAlpha(0f);
+        mTomatoWidget.animate().alpha(1f).setDuration(400).start();
+    }
+
+    private void hideTomatoWidget() {
+        if (mTomatoWidget == null) return;
+        mTomatoWidget.animate()
+                .alpha(0f)
+                .setDuration(300)
+                .withEndAction(() -> {
+                    if (mTomatoWidget != null) {
+                        mTomatoWidget.setVisibility(View.GONE);
+                        mTomatoGrowthView.reset();
+                    }
+                })
+                .start();
     }
 
     private void updateSessionLabel(PomodoroTimer.TimerState state) {
@@ -230,10 +350,13 @@ public class FocusFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mTimerView = null;
-        mTvTime = null;
-        mTvSessionLabel = null;
-        mBtnPlayPause = null;
+        mTimerView        = null;
+        mTvTime           = null;
+        mTvSessionLabel   = null;
+        mBtnPlayPause     = null;
+        mTomatoGrowthView = null;
+        mTomatoWidget     = null;
+        mTvTomatoStatus   = null;
     }
 
     @Override

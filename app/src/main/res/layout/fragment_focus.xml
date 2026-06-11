@@ -58,7 +58,91 @@
             android:textAppearance="@style/TextAppearance.Toma.Display"
             android:textSize="32sp" />
 
+        <!-- ════ DEBUG: Speed Control Bar ════ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⚡ TEST SPEED"
+                android:textSize="9sp"
+                android:letterSpacing="0.12"
+                android:textColor="@color/toma_text_muted"
+                android:fontFamily="sans-serif-medium" />
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/speed_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:singleSelection="true"
+                app:selectionRequired="true">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_speed_1x"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="1x"
+                    android:textSize="11sp"
+                    android:paddingHorizontal="10dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_speed_2x"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="2x"
+                    android:textSize="11sp"
+                    android:paddingHorizontal="10dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_speed_4x"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="4x"
+                    android:textSize="11sp"
+                    android:paddingHorizontal="10dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_speed_8x"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="8x"
+                    android:textSize="11sp"
+                    android:paddingHorizontal="10dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_speed_16x"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:text="16x"
+                    android:textSize="11sp"
+                    android:paddingHorizontal="10dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+        </LinearLayout>
+
         <!-- Timer ring -->
+
         <FrameLayout
             android:layout_width="280dp"
             android:layout_height="280dp"
@@ -137,6 +221,34 @@
                 app:tint="@color/toma_text"
                 android:contentDescription="Skip" />
         </LinearLayout>
+
+        <!-- Tomato Growth Widget -->
+        <LinearLayout
+            android:id="@+id/layout_tomato_widget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <com.tomaflow.app.ui.timer.TomatoGrowthView
+                android:id="@+id/tomato_growth_view"
+                android:layout_width="110dp"
+                android:layout_height="110dp" />
+
+            <TextView
+                android:id="@+id/tv_tomato_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Your tomato is growing..."
+                android:textColor="@color/toma_text_muted"
+                android:textSize="12sp"
+                android:fontFamily="sans-serif-medium"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
 
         <!-- Current task card -->
         <com.google.android.material.card.MaterialCardView

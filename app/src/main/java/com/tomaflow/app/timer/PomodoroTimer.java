@@ -41,6 +41,8 @@ public class PomodoroTimer {
     private long mRemainingMs = DEFAULT_FOCUS_MS;
     private long mStartElapsedMs = 0;
     private int mSessionCount = 0;
+    /** Speed multiplier for debug/testing: 1x/2x/4x/8x/16x. */
+    private int mSpeedMultiplier = 1;
 
     public interface OnTimerEventListener {
         void onTick(TimerState state);
@@ -176,7 +178,7 @@ public class PomodoroTimer {
         }
 
         long nowElapsed = SystemClock.elapsedRealtime();
-        long elapsedSinceStart = nowElapsed - mStartElapsedMs;
+        long elapsedSinceStart = (nowElapsed - mStartElapsedMs) * mSpeedMultiplier;
         long currentDuration = getDurationForPhase(mPhase);
         mRemainingMs = currentDuration - elapsedSinceStart;
 
@@ -191,6 +193,32 @@ public class PomodoroTimer {
             }
         }
     }
+
+    /**
+     * [DEBUG] Set timer speed multiplier. Safe to call at any time.
+     * Recalculates mStartElapsedMs so remaining time is preserved at the moment of change.
+     *
+     * @param multiplier 1 = real time, 2 = 2x, 4 = 4x, 8 = 8x, 16 = 16x
+     */
+    public void setSpeedMultiplier(int multiplier) {
+        if (multiplier < 1) multiplier = 1;
+        if (mSpeedMultiplier == multiplier) return;
+
+        if (isRunning()) {
+            // Preserve mRemainingMs: adjust virtual start so remaining stays the same
+            // virtualElapsed = duration - remaining
+            // realElapsed    = virtualElapsed / newMultiplier
+            // mStartElapsed  = now - realElapsed
+            long nowElapsed = SystemClock.elapsedRealtime();
+            long consumed   = getDurationForPhase(mPhase) - mRemainingMs;
+            mSpeedMultiplier = multiplier;
+            mStartElapsedMs  = nowElapsed - (consumed / mSpeedMultiplier);
+        } else {
+            mSpeedMultiplier = multiplier;
+        }
+    }
+
+    public int getSpeedMultiplier() { return mSpeedMultiplier; }
 
     public void restoreFromState(TimerState state) {
         this.mState = state.state;

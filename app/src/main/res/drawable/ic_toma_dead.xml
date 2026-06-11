@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cây héo — khi bỏ giữa chừng -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="80dp"
+    android:height="80dp"
+    android:viewportWidth="80"
+    android:viewportHeight="80">
+
+    <!-- Đất -->
+    <path
+        android:fillColor="#7A5C10"
+        android:pathData="M10,62 Q40,55 70,62 L70,72 Q40,70 10,72 Z" />
+    <path
+        android:fillColor="#8B6914"
+        android:pathData="M10,58 Q40,52 70,58 Q40,65 10,58 Z" />
+    <!-- Thân cây héo (cong xuống) -->
+    <path
+        android:strokeColor="#8D6E63"
+        android:strokeWidth="3"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:pathData="M40,58 Q38,48 36,38 Q34,30 32,24" />
+    <!-- Lá héo trái (cong xuống, màu vàng nâu) -->
+    <path
+        android:fillColor="#A1887F"
+        android:pathData="M36,38 Q26,38 20,44 Q22,34 36,38 Z" />
+    <!-- Lá héo phải -->
+    <path
+        android:fillColor="#BCAAA4"
+        android:pathData="M34,32 Q44,30 48,36 Q40,28 34,32 Z" />
+    <!-- Lá đỉnh héo -->
+    <path
+        android:fillColor="#A1887F"
+        android:pathData="M32,24 Q28,16 32,10 Q36,16 32,24 Z" />
+    <!-- Dấu X (chết) nhỏ -->
+    <path
+        android:strokeColor="#D32F2F"
+        android:strokeWidth="2"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:pathData="M54,14 L60,20 M60,14 L54,20" />
+</vector>
