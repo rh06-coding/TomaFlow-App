@@ -23,7 +23,7 @@
 
     <item
         android:id="@+id/nav_rewards"
-        android:icon="@drawable/ic_nav_rewards"
+        android:icon="@drawable/ic_nav_medal"
         android:title="@string/nav_rewards" />
 
     <item

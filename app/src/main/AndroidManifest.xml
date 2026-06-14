@@ -49,10 +49,7 @@
             android:exported="false"
             android:name=".ui.stats.StatsActivity" />
 
-        <!-- ── Rewards screen (stub — to be implemented) ─ -->
-        <activity
-            android:exported="false"
-            android:name=".ui.rewards.RewardsActivity" />
+
 
         <!-- ── Settings screen (stub — to be implemented) ─ -->
         <activity
