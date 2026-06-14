@@ -35,4 +35,10 @@
         android:label="Settings"
         tools:layout="@layout/fragment_settings" />
 
+    <activity
+        android:id="@+id/nav_rewards"
+        android:name="com.tomaflow.app.ui.rewards.RewardsActivity"
+        android:label="Rewards"
+        tools:layout="@layout/activity_rewards" />
+
 </navigation>

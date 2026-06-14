@@ -2,8 +2,10 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_badge"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="6dp"
     app:cardCornerRadius="22dp"
     app:cardElevation="1dp"
     app:contentPadding="18dp">
@@ -15,17 +17,27 @@
         android:orientation="vertical">
 
         <FrameLayout
-            android:id="@+id/container_badge_icon"
+            android:id="@+id/icon_bg"
             android:layout_width="52dp"
             android:layout_height="52dp"
             android:background="@drawable/bg_icon_chip_info">
+
             <ImageView
-                android:id="@+id/iv_badge_icon"
+                android:id="@+id/iv_badge"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_sun"
                 app:tint="@color/toma_info" />
+
+            <ImageView
+                android:id="@+id/iv_lock"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="bottom|end"
+                android:src="@drawable/ic_lock"
+                android:visibility="gone"
+                app:tint="@color/toma_text" />
         </FrameLayout>
 
         <TextView

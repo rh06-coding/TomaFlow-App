@@ -3,6 +3,8 @@ package com.tomaflow.app.ui.rewards;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.tomaflow.app.R;
+
 /**
  * RewardsActivity — Achievements / Rewards Screen (stub).
  *
@@ -20,6 +22,18 @@ public class RewardsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // TODO: setContentView(R.layout.activity_rewards);
+        setContentView(R.layout.activity_rewards);
+
+        androidx.recyclerview.widget.RecyclerView rvBadges = findViewById(R.id.rv_badges);
+        rvBadges.setLayoutManager(new androidx.recyclerview.widget.GridLayoutManager(this, 3));
+        BadgeAdapter adapter = new BadgeAdapter();
+        rvBadges.setAdapter(adapter);
+
+        RewardsViewModel viewModel = new androidx.lifecycle.ViewModelProvider(this).get(RewardsViewModel.class);
+        viewModel.getBadges().observe(this, badges -> {
+            adapter.submitList(badges);
+        });
+
+        ((androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar)).setNavigationOnClickListener(v -> finish());
     }
 }
