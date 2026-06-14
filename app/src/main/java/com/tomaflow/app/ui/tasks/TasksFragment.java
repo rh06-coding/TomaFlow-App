@@ -50,6 +50,11 @@ public class TasksFragment extends Fragment {
 
         mTaskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 
+        View avatar = view.findViewById(R.id.iv_avatar);
+        if (avatar != null) {
+            avatar.setOnClickListener(v -> androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_profile));
+        }
+
         setupRecyclerViews();
         observeTasks();
 

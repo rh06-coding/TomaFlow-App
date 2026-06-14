@@ -39,5 +39,31 @@ public class RewardsFragment extends Fragment {
         if (toolbar != null) {
             toolbar.setNavigationIcon(null);
         }
+        // Cập nhật tên Profile từ Firebase
+        com.google.firebase.auth.FirebaseUser user = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            android.widget.TextView tvName = view.findViewById(R.id.tv_rewards_profile_name);
+            android.widget.TextView tvInitials = view.findViewById(R.id.tv_rewards_avatar_initials);
+
+            String name = user.getDisplayName();
+            if (name == null || name.isEmpty()) {
+                name = user.getEmail();
+            }
+            if (tvName != null && name != null) {
+                tvName.setText(name);
+            }
+
+            if (tvInitials != null && name != null && !name.isEmpty()) {
+                String initials = "";
+                String[] parts = name.split(" ");
+                if (parts.length > 0 && !parts[0].isEmpty()) {
+                    initials += parts[0].charAt(0);
+                    if (parts.length > 1 && !parts[parts.length - 1].isEmpty()) {
+                        initials += parts[parts.length - 1].charAt(0);
+                    }
+                }
+                tvInitials.setText(initials.toUpperCase());
+            }
+        }
     }
 }

@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
+import androidx.navigation.Navigation;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -57,7 +58,14 @@ public class StatsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_stats, container, false);
+        View view = inflater.inflate(R.layout.fragment_stats, container, false);
+        
+        View avatar = view.findViewById(R.id.iv_avatar);
+        if (avatar != null) {
+            avatar.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.nav_profile));
+        }
+        
+        return view;
     }
 
     @Override

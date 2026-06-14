@@ -30,6 +30,11 @@ public class SettingsFragment extends Fragment {
 
         mSettingsManager = new SettingsManager(requireContext());
 
+        View avatar = view.findViewById(R.id.iv_avatar);
+        if (avatar != null) {
+            avatar.setOnClickListener(v -> androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_profile));
+        }
+
         bindDarkMode(view);
         bindDurationSettings(view);
 

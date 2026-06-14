@@ -67,6 +67,11 @@ public class FocusFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mTimerViewModel = new ViewModelProvider(requireActivity()).get(TimerViewModel.class);
 
+        View avatar = view.findViewById(R.id.iv_avatar);
+        if (avatar != null) {
+            avatar.setOnClickListener(v -> androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_profile));
+        }
+
         bindViews(view);
         setupTimerObserver();
     }
