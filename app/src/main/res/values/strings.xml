@@ -87,6 +87,10 @@
     <string name="settings_dark_mode_desc">Switch between light and dark themes.</string>
 
     <string name="nav_rewards">REWARDS</string>
+    <string name="rewards_title">Achievements</string>
+    <string name="rewards_section_badges">Badges</string>
+    <string name="rewards_view_all">VIEW ALL</string>
+
     <string name="notification_channel_timer_name">Pomodoro Timer</string>
     <string name="notification_channel_timer_desc">Shows the current timer and controls</string>
     <string name="notification_channel_sound_name">Timer Alerts</string>

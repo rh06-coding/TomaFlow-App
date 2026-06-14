@@ -8,6 +8,7 @@
 
     <!-- Surfaces -->
     <color name="toma_background">#F8F5FA</color>
+    <color name="toma_bg">#F8F5FA</color>
     <color name="toma_surface">#FFFFFF</color>
     <color name="toma_surface_muted">#EFECF3</color>
 

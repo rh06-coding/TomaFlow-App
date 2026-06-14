@@ -31,11 +31,15 @@ public interface SessionDao {
             "and strftime('%W', datetime(startTime / 1000, 'unixepoch')) = strftime('%W', 'now')")
     LiveData<Integer> getWeeklyFocusMinutes();
 
-    // Số phiên Pomodoro hoàn thành trong tuần hiện tại.
+    // Tổng số phiên Pomodoro hoàn thành trong tuần hiện tại.
     @Query("select count(*) from Sessions " +
            "where status = 'Completed' " +
            "and strftime('%W', datetime(startTime / 1000, 'unixepoch')) = strftime('%W', 'now')")
     LiveData<Integer> getWeeklyCompletedCycles();
+
+    // Tổng số phiên Pomodoro đã hoàn thành (tất cả thời gian), dùng cho hệ thống Huy hiệu.
+    @Query("select count(*) from Sessions where status = 'Completed'")
+    LiveData<Integer> getTotalCompletedSessions();
 
 
     // Thống kê focus theo từng ngày trong tuần để vẽ biểu đồ.
