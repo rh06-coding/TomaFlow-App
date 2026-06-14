@@ -9,7 +9,7 @@ import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.Observer;
 
 import com.tomaflow.app.R;
-import com.tomaflow.app.data.db.AppDatabase;
+import com.tomaflow.app.data.db.TomaFlowDatabase;
 import com.tomaflow.app.data.db.dao.SessionDao;
 import com.tomaflow.app.data.model.BadgeItem;
 
@@ -23,7 +23,7 @@ public class RewardsRepository {
     private static final String PREF_NAME = "rewards_prefs";
 
     public RewardsRepository(Application application) {
-        AppDatabase db = AppDatabase.getInstance(application);
+        TomaFlowDatabase db = TomaFlowDatabase.getInstance(application);
         this.sessionDao = db.sessionDao();
         this.prefs = application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
     }

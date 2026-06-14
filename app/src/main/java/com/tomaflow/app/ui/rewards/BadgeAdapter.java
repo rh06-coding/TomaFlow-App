@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tomaflow.app.R;
+import com.tomaflow.app.data.model.BadgeItem;
 
 public class BadgeAdapter extends ListAdapter<BadgeItem, BadgeAdapter.BadgeViewHolder> {
 
