@@ -29,6 +29,11 @@ public class ProfileFragment extends Fragment {
         TextView tvName = view.findViewById(R.id.tv_profile_name);
         TextView tvInitials = view.findViewById(R.id.tv_avatar_initials);
 
+        View btnBack = view.findViewById(R.id.btn_back);
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> androidx.navigation.Navigation.findNavController(v).navigateUp());
+        }
+
         if (user != null) {
             String name = user.getDisplayName();
             if (name == null || name.isEmpty()) {

@@ -21,23 +21,6 @@ public class MainActivity extends AppCompatActivity {
 
         mBottomNav = findViewById(R.id.bottom_nav);
         setupBottomNavigation();
-        setupBackPressedHandler();
-    }
-
-    private void setupBackPressedHandler() {
-        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-            private long lastPressedTime;
-            @Override
-            public void handleOnBackPressed() {
-                if (System.currentTimeMillis() - lastPressedTime < 2000) {
-                    finish();
-                } else {
-                    Toast.makeText(MainActivity.this, "Nhấn back lần nữa để thoát", Toast.LENGTH_SHORT).show();
-                    lastPressedTime = System.currentTimeMillis();
-                }
-            }
-        };
-        getOnBackPressedDispatcher().addCallback(this, callback);
     }
 
     private void setupBottomNavigation() {
@@ -45,6 +28,33 @@ public class MainActivity extends AppCompatActivity {
         if (navHostFragment != null) {
             NavController navController = navHostFragment.getNavController();
             NavigationUI.setupWithNavController(mBottomNav, navController);
+
+            // Double tap to exit callback
+            OnBackPressedCallback exitCallback = new OnBackPressedCallback(true) {
+                private long lastPressedTime;
+                @Override
+                public void handleOnBackPressed() {
+                    if (System.currentTimeMillis() - lastPressedTime < 2000) {
+                        finish();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Nhấn back lần nữa để thoát", Toast.LENGTH_SHORT).show();
+                        lastPressedTime = System.currentTimeMillis();
+                    }
+                }
+            };
+            getOnBackPressedDispatcher().addCallback(this, exitCallback);
+
+            navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+                // Only enable double-tap to exit on the home tab (Focus)
+                exitCallback.setEnabled(destination.getId() == R.id.nav_focus);
+
+                // Hide bottom nav on Profile screen
+                if (destination.getId() == R.id.nav_profile) {
+                    mBottomNav.setVisibility(android.view.View.GONE);
+                } else {
+                    mBottomNav.setVisibility(android.view.View.VISIBLE);
+                }
+            });
         }
     }
 }
