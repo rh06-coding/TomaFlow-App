@@ -19,8 +19,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical">
-            <ImageView android:layout_width="28dp" android:layout_height="28dp"
-                android:src="@drawable/ic_menu" app:tint="@color/toma_primary" />
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_back"
+                app:tint="@color/toma_primary" />
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
