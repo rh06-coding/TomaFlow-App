@@ -304,6 +304,26 @@ public class TimerEngineService extends Service {
                 session.duration = (int) (mTimer.getFocusDurationMs() / 1000);
                 session.status = "Completed";
                 mSessionRepository.insert(session);
+
+                // --- LOGIC KIỂM TRA & MỞ KHOÁ HUY HIỆU ĐẶC BIỆT ---
+                com.tomaflow.app.data.repository.RewardsRepository rewardsRepo = 
+                        new com.tomaflow.app.data.repository.RewardsRepository(getApplication());
+                
+                java.util.Calendar cal = java.util.Calendar.getInstance();
+                int hour = cal.get(java.util.Calendar.HOUR_OF_DAY);
+                
+                // Chim sớm: Hoàn thành trước 7h sáng
+                if (hour < 7) {
+                    rewardsRepo.unlockBadge("earlybird");
+                }
+                // Cú đêm: Hoàn thành sau 22h đêm
+                else if (hour >= 22) {
+                    rewardsRepo.unlockBadge("nightowl");
+                }
+                // Marathon: 4 chu kỳ trong 1 ngày (logic đơn giản hoá: check sessionCount)
+                if (sessionCount >= 4) {
+                    rewardsRepo.unlockBadge("marathon");
+                }
             }
 
             @Override
