@@ -137,10 +137,18 @@ public class LoginActivity extends AppCompatActivity {
 
     private void goToMain() {
         // Kéo task từ Firestore về Room sau khi user đã đăng nhập.
-        TaskRepository taskRepository = new TaskRepository(getApplication());
+        com.tomaflow.app.data.repository.TaskRepository taskRepository = new com.tomaflow.app.data.repository.TaskRepository(getApplication());
         taskRepository.syncTasksFromFirestore();
 
-        startActivity(new Intent(this, MainActivity.class));
+        // Kéo lịch sử Pomodoro từ Firestore về Room
+        com.tomaflow.app.data.repository.SessionRepository sessionRepository = new com.tomaflow.app.data.repository.SessionRepository(getApplication());
+        sessionRepository.syncSessionsFromFirestore();
+
+        // Kéo huy hiệu từ Firestore về SharedPreferences
+        com.tomaflow.app.data.repository.RewardsRepository rewardsRepository = new com.tomaflow.app.data.repository.RewardsRepository(getApplication());
+        rewardsRepository.syncRewardsFromFirestore();
+
+        startActivity(new Intent(this, com.tomaflow.app.ui.main.MainActivity.class));
         finish();
     }
 }
