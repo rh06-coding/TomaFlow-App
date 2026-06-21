@@ -18,15 +18,18 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.button.MaterialButtonToggleGroup;
 
 import com.tomaflow.app.R;
 import com.tomaflow.app.constants.AppConstants;
+import com.tomaflow.app.data.db.entity.TaskEntity;
 import com.tomaflow.app.timer.PomodoroTimer;
 import com.tomaflow.app.ui.timer.TimerView;
 import com.tomaflow.app.ui.timer.TimerViewModel;
 import com.tomaflow.app.ui.timer.TomatoGrowthView;
+import com.tomaflow.app.ui.tasks.TaskViewModel;
+import androidx.appcompat.app.AlertDialog;
 
+import java.util.List;
 import java.util.Locale;
 
 public class FocusFragment extends Fragment {
@@ -42,6 +45,8 @@ public class FocusFragment extends Fragment {
     private static final int    COLOR_LONG_BREAK_BG   = 0xFFEAF3FD;
 
     private TimerViewModel        mTimerViewModel;
+    private TaskViewModel         mTaskViewModel;
+    private TaskEntity            mCurrentTask;
     private TimerView             mTimerView;
     private TextView              mTvTime;
     private TextView              mTvSessionLabel;
@@ -50,6 +55,8 @@ public class FocusFragment extends Fragment {
     private TomatoGrowthView      mTomatoGrowthView;
     private View                  mTomatoWidget;
     private TextView              mTvTomatoStatus;
+    private TextView              mTvTaskTitle;
+    private TextView              mTvTaskSubtitle;
 
     /** Pha trước đó — để phát hiện khi nào pha thay đổi. */
     private PomodoroTimer.Phase   mPreviousPhase  = null;
@@ -82,6 +89,7 @@ public class FocusFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTimerViewModel = new ViewModelProvider(requireActivity()).get(TimerViewModel.class);
+        mTaskViewModel  = new ViewModelProvider(requireActivity()).get(TaskViewModel.class);
 
         View avatar = view.findViewById(R.id.iv_avatar);
         if (avatar != null) {
@@ -90,6 +98,7 @@ public class FocusFragment extends Fragment {
 
         bindViews(view);
         setupTimerObserver();
+        setupTaskObserver();
     }
 
     private boolean isTaskCompleted = false;
@@ -108,7 +117,11 @@ public class FocusFragment extends Fragment {
         CardView cardCurrentTask = v.findViewById(R.id.card_current_task);
 
         View btnCompleteTask = v.findViewById(R.id.btn_complete_task);
-        TextView tvTaskTitle = v.findViewById(R.id.tv_task_title);
+        mTvTaskTitle    = v.findViewById(R.id.tv_task_title);
+        mTvTaskSubtitle = v.findViewById(R.id.tv_task_subtitle);
+
+        mTvTaskTitle.setText("Chọn công việc");
+        mTvTaskSubtitle.setText("Nhấn để chọn");
 
         mBtnPlayPause.setOnClickListener(v1 -> onPlayPauseClicked());
         btnReset.setOnClickListener(v1 -> onResetClicked());
@@ -136,31 +149,18 @@ public class FocusFragment extends Fragment {
         }
 
         btnCompleteTask.setOnClickListener(v1 -> {
-            isTaskCompleted = !isTaskCompleted;
-            if (isTaskCompleted) {
-                tvTaskTitle.setPaintFlags(tvTaskTitle.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
-                tvTaskTitle.setTextColor(getResources().getColor(R.color.toma_text_muted, null));
-                btnCompleteTask.setAlpha(0.5f);
+            if (mCurrentTask != null) {
+                mTaskViewModel.markTaskCompleted(mCurrentTask.taskId);
                 android.widget.Toast.makeText(getContext(), "Tuyệt vời! Task đã hoàn thành.", android.widget.Toast.LENGTH_SHORT).show();
+                mCurrentTask = null;
+                mTimerViewModel.setCurrentTaskId(null);
+                mTvTaskTitle.setText("Chọn công việc");
+                mTvTaskSubtitle.setText("Nhấn để chọn");
             } else {
-                tvTaskTitle.setPaintFlags(tvTaskTitle.getPaintFlags() & (~android.graphics.Paint.STRIKE_THRU_TEXT_FLAG));
-                tvTaskTitle.setTextColor(getResources().getColor(R.color.toma_text, null));
-                btnCompleteTask.setAlpha(1.0f);
+                onTaskCardClicked(); // Mở picker nếu chưa có task
             }
         });
 
-        // ── Speed Toggle (debug) ───────────────────────────────────────────────
-        MaterialButtonToggleGroup speedToggle = v.findViewById(R.id.speed_toggle);
-        speedToggle.check(R.id.btn_speed_1x); // default 1x
-        speedToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (!isChecked) return;
-            int speed = 1;
-            if      (checkedId == R.id.btn_speed_2x)  speed = 2;
-            else if (checkedId == R.id.btn_speed_4x)  speed = 4;
-            else if (checkedId == R.id.btn_speed_8x)  speed = 8;
-            else if (checkedId == R.id.btn_speed_16x) speed = 16;
-            mTimerViewModel.setTimerSpeed(speed);
-        });
     }
 
     private void setupTimerObserver() {
@@ -207,8 +207,63 @@ public class FocusFragment extends Fragment {
         mTimerViewModel.sendCommand(AppConstants.COMMAND_SKIP);
     }
 
+    private List<TaskEntity> mPendingTasks;
+
+    private void setupTaskObserver() {
+        mTaskViewModel.getPendingTasks().observe(getViewLifecycleOwner(), tasks -> {
+            mPendingTasks = tasks;
+        });
+    }
+
     private void onTaskCardClicked() {
-        // Navigation logic for tasks
+        if (mPendingTasks == null || mPendingTasks.isEmpty()) {
+            android.widget.Toast.makeText(getContext(), "Không có công việc nào đang chờ.", android.widget.Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        com.google.android.material.bottomsheet.BottomSheetDialog dialog = new com.google.android.material.bottomsheet.BottomSheetDialog(requireContext());
+        View sheetView = getLayoutInflater().inflate(R.layout.layout_task_picker_sheet, null);
+        android.widget.LinearLayout layoutTaskList = sheetView.findViewById(R.id.layout_task_list);
+
+        for (TaskEntity task : mPendingTasks) {
+            View itemView = getLayoutInflater().inflate(R.layout.item_task_picker, layoutTaskList, false);
+            TextView tvTitle = itemView.findViewById(R.id.tv_title);
+            TextView tvDesc = itemView.findViewById(R.id.tv_desc);
+            TextView tvPomos = itemView.findViewById(R.id.tv_pomos);
+
+            tvTitle.setText(task.title);
+            if (task.description == null || task.description.trim().isEmpty()) {
+                tvDesc.setVisibility(View.GONE);
+            } else {
+                tvDesc.setText(task.description);
+                tvDesc.setVisibility(View.VISIBLE);
+            }
+            if (task.estimatedMinutes > 0) {
+                tvPomos.setText(task.estimatedMinutes + "m");
+            } else {
+                tvPomos.setText(String.valueOf(task.estPomodoros));
+            }
+
+            itemView.setOnClickListener(v -> {
+                mCurrentTask = task;
+                mTimerViewModel.setCurrentTaskId(mCurrentTask.taskId);
+                mTvTaskTitle.setText(mCurrentTask.title);
+                mTvTaskSubtitle.setText(mCurrentTask.description == null || mCurrentTask.description.trim().isEmpty() ? "Đang tập trung" : mCurrentTask.description);
+                
+                // Đảm bảo icon hoàn thành hiển thị chuẩn
+                View btnCompleteTask = mRootScrollView.findViewById(R.id.btn_complete_task);
+                mTvTaskTitle.setPaintFlags(mTvTaskTitle.getPaintFlags() & (~android.graphics.Paint.STRIKE_THRU_TEXT_FLAG));
+                mTvTaskTitle.setTextColor(getResources().getColor(R.color.toma_text, null));
+                if (btnCompleteTask != null) btnCompleteTask.setAlpha(1.0f);
+                
+                dialog.dismiss();
+            });
+
+            layoutTaskList.addView(itemView);
+        }
+
+        dialog.setContentView(sheetView);
+        dialog.show();
     }
 
     private void updateTimerDisplay(long millis) {

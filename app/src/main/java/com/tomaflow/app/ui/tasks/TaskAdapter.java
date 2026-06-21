@@ -20,24 +20,18 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
     private List<TaskEntity> taskList;
     private OnTaskCheckedChangeListener listener;
-    private OnSendToFocusListener sendToFocusListener;
 
     public interface OnTaskCheckedChangeListener {
         void onCheckedChange(TaskEntity task, boolean isChecked);
     }
 
-    public interface OnSendToFocusListener {
-        void onSendToFocus(TaskEntity task);
-    }
 
     public TaskAdapter(List<TaskEntity> taskList, OnTaskCheckedChangeListener listener) {
         this.taskList = taskList;
         this.listener = listener;
     }
 
-    public void setSendToFocusListener(OnSendToFocusListener sendToFocusListener) {
-        this.sendToFocusListener = sendToFocusListener;
-    }
+
 
     @NonNull
     @Override
@@ -67,23 +61,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             }
         });
 
-        // "Send to Focus" button
-        if (holder.btnSendToFocus != null) {
-            if ("Completed".equals(task.status)) {
-                holder.btnSendToFocus.setVisibility(View.GONE);
-            } else {
-                holder.btnSendToFocus.setVisibility(View.VISIBLE);
-                holder.btnSendToFocus.setOnClickListener(v -> {
-                    if (sendToFocusListener != null) {
-                        sendToFocusListener.onSendToFocus(task);
-                    } else {
-                        // Fallback toast
-                        String msg = v.getContext().getString(R.string.task_sent_to_focus, task.title);
-                        Toast.makeText(v.getContext(), msg, Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        }
+        // Removed send to focus logic
     }
 
     @Override
@@ -96,7 +74,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
         TextView tvTitle;
         TextView tvNote;
         TextView tvPomos;
-        ImageView btnSendToFocus;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -104,7 +81,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             tvTitle = itemView.findViewById(R.id.tv_title);
             tvNote = itemView.findViewById(R.id.tv_note);
             tvPomos = itemView.findViewById(R.id.tv_pomos);
-            btnSendToFocus = itemView.findViewById(R.id.btn_send_to_focus);
         }
     }
 }

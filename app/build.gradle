@@ -60,6 +60,9 @@ dependencies {
     // ── CardView (used in task card) ──────────────────────────────────────────
     implementation 'androidx.cardview:cardview:1.0.0'
 
+    // ── Media (used for MediaSessionCompat) ───────────────────────────────────
+    implementation 'androidx.media:media:1.7.0'
+
     // ── MPAndroidChart (stats BarChart + PieChart) ────────────────────────────
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 

@@ -131,18 +131,6 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
         getApplication().startService(intent);
     }
 
-    /**
-     * [DEBUG] Set timer speed multiplier: 1=real-time, 2=2x, 4=4x, 8=8x, 16=16x.
-     * Safe to call while timer is running — remaining time is preserved.
-     */
-    public void setTimerSpeed(int multiplier) {
-        Intent intent = new Intent(TimerEngineService.ACTION_COMMAND);
-        intent.setClass(getApplication(), TimerEngineService.class);
-        intent.putExtra(AppConstants.INTENT_EXTRA_COMMAND, AppConstants.COMMAND_SET_SPEED);
-        intent.putExtra(AppConstants.INTENT_EXTRA_SPEED, multiplier);
-        getApplication().startService(intent);
-    }
-
 
 
     private void saveCurrentFocusSession(String status) {

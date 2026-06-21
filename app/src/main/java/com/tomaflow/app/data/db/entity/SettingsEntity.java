@@ -24,6 +24,7 @@ public class SettingsEntity {
     public SettingsEntity() {
     }
 
+    @androidx.room.Ignore
     public SettingsEntity(int workDuration, int shortBreak, int longBreak, int longBreakInterval) {
         this.userId = 0;
         this.workDuration = workDuration;

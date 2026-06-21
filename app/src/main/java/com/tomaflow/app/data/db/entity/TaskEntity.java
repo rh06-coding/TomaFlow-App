@@ -37,6 +37,7 @@ public class TaskEntity {
         this.taskId = UUID.randomUUID().toString();
     }
 
+    @androidx.room.Ignore
     public TaskEntity(String title, String description, int estPomodoros) {
         this();
         this.userId = "";
@@ -50,6 +51,7 @@ public class TaskEntity {
         this.updatedAt = System.currentTimeMillis();
     }
 
+    @androidx.room.Ignore
     public TaskEntity(String title, String description, int estPomodoros, int estimatedMinutes) {
         this(title, description, estPomodoros);
         this.estimatedMinutes = estimatedMinutes;
