@@ -56,6 +56,22 @@ public class FocusFragment extends Fragment {
     /** Trạng thái running trước — để phát hiện khi bắt đầu/dừng. */
     private boolean               mPreviousRunning = false;
 
+    private TextView mTvMusicName;
+
+    private final androidx.activity.result.ActivityResultLauncher<android.content.Intent> musicPickerLauncher =
+            registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == android.app.Activity.RESULT_OK && result.getData() != null) {
+                    String trackName = result.getData().getStringExtra(com.tomaflow.app.ui.music.MusicPickerActivity.EXTRA_TRACK_NAME);
+                    if (trackName != null && mTvMusicName != null) {
+                        mTvMusicName.setText(trackName);
+                    }
+                } else if (result.getResultCode() == android.app.Activity.RESULT_CANCELED) {
+                    if (mTvMusicName != null) {
+                        mTvMusicName.setText(R.string.focus_music_empty);
+                    }
+                }
+            });
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -98,6 +114,26 @@ public class FocusFragment extends Fragment {
         btnReset.setOnClickListener(v1 -> onResetClicked());
         btnSkip.setOnClickListener(v1 -> onSkipClicked());
         cardCurrentTask.setOnClickListener(v1 -> onTaskCardClicked());
+
+        mTvMusicName = v.findViewById(R.id.tv_music_name);
+        View btnPickMusic = v.findViewById(R.id.btn_pick_music);
+        View btnPlayMusic = v.findViewById(R.id.btn_play_music);
+
+        if (btnPickMusic != null) {
+            btnPickMusic.setOnClickListener(v1 -> {
+                android.content.Intent intent = new android.content.Intent(getContext(), com.tomaflow.app.ui.music.MusicPickerActivity.class);
+                if (mTvMusicName != null && !mTvMusicName.getText().toString().equals(getString(R.string.focus_music_empty))) {
+                    intent.putExtra(com.tomaflow.app.ui.music.MusicPickerActivity.EXTRA_TRACK_NAME, mTvMusicName.getText().toString());
+                }
+                musicPickerLauncher.launch(intent);
+            });
+        }
+        
+        if (btnPlayMusic != null) {
+            btnPlayMusic.setOnClickListener(v1 -> {
+                android.widget.Toast.makeText(getContext(), "Tính năng phát nhạc đang phát triển", android.widget.Toast.LENGTH_SHORT).show();
+            });
+        }
 
         btnCompleteTask.setOnClickListener(v1 -> {
             isTaskCompleted = !isTaskCompleted;
