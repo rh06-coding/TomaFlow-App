@@ -37,8 +37,29 @@ public class SettingsFragment extends Fragment {
 
         bindDarkMode(view);
         bindDurationSettings(view);
+        bindLanguageToggle(view);
 
         return view;
+    }
+
+    private void bindLanguageToggle(View view) {
+        com.google.android.material.button.MaterialButtonToggleGroup toggleLang =
+                view.findViewById(R.id.toggle_lang);
+        if (toggleLang == null) return;
+
+        String currentLang = com.tomaflow.app.utils.LanguageManager.getSavedLanguage(requireContext());
+        toggleLang.check(com.tomaflow.app.utils.LanguageManager.LANG_VI.equals(currentLang)
+                ? R.id.btn_lang_vi : R.id.btn_lang_en);
+
+        toggleLang.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (!isChecked) return;
+            String lang = (checkedId == R.id.btn_lang_vi)
+                    ? com.tomaflow.app.utils.LanguageManager.LANG_VI
+                    : com.tomaflow.app.utils.LanguageManager.LANG_EN;
+            com.tomaflow.app.utils.LanguageManager.setLanguage(requireContext(), lang);
+            // Restart host activity to apply
+            requireActivity().recreate();
+        });
     }
 
     private void bindDarkMode(View view) {

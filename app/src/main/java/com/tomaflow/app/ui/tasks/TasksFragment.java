@@ -114,6 +114,7 @@ public class TasksFragment extends Fragment {
 
         EditText etTitle = view.findViewById(R.id.et_title);
         EditText etNote = view.findViewById(R.id.et_note);
+        EditText etDurationMinutes = view.findViewById(R.id.et_duration_minutes);
         TextView tvPomodoroCount = view.findViewById(R.id.tv_pomodoro_count);
         ImageButton btnMinus = view.findViewById(R.id.btn_minus);
         ImageButton btnPlus = view.findViewById(R.id.btn_plus);
@@ -142,12 +143,15 @@ public class TasksFragment extends Fragment {
                 Toast.makeText(getContext(), "Vui lòng nhập tên công việc", Toast.LENGTH_SHORT).show();
                 return;
             }
+            int durationMinutes = 0;
+            String durStr = etDurationMinutes != null ? etDurationMinutes.getText().toString().trim() : "";
+            if (!durStr.isEmpty()) {
+                try { durationMinutes = Integer.parseInt(durStr); } catch (NumberFormatException ignored) {}
+            }
 
-            TaskEntity newTask = new TaskEntity(title, note, count[0]);
-            // Persist through Room (and Firestore). The LiveData observer rebuilds the list.
+            TaskEntity newTask = new TaskEntity(title, note, count[0], durationMinutes);
             mTaskViewModel.insert(newTask);
             rvActive.scrollToPosition(0);
-
             dialog.dismiss();
         });
 

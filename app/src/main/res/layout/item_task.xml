@@ -19,7 +19,7 @@
             android:id="@+id/cb_done"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:buttonTint="@color/toma_primary" />
+            android:buttonTint="@color/toma_primary_soft" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -55,5 +55,16 @@
             android:text="4"
             android:textColor="@color/toma_primary"
             android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/btn_send_to_focus"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:padding="6dp"
+            android:src="@drawable/ic_send_to_focus"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/task_send_to_focus"
+            app:tint="@color/toma_primary" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -1,5 +1,6 @@
 package com.tomaflow.app.ui.auth;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -26,6 +27,11 @@ import com.tomaflow.app.MainActivity;
 import com.tomaflow.app.R;
 
 public class LoginActivity extends AppCompatActivity {
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(com.tomaflow.app.utils.LanguageManager.wrap(base));
+    }
 
     private static final String TAG = "LoginActivity";
     private FirebaseAuth mAuth;

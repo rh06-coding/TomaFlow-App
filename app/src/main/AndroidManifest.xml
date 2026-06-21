@@ -66,6 +66,11 @@
                 android:value="TomaFlow needs a foreground service to maintain an accurate Pomodoro timer and display a persistent notification when the app is in the background." />
         </service>
 
+        <!-- ── Music Picker ────────────────────────────── -->
+        <activity
+            android:exported="false"
+            android:name=".ui.music.MusicPickerActivity" />
+
     </application>
 
 </manifest>

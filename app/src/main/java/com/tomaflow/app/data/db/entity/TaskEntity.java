@@ -22,6 +22,7 @@ public class TaskEntity {
     public String title;
     public String description;
     public int estPomodoros = 1; // Estimated Pomodoro sessions needed
+    public int estimatedMinutes = 0; // Estimated duration in minutes (0 = not set)
 
     // Trạng thái task: Pending, InProgress hoặc Completed.
     public String status;
@@ -42,9 +43,15 @@ public class TaskEntity {
         this.title = title;
         this.description = description;
         this.estPomodoros = estPomodoros;
+        this.estimatedMinutes = 0;
         this.status = "Pending";
         this.tags = "";
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = System.currentTimeMillis();
+    }
+
+    public TaskEntity(String title, String description, int estPomodoros, int estimatedMinutes) {
+        this(title, description, estPomodoros);
+        this.estimatedMinutes = estimatedMinutes;
     }
 }

@@ -19,11 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical">
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/ic_menu"
-                app:tint="@color/toma_text" />
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -250,6 +245,71 @@
                 android:textAllCaps="false" />
         </LinearLayout>
 
+
+        <!-- Music card -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_icon_chip_primary">
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_music"
+                        app:tint="@color/toma_primary" />
+                </FrameLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/focus_music_title"
+                        android:textColor="@color/toma_text"
+                        android:textStyle="bold"
+                        android:textSize="15sp" />
+                    <TextView
+                        android:id="@+id/tv_music_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@string/focus_music_empty"
+                        android:textColor="@color/toma_text_muted" />
+                </LinearLayout>
+                <ImageView
+                    android:id="@+id/btn_pick_music"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_chevron_right"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/focus_music_pick"
+                    app:tint="@color/toma_text_muted" />
+                <ImageView
+                    android:id="@+id/btn_play_music"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="6dp"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_play"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/focus_music_play"
+                    app:tint="@color/toma_primary" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Current task card -->
         <com.google.android.material.card.MaterialCardView

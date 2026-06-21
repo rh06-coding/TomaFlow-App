@@ -60,8 +60,8 @@ public class BadgeAdapter extends ListAdapter<BadgeItem, BadgeAdapter.BadgeViewH
         }
 
         public void bind(BadgeItem item) {
-            tvTitle.setText(item.getTitle());
-            tvDesc.setText(item.getDescription());
+            tvTitle.setText(itemView.getContext().getString(item.getTitleResId()));
+            tvDesc.setText(itemView.getContext().getString(item.getDescResId()));
             ivIcon.setImageResource(item.getIconResId());
 
             if (!item.isUnlocked()) {

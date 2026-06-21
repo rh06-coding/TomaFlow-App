@@ -1,5 +1,6 @@
 package com.tomaflow.app;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -13,6 +14,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
     private BottomNavigationView mBottomNav;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(com.tomaflow.app.utils.LanguageManager.wrap(base));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

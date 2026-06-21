@@ -48,42 +48,35 @@ public class RewardsRepository {
     private List<BadgeItem> generateBadges(int totalSessions) {
         List<BadgeItem> list = new ArrayList<>();
 
-        // 1. 🌱 Người mới - Hoàn thành 1 Pomodoro
-        BadgeItem b1 = new BadgeItem("newbie", "Người mới", "Hoàn thành 1 Pomodoro", R.drawable.ic_toma_sprout);
+        BadgeItem b1 = new BadgeItem("newbie", R.string.badge_newbie_title, R.string.badge_newbie_desc, R.drawable.ic_toma_sprout);
         b1.setUnlocked(totalSessions >= 1);
         list.add(b1);
 
-        // 2. 🔥 Chăm chỉ - Hoàn thành 10 Pomodoro
-        BadgeItem b2 = new BadgeItem("hardworker", "Chăm chỉ", "Hoàn thành 10 Pomodoro", R.drawable.ic_sparkle);
+        BadgeItem b2 = new BadgeItem("hardworker", R.string.badge_hardworker_title, R.string.badge_hardworker_desc, R.drawable.ic_sparkle);
         b2.setUnlocked(totalSessions >= 10);
         list.add(b2);
 
-        // 3. 💪 Siêu nhân - Hoàn thành 50 Pomodoro
-        BadgeItem b3 = new BadgeItem("superman", "Siêu nhân", "Hoàn thành 50 Pomodoro", R.drawable.ic_star);
+        BadgeItem b3 = new BadgeItem("superman", R.string.badge_superman_title, R.string.badge_superman_desc, R.drawable.ic_star);
         b3.setUnlocked(totalSessions >= 50);
         list.add(b3);
 
-        // Các badge phức tạp khác (Kiên trì, Marathon, Hoàn hảo, Cú đêm, Chim sớm)
-        // Những badge này có thể được unlock thủ công trong logic timer/task
-        // và lưu trạng thái vào SharedPreferences.
-
-        BadgeItem b4 = new BadgeItem("consistent", "Kiên trì", "Focus 7 ngày liên tiếp", R.drawable.ic_stats);
+        BadgeItem b4 = new BadgeItem("consistent", R.string.badge_consistent_title, R.string.badge_consistent_desc, R.drawable.ic_stats);
         b4.setUnlocked(prefs.getBoolean("badge_consistent", false));
         list.add(b4);
 
-        BadgeItem b5 = new BadgeItem("marathon", "Marathon", "Focus 4 chu kỳ trong 1 ngày", R.drawable.ic_focus);
+        BadgeItem b5 = new BadgeItem("marathon", R.string.badge_marathon_title, R.string.badge_marathon_desc, R.drawable.ic_focus);
         b5.setUnlocked(prefs.getBoolean("badge_marathon", false));
         list.add(b5);
 
-        BadgeItem b6 = new BadgeItem("perfect", "Hoàn hảo", "Hoàn thành 5 task", R.drawable.ic_check);
+        BadgeItem b6 = new BadgeItem("perfect", R.string.badge_perfect_title, R.string.badge_perfect_desc, R.drawable.ic_check);
         b6.setUnlocked(prefs.getBoolean("badge_perfect", false));
         list.add(b6);
 
-        BadgeItem b7 = new BadgeItem("nightowl", "Cú đêm", "Focus sau 22:00", R.drawable.ic_bed);
+        BadgeItem b7 = new BadgeItem("nightowl", R.string.badge_nightowl_title, R.string.badge_nightowl_desc, R.drawable.ic_bed);
         b7.setUnlocked(prefs.getBoolean("badge_nightowl", false));
         list.add(b7);
 
-        BadgeItem b8 = new BadgeItem("earlybird", "Chim sớm", "Focus trước 7:00", R.drawable.ic_sun);
+        BadgeItem b8 = new BadgeItem("earlybird", R.string.badge_earlybird_title, R.string.badge_earlybird_desc, R.drawable.ic_sun);
         b8.setUnlocked(prefs.getBoolean("badge_earlybird", false));
         list.add(b8);
 

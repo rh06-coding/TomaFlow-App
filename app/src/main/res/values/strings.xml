@@ -107,4 +107,50 @@
     <string name="placeholder_task_title">No Active Task</string>
     <string name="placeholder_task_subtitle">Select a task to start focusing</string>
     <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID_HERE</string>
+
+    <!-- Music -->
+    <string name="focus_music_title">Background music</string>
+    <string name="focus_music_empty">No track selected</string>
+    <string name="focus_music_pick">Pick music</string>
+    <string name="focus_music_play">Play</string>
+    <string name="focus_music_pause">Pause</string>
+
+    <!-- Current task -->
+    <string name="focus_no_task">No task selected</string>
+    <string name="focus_no_task_sub">Open Tasks and pick one to focus on</string>
+    <string name="task_send_to_focus">Send to Focus</string>
+    <string name="task_sent_to_focus">Sent \"%1$s\" to Focus</string>
+
+    <!-- Language -->
+    <string name="settings_language">Language</string>
+    <string name="settings_language_desc">Switch between English and Vietnamese</string>
+    <string name="lang_en">English</string>
+    <string name="lang_vi">Tiếng Việt</string>
+
+    <!-- Task duration -->
+    <string name="task_duration_hint">Mins (opt)</string>
+    <string name="task_duration_label">Duration</string>
+
+    <!-- Music Picker -->
+    <string name="music_pick_device">Choose from device</string>
+    <string name="music_pick_device_desc">Browse and select an audio file</string>
+    <string name="music_section_selected">SELECTED TRACK</string>
+    <string name="music_from_device">From device</string>
+    <!-- Badges -->
+    <string name="badge_newbie_title">First Step</string>
+    <string name="badge_newbie_desc">Complete 1 Pomodoro</string>
+    <string name="badge_hardworker_title">Hard Worker</string>
+    <string name="badge_hardworker_desc">Complete 10 Pomodoros</string>
+    <string name="badge_superman_title">Superman</string>
+    <string name="badge_superman_desc">Complete 50 Pomodoros</string>
+    <string name="badge_consistent_title">Consistent</string>
+    <string name="badge_consistent_desc">Focus 7 days in a row</string>
+    <string name="badge_marathon_title">Marathon</string>
+    <string name="badge_marathon_desc">4 cycles in one day</string>
+    <string name="badge_perfect_title">Perfect</string>
+    <string name="badge_perfect_desc">Complete 5 tasks</string>
+    <string name="badge_nightowl_title">Night Owl</string>
+    <string name="badge_nightowl_desc">Focus after 22:00</string>
+    <string name="badge_earlybird_title">Early Bird</string>
+    <string name="badge_earlybird_desc">Focus before 07:00</string>
 </resources>
