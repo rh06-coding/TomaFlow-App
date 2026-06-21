@@ -64,18 +64,39 @@ public class FocusFragment extends Fragment {
     private boolean               mPreviousRunning = false;
 
     private TextView mTvMusicName;
+    private com.tomaflow.app.data.model.BuiltInTrack mSelectedBuiltInTrack;
 
     private final androidx.activity.result.ActivityResultLauncher<android.content.Intent> musicPickerLauncher =
             registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == android.app.Activity.RESULT_OK && result.getData() != null) {
-                    String trackName = result.getData().getStringExtra(com.tomaflow.app.ui.music.MusicPickerActivity.EXTRA_TRACK_NAME);
-                    if (trackName != null && mTvMusicName != null) {
-                        mTvMusicName.setText(trackName);
+                    boolean isCleared = result.getData().getBooleanExtra(com.tomaflow.app.ui.music.MusicPickerActivity.EXTRA_CLEAR_TRACK, false);
+                    if (isCleared) {
+                        if (mTvMusicName != null) {
+                            mTvMusicName.setText(R.string.focus_music_empty);
+                        }
+                        mSelectedBuiltInTrack = null;
+                        com.tomaflow.app.ui.music.AppMusicPlayer.getInstance().stop(requireContext());
+                    } else {
+                        String trackName = result.getData().getStringExtra(com.tomaflow.app.ui.music.MusicPickerActivity.EXTRA_TRACK_NAME);
+                        String trackId = result.getData().getStringExtra(com.tomaflow.app.ui.music.MusicPickerActivity.EXTRA_BUILTIN_TRACK_ID);
+                        if (trackName != null && mTvMusicName != null) {
+                            mTvMusicName.setText(trackName);
+                        }
+                        if (trackId != null) {
+                            for (com.tomaflow.app.data.model.BuiltInTrack track : com.tomaflow.app.ui.music.BuiltInTrackCatalog.TRACKS) {
+                                if (track.id.equals(trackId)) {
+                                    mSelectedBuiltInTrack = track;
+                                    // Tự động phát khi chọn xong
+                                    com.tomaflow.app.ui.music.AppMusicPlayer.getInstance().play(requireContext(), mSelectedBuiltInTrack);
+                                    break;
+                                }
+                            }
+                        } else {
+                            mSelectedBuiltInTrack = null;
+                        }
                     }
                 } else if (result.getResultCode() == android.app.Activity.RESULT_CANCELED) {
-                    if (mTvMusicName != null) {
-                        mTvMusicName.setText(R.string.focus_music_empty);
-                    }
+                    // Do nothing when user cancels picker without explicitly clearing
                 }
             });
 
@@ -144,7 +165,18 @@ public class FocusFragment extends Fragment {
         
         if (btnPlayMusic != null) {
             btnPlayMusic.setOnClickListener(v1 -> {
-                android.widget.Toast.makeText(getContext(), "Tính năng phát nhạc đang phát triển", android.widget.Toast.LENGTH_SHORT).show();
+                com.tomaflow.app.ui.music.AppMusicPlayer player = com.tomaflow.app.ui.music.AppMusicPlayer.getInstance();
+                if (player.isPlaying()) {
+                    player.pause(requireContext());
+                } else {
+                    if (mSelectedBuiltInTrack != null) {
+                        player.play(requireContext(), mSelectedBuiltInTrack);
+                    } else if (player.getCurrentTrack() != null) {
+                        player.resume(requireContext());
+                    } else {
+                        android.widget.Toast.makeText(getContext(), "Vui lòng chọn nhạc trước", android.widget.Toast.LENGTH_SHORT).show();
+                    }
+                }
             });
         }
 
@@ -455,14 +487,31 @@ public class FocusFragment extends Fragment {
         mTvTomatoStatus   = null;
     }
 
+    private final com.tomaflow.app.ui.music.AppMusicPlayer.OnPlaybackStateChanged mMusicListener = (isPlaying, track) -> {
+        if (getView() != null) {
+            android.widget.ImageView btnPlay = getView().findViewById(R.id.btn_play_music);
+            if (btnPlay != null) {
+                btnPlay.setImageResource(isPlaying ? R.drawable.ic_pause : R.drawable.ic_play);
+            }
+            if (track != null) {
+                mSelectedBuiltInTrack = track;
+                if (mTvMusicName != null) {
+                    mTvMusicName.setText(track.name);
+                }
+            }
+        }
+    };
+
     @Override
     public void onStart() {
         super.onStart();
         mTimerViewModel.startListening();
+        com.tomaflow.app.ui.music.AppMusicPlayer.getInstance().addListener(mMusicListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        com.tomaflow.app.ui.music.AppMusicPlayer.getInstance().removeListener(mMusicListener);
     }
 }

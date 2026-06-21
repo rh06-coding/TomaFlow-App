@@ -145,6 +145,14 @@ public class TimerEngineService extends Service {
         super.onDestroy();
     }
 
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        com.tomaflow.app.ui.music.AppMusicPlayer.getInstance().stop(this);
+        stopForeground(true);
+        stopSelf();
+    }
+
     // ── Command handling (runs on mTimerThread) ───────────────────────────────
 
     private void handleCommand(String command) {

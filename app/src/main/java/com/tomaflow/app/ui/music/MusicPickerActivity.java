@@ -14,6 +14,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.tomaflow.app.R;
+import com.tomaflow.app.data.model.BuiltInTrack;
+import android.widget.LinearLayout;
+import android.view.LayoutInflater;
 
 public class MusicPickerActivity extends AppCompatActivity {
 
@@ -24,6 +27,8 @@ public class MusicPickerActivity extends AppCompatActivity {
 
     public static final String EXTRA_TRACK_URI = "extra_track_uri";
     public static final String EXTRA_TRACK_NAME = "extra_track_name";
+    public static final String EXTRA_BUILTIN_TRACK_ID = "extra_builtin_track_id";
+    public static final String EXTRA_CLEAR_TRACK = "extra_clear_track";
 
     private TextView tvTrackName;
     private View cardSelectedTrack;
@@ -59,11 +64,51 @@ public class MusicPickerActivity extends AppCompatActivity {
                 pickAudioLauncher.launch("audio/*")
         );
 
+        setupBuiltInTracks();
+
         findViewById(R.id.btn_clear_track).setOnClickListener(v -> {
             selectedUri = null;
             tvTrackName.setText(R.string.focus_music_empty);
-            setResult(RESULT_CANCELED);
+            Intent result = new Intent();
+            result.putExtra(EXTRA_CLEAR_TRACK, true);
+            setResult(RESULT_OK, result);
+            finish();
         });
+    }
+
+    private void setupBuiltInTracks() {
+        LinearLayout layoutBuiltIn = findViewById(R.id.layout_builtin_tracks);
+        if (layoutBuiltIn == null) return;
+
+        LayoutInflater inflater = getLayoutInflater();
+        for (BuiltInTrack track : BuiltInTrackCatalog.TRACKS) {
+            View itemView = inflater.inflate(R.layout.item_builtin_track, layoutBuiltIn, false);
+            TextView tvIcon = itemView.findViewById(R.id.tv_track_icon);
+            TextView tvName = itemView.findViewById(R.id.tv_track_name);
+            TextView tvCategory = itemView.findViewById(R.id.tv_track_category);
+
+            tvIcon.setText(track.emoji);
+            tvName.setText(track.name);
+            tvCategory.setText(track.category);
+
+            itemView.setOnClickListener(v -> {
+                handlePickedBuiltInTrack(track);
+            });
+
+            layoutBuiltIn.addView(itemView);
+        }
+    }
+
+    private void handlePickedBuiltInTrack(BuiltInTrack track) {
+        tvTrackName.setText(track.name);
+        selectedUri = "android.resource://" + getPackageName() + "/" + track.rawResId;
+
+        Intent result = new Intent();
+        result.putExtra(EXTRA_TRACK_URI, selectedUri);
+        result.putExtra(EXTRA_TRACK_NAME, track.name);
+        result.putExtra(EXTRA_BUILTIN_TRACK_ID, track.id);
+        setResult(RESULT_OK, result);
+        finish();
     }
 
     private void handlePickedAudio(Uri uri) {
@@ -77,6 +122,7 @@ public class MusicPickerActivity extends AppCompatActivity {
         result.putExtra(EXTRA_TRACK_URI, selectedUri);
         result.putExtra(EXTRA_TRACK_NAME, name);
         setResult(RESULT_OK, result);
+        finish();
     }
 
     private String resolveFileName(Uri uri) {

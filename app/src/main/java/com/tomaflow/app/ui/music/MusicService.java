@@ -65,6 +65,14 @@ public class MusicService extends Service {
         return START_STICKY;
     }
 
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        super.onTaskRemoved(rootIntent);
+        AppMusicPlayer.getInstance().stop(this);
+        stopForeground(true);
+        stopSelf();
+    }
+
     private void updateNotification(AppMusicPlayer player) {
         BuiltInTrack track = player.getCurrentTrack();
         if (track == null) {

@@ -9,6 +9,7 @@
     <!-- Foreground service permission for a persistent timer notification (future) -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -70,6 +71,13 @@
         <activity
             android:exported="false"
             android:name=".ui.music.MusicPickerActivity" />
+
+        <!-- ── Music Service ─────────────────────────────── -->
+        <service
+            android:name=".ui.music.MusicService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback"
+            android:stopWithTask="true" />
 
     </application>
 

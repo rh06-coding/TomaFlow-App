@@ -41,6 +41,8 @@ public final class BuiltInTrackCatalog {
      *   new BuiltInTrack("deep_focus",   "Deep Focus",        "Focus",  "🧘", R.raw.deep_focus),
      */
     public static final List<BuiltInTrack> TRACKS = Arrays.asList(
-        // ← Add your tracks here
+        new BuiltInTrack("lofi_chill", "Lo-Fi Chill", "Lofi", "🎵", R.raw.lofi_chill),
+        new BuiltInTrack("piano_focus", "Piano Focus", "Piano", "🎹", R.raw.piano_focus),
+        new BuiltInTrack("rain_ambience", "Tiếng Mưa", "Nature", "🌧", R.raw.rain_ambience)
     );
 }
