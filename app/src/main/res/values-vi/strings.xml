@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TomaFlow</string>
+
+    <!-- Bottom nav -->
+    <string name="nav_focus">TẬP TRUNG</string>
+    <string name="nav_tasks">CÔNG VIỆC</string>
+    <string name="nav_stats">THỐNG KÊ</string>
+    <string name="nav_profile">HỒ SƠ</string>
+    <string name="nav_settings">CÀI ĐẶT</string>
+
+    <!-- Auth -->
+    <string name="auth_welcome">Chào mừng\ntrở lại.</string>
+    <string name="auth_welcome_sub">Đăng nhập để tiếp tục hành trình tập trung.</string>
+    <string name="auth_email">Địa chỉ email</string>
+    <string name="auth_password">Mật khẩu</string>
+    <string name="auth_forgot">Quên mật khẩu?</string>
+    <string name="auth_signin">Đăng nhập</string>
+    <string name="auth_no_account">Chưa có tài khoản?</string>
+    <string name="auth_create">Tạo tài khoản</string>
+
+    <string name="reg_title">Bắt đầu\ndòng chảy.</string>
+    <string name="reg_sub">Tạo tài khoản để kiến tạo sự tập trung của bạn.</string>
+    <string name="reg_name">Họ và tên</string>
+    <string name="reg_password">Mật khẩu (từ 8 ký tự)</string>
+    <string name="reg_submit">Tạo tài khoản</string>
+    <string name="reg_terms">Khi tiếp tục, bạn đồng ý với Điều khoản và Chính sách bảo mật của TomaFlow.</string>
+    <string name="reg_have">Đã có tài khoản?</string>
+    <string name="reg_signin">Đăng nhập</string>
+
+    <!-- Focus -->
+    <string name="focus_current">PHIÊN HIỆN TẠI</string>
+    <string name="focus_title">Giờ tập trung</string>
+    <string name="focus_time">25:00</string>
+    <string name="focus_phase">LÀM VIỆC SÂU</string>
+
+    <!-- Tasks -->
+    <string name="tasks_current">TIÊU ĐIỂM HIỆN TẠI</string>
+    <string name="tasks_title">Kiến trúc\ncông việc</string>
+    <string name="tasks_slots">VỊ TRÍ HOẠT ĐỘNG</string>
+    <string name="tasks_est">SỐ POMODORO DỰ KIẾN</string>
+    <string name="tasks_completion">TỶ LỆ HOÀN THÀNH</string>
+    <string name="tasks_active">Đang làm</string>
+    <string name="tasks_completed">Đã hoàn thành</string>
+
+    <!-- Stats -->
+    <string name="stats_performance">HIỆU SUẤT CỦA BẠN</string>
+    <string name="stats_title">Dòng chảy tuần</string>
+    <string name="stats_total">TỔNG THỜI GIAN TẬP TRUNG</string>
+    <string name="stats_pomos">POMODORO ĐÃ HOÀN THÀNH</string>
+    <string name="stats_best">NGÀY TỐT NHẤT</string>
+    <string name="stats_intensity">Cường độ tập trung\nhàng ngày</string>
+    <string name="stats_insights">PHÂN TÍCH DÒNG CHẢY</string>
+    <string name="stats_peak">Phát hiện đỉnh hiệu suất</string>
+    <string name="stats_peak_desc">Mức tập trung của bạn cao hơn 24% trong khoảng 9:00 - 11:30 sáng. Hãy lên lịch làm việc sâu vào khung giờ này.</string>
+
+    <!-- Profile -->
+    <string name="profile_role">KIẾN TRÚC SƯ TẬP TRUNG CẤP CAO</string>
+    <string name="profile_badges">Huy hiệu đã đạt</string>
+    <string name="profile_view_all">XEM TẤT CẢ</string>
+    <string name="profile_cloud">Đồng bộ Cloud</string>
+    <string name="profile_cloud_time">CÁCH ĐÂY 2 PHÚT</string>
+    <string name="profile_logout">Đăng xuất</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Cài đặt</string>
+    <string name="settings_header">Tuỳ chọn bộ đếm</string>
+    <string name="settings_sub">Tuỳ biến chu kỳ tập trung theo nhịp của bạn.</string>
+    <string name="settings_focus">Tập trung</string>
+    <string name="settings_short">Nghỉ ngắn</string>
+    <string name="settings_long">Nghỉ dài</string>
+    <string name="settings_deep">HỆ THỐNG LÀM VIỆC SÂU</string>
+    <string name="settings_strict">Chế độ nghiêm</string>
+    <string name="settings_strict_desc">Không cho phép tạm dừng khi đang trong phiên.</string>
+    <string name="settings_notify">Thông báo</string>
+    <string name="settings_notify_desc">Âm thanh &amp; rung khi chuyển giai đoạn.</string>
+    <string name="settings_sanctuary">Không gian tập trung</string>
+    <string name="settings_sanctuary_desc">Không gian được tinh chỉnh cho hiệu suất nhận thức đỉnh cao.</string>
+
+    <!-- Rewards -->
+    <string name="rewards_title">Phần thưởng</string>
+    <string name="rewards_section_badges">Huy hiệu đã đạt</string>
+    <string name="rewards_view_all">Xem tất cả</string>
+
+    <!-- Music -->
+    <string name="focus_music_title">Nhạc nền</string>
+    <string name="focus_music_empty">Chưa chọn bản nhạc</string>
+    <string name="focus_music_pick">Chọn nhạc</string>
+    <string name="focus_music_play">Phát</string>
+    <string name="focus_music_pause">Tạm dừng</string>
+
+    <!-- Current task -->
+    <string name="focus_no_task">Chưa chọn công việc</string>
+    <string name="focus_no_task_sub">Mở tab Công việc và chọn một mục để tập trung</string>
+    <string name="task_send_to_focus">Đưa vào Tập trung</string>
+    <string name="task_sent_to_focus">Đã đưa \"%1$s\" vào Tập trung</string>
+
+    <!-- Language -->
+    <string name="settings_language">Ngôn ngữ</string>
+    <string name="settings_language_desc">Chuyển đổi giữa Tiếng Anh và Tiếng Việt</string>
+    <string name="lang_en">English</string>
+    <string name="lang_vi">Tiếng Việt</string>
+
+    <!-- Music Picker -->
+    <string name="music_pick_device">Chọn từ thiết bị</string>
+    <string name="music_pick_device_desc">Duyệt và chọn một file âm thanh</string>
+    <string name="music_section_selected">BÀI NHẠC ĐÃ CHỌN</string>
+    <string name="music_from_device">Từ thiết bị</string>
+
+    <!-- Task duration -->
+    <string name="task_duration_hint">Phút (tuỳ chọn)</string>
+    <string name="task_duration_label">Thời lượng</string>
+
+    <!-- Badges -->
+    <string name="badge_newbie_title">Người mới</string>
+    <string name="badge_newbie_desc">Hoàn thành 1 Pomodoro</string>
+    <string name="badge_hardworker_title">Chăm chỉ</string>
+    <string name="badge_hardworker_desc">Hoàn thành 10 Pomodoro</string>
+    <string name="badge_superman_title">Siêu nhân</string>
+    <string name="badge_superman_desc">Hoàn thành 50 Pomodoro</string>
+    <string name="badge_consistent_title">Kiên trì</string>
+    <string name="badge_consistent_desc">Focus 7 ngày liên tiếp</string>
+    <string name="badge_marathon_title">Marathon</string>
+    <string name="badge_marathon_desc">Focus 4 chu kỳ trong 1 ngày</string>
+    <string name="badge_perfect_title">Hoàn hảo</string>
+    <string name="badge_perfect_desc">Hoàn thành 5 task</string>
+    <string name="badge_nightowl_title">Cú đêm</string>
+    <string name="badge_nightowl_desc">Focus sau 22:00</string>
+    <string name="badge_earlybird_title">Chim sớm</string>
+    <string name="badge_earlybird_desc">Focus trước 07:00</string>
+</resources>
