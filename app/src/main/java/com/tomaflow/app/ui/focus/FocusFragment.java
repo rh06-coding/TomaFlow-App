@@ -18,15 +18,18 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.button.MaterialButtonToggleGroup;
 
 import com.tomaflow.app.R;
 import com.tomaflow.app.constants.AppConstants;
+import com.tomaflow.app.data.db.entity.TaskEntity;
 import com.tomaflow.app.timer.PomodoroTimer;
 import com.tomaflow.app.ui.timer.TimerView;
 import com.tomaflow.app.ui.timer.TimerViewModel;
 import com.tomaflow.app.ui.timer.TomatoGrowthView;
+import com.tomaflow.app.ui.tasks.TaskViewModel;
+import androidx.appcompat.app.AlertDialog;
 
+import java.util.List;
 import java.util.Locale;
 
 public class FocusFragment extends Fragment {
@@ -42,6 +45,8 @@ public class FocusFragment extends Fragment {
     private static final int    COLOR_LONG_BREAK_BG   = 0xFFEAF3FD;
 
     private TimerViewModel        mTimerViewModel;
+    private TaskViewModel         mTaskViewModel;
+    private TaskEntity            mCurrentTask;
     private TimerView             mTimerView;
     private TextView              mTvTime;
     private TextView              mTvSessionLabel;
@@ -50,6 +55,9 @@ public class FocusFragment extends Fragment {
     private TomatoGrowthView      mTomatoGrowthView;
     private View                  mTomatoWidget;
     private TextView              mTvTomatoStatus;
+    private TextView              mTvTaskTitle;
+    private TextView              mTvTaskSubtitle;
+    private TextView              mTvTaskPomos;
 
     /** Pha trước đó — để phát hiện khi nào pha thay đổi. */
     private PomodoroTimer.Phase   mPreviousPhase  = null;
@@ -57,20 +65,72 @@ public class FocusFragment extends Fragment {
     private boolean               mPreviousRunning = false;
 
     private TextView mTvMusicName;
+    private com.tomaflow.app.data.model.BuiltInTrack mSelectedBuiltInTrack;
 
     private final androidx.activity.result.ActivityResultLauncher<android.content.Intent> musicPickerLauncher =
             registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(), result -> {
+                // Everything is now handled by AppMusicPlayer and mMusicListener
+            });
+
+    private final androidx.activity.result.ActivityResultLauncher<android.content.Intent> taskPickerLauncher =
+            registerForActivityResult(new androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult(), result -> {
                 if (result.getResultCode() == android.app.Activity.RESULT_OK && result.getData() != null) {
-                    String trackName = result.getData().getStringExtra(com.tomaflow.app.ui.music.MusicPickerActivity.EXTRA_TRACK_NAME);
-                    if (trackName != null && mTvMusicName != null) {
-                        mTvMusicName.setText(trackName);
-                    }
-                } else if (result.getResultCode() == android.app.Activity.RESULT_CANCELED) {
-                    if (mTvMusicName != null) {
-                        mTvMusicName.setText(R.string.focus_music_empty);
+                    boolean isCleared = result.getData().getBooleanExtra(com.tomaflow.app.ui.tasks.TaskPickerActivity.EXTRA_CLEAR_TASK, false);
+                    if (isCleared) {
+                        mCurrentTask = null;
+                        mTimerViewModel.setCurrentTaskId(null);
+                        if (mTvTaskTitle != null) mTvTaskTitle.setText("Chọn công việc");
+                        if (mTvTaskSubtitle != null) mTvTaskSubtitle.setText("Nhấn để chọn");
+                        if (mTvTaskPomos != null) mTvTaskPomos.setVisibility(View.GONE);
+                    } else {
+                        String taskId = result.getData().getStringExtra(com.tomaflow.app.ui.tasks.TaskPickerActivity.EXTRA_TASK_ID);
+                        String taskName = result.getData().getStringExtra(com.tomaflow.app.ui.tasks.TaskPickerActivity.EXTRA_TASK_NAME);
+                        String taskDesc = result.getData().getStringExtra(com.tomaflow.app.ui.tasks.TaskPickerActivity.EXTRA_TASK_DESC);
+                        
+                        if (taskId != null && FocusFragment.this.mPendingTasks != null) {
+                            for (TaskEntity t : FocusFragment.this.mPendingTasks) {
+                                if (t.taskId.equals(taskId)) {
+                                    mCurrentTask = t;
+                                    break;
+                                }
+                            }
+                        }
+                        if (mCurrentTask == null && taskId != null && taskName != null) {
+                            // Fallback in case not in pending list but returned
+                            mCurrentTask = new TaskEntity();
+                            mCurrentTask.taskId = taskId;
+                            mCurrentTask.title = taskName;
+                            mCurrentTask.description = taskDesc;
+                        }
+                        
+                        if (mCurrentTask != null) {
+                            mTimerViewModel.setCurrentTaskId(mCurrentTask.taskId);
+                        }
+                        updateTaskUI();
                     }
                 }
             });
+
+    private void updateTaskUI() {
+        if (mCurrentTask != null) {
+            if (mTvTaskTitle != null) {
+                mTvTaskTitle.setText(mCurrentTask.title);
+                mTvTaskTitle.setPaintFlags(mTvTaskTitle.getPaintFlags() & (~android.graphics.Paint.STRIKE_THRU_TEXT_FLAG));
+                mTvTaskTitle.setTextColor(getResources().getColor(R.color.toma_text, null));
+            }
+            if (mTvTaskSubtitle != null) {
+                mTvTaskSubtitle.setText(mCurrentTask.description == null || mCurrentTask.description.trim().isEmpty() ? "Đang tập trung" : mCurrentTask.description);
+            }
+            if (mTvTaskPomos != null) {
+                mTvTaskPomos.setVisibility(View.VISIBLE);
+                mTvTaskPomos.setText(String.valueOf(mCurrentTask.estPomodoros));
+            }
+        } else {
+            if (mTvTaskTitle != null) mTvTaskTitle.setText("Chọn công việc");
+            if (mTvTaskSubtitle != null) mTvTaskSubtitle.setText("Nhấn để chọn");
+            if (mTvTaskPomos != null) mTvTaskPomos.setVisibility(View.GONE);
+        }
+    }
 
     @Nullable
     @Override
@@ -82,6 +142,7 @@ public class FocusFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mTimerViewModel = new ViewModelProvider(requireActivity()).get(TimerViewModel.class);
+        mTaskViewModel  = new ViewModelProvider(requireActivity()).get(TaskViewModel.class);
 
         View avatar = view.findViewById(R.id.iv_avatar);
         if (avatar != null) {
@@ -90,6 +151,7 @@ public class FocusFragment extends Fragment {
 
         bindViews(view);
         setupTimerObserver();
+        setupTaskObserver();
     }
 
     private boolean isTaskCompleted = false;
@@ -107,8 +169,13 @@ public class FocusFragment extends Fragment {
         ImageButton btnSkip      = v.findViewById(R.id.btn_skip);
         CardView cardCurrentTask = v.findViewById(R.id.card_current_task);
 
-        View btnCompleteTask = v.findViewById(R.id.btn_complete_task);
-        TextView tvTaskTitle = v.findViewById(R.id.tv_task_title);
+        mTvTaskTitle    = v.findViewById(R.id.tv_task_title);
+        mTvTaskSubtitle = v.findViewById(R.id.tv_task_subtitle);
+        mTvTaskPomos    = v.findViewById(R.id.tv_task_pomos);
+
+        mTvTaskTitle.setText("Chọn công việc");
+        mTvTaskSubtitle.setText("Nhấn để chọn");
+        if (mTvTaskPomos != null) mTvTaskPomos.setVisibility(View.GONE);
 
         mBtnPlayPause.setOnClickListener(v1 -> onPlayPauseClicked());
         btnReset.setOnClickListener(v1 -> onResetClicked());
@@ -131,36 +198,20 @@ public class FocusFragment extends Fragment {
         
         if (btnPlayMusic != null) {
             btnPlayMusic.setOnClickListener(v1 -> {
-                android.widget.Toast.makeText(getContext(), "Tính năng phát nhạc đang phát triển", android.widget.Toast.LENGTH_SHORT).show();
+                com.tomaflow.app.ui.music.AppMusicPlayer player = com.tomaflow.app.ui.music.AppMusicPlayer.getInstance();
+                if (player.isPlaying()) {
+                    player.pause(requireContext());
+                } else {
+                    if (mSelectedBuiltInTrack != null) {
+                        player.play(requireContext(), mSelectedBuiltInTrack);
+                    } else if (player.getCurrentTrack() != null) {
+                        player.resume(requireContext());
+                    } else {
+                        android.widget.Toast.makeText(getContext(), "Vui lòng chọn nhạc trước", android.widget.Toast.LENGTH_SHORT).show();
+                    }
+                }
             });
         }
-
-        btnCompleteTask.setOnClickListener(v1 -> {
-            isTaskCompleted = !isTaskCompleted;
-            if (isTaskCompleted) {
-                tvTaskTitle.setPaintFlags(tvTaskTitle.getPaintFlags() | android.graphics.Paint.STRIKE_THRU_TEXT_FLAG);
-                tvTaskTitle.setTextColor(getResources().getColor(R.color.toma_text_muted, null));
-                btnCompleteTask.setAlpha(0.5f);
-                android.widget.Toast.makeText(getContext(), "Tuyệt vời! Task đã hoàn thành.", android.widget.Toast.LENGTH_SHORT).show();
-            } else {
-                tvTaskTitle.setPaintFlags(tvTaskTitle.getPaintFlags() & (~android.graphics.Paint.STRIKE_THRU_TEXT_FLAG));
-                tvTaskTitle.setTextColor(getResources().getColor(R.color.toma_text, null));
-                btnCompleteTask.setAlpha(1.0f);
-            }
-        });
-
-        // ── Speed Toggle (debug) ───────────────────────────────────────────────
-        MaterialButtonToggleGroup speedToggle = v.findViewById(R.id.speed_toggle);
-        speedToggle.check(R.id.btn_speed_1x); // default 1x
-        speedToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (!isChecked) return;
-            int speed = 1;
-            if      (checkedId == R.id.btn_speed_2x)  speed = 2;
-            else if (checkedId == R.id.btn_speed_4x)  speed = 4;
-            else if (checkedId == R.id.btn_speed_8x)  speed = 8;
-            else if (checkedId == R.id.btn_speed_16x) speed = 16;
-            mTimerViewModel.setTimerSpeed(speed);
-        });
     }
 
     private void setupTimerObserver() {
@@ -207,8 +258,59 @@ public class FocusFragment extends Fragment {
         mTimerViewModel.sendCommand(AppConstants.COMMAND_SKIP);
     }
 
+    private List<TaskEntity> mPendingTasks;
+
+    private void setupTaskObserver() {
+        mTaskViewModel.getPendingTasks().observe(getViewLifecycleOwner(), tasks -> {
+            mPendingTasks = tasks;
+            
+            // Khôi phục UI của task nếu đang được chọn trong TimerViewModel
+            String currentTaskId = mTimerViewModel.getCurrentTaskId();
+            if (currentTaskId != null && mCurrentTask == null) {
+                for (TaskEntity t : tasks) {
+                    if (t.taskId.equals(currentTaskId)) {
+                        mCurrentTask = t;
+                        break;
+                    }
+                }
+            } else if (currentTaskId != null && mCurrentTask != null) {
+                // Update current task pomodoro count dynamically
+                for (TaskEntity t : tasks) {
+                    if (t.taskId.equals(currentTaskId)) {
+                        mCurrentTask = t;
+                        break;
+                    }
+                }
+            }
+            // Always refresh UI when tasks change to reflect latest state
+            updateTaskUI();
+        });
+
+        mTimerViewModel.getTaskCompletedEvent().observe(getViewLifecycleOwner(), completed -> {
+            if (Boolean.TRUE.equals(completed)) {
+                new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Hoàn thành!")
+                    .setMessage("Tuyệt vời! Bạn đã hoàn thành công việc này.")
+                    .setPositiveButton("OK", null)
+                    .show();
+                
+                mCurrentTask = null;
+                mTimerViewModel.setCurrentTaskId(null);
+                updateTaskUI();
+                
+                // Consume event
+                mTimerViewModel.getTaskCompletedEvent().setValue(false);
+            }
+        });
+    }
+
     private void onTaskCardClicked() {
-        // Navigation logic for tasks
+        android.content.Intent intent = new android.content.Intent(getContext(), com.tomaflow.app.ui.tasks.TaskPickerActivity.class);
+        if (mCurrentTask != null) {
+            intent.putExtra(com.tomaflow.app.ui.tasks.TaskPickerActivity.EXTRA_TASK_ID, mCurrentTask.taskId);
+            intent.putExtra(com.tomaflow.app.ui.tasks.TaskPickerActivity.EXTRA_TASK_NAME, mCurrentTask.title);
+        }
+        taskPickerLauncher.launch(intent);
     }
 
     private void updateTimerDisplay(long millis) {
@@ -400,14 +502,36 @@ public class FocusFragment extends Fragment {
         mTvTomatoStatus   = null;
     }
 
+    private final com.tomaflow.app.ui.music.AppMusicPlayer.OnPlaybackStateChanged mMusicListener = (isPlaying, track) -> {
+        if (getView() != null) {
+            android.widget.ImageView btnPlay = getView().findViewById(R.id.btn_play_music);
+            if (btnPlay != null) {
+                btnPlay.setImageResource(isPlaying ? R.drawable.ic_pause : R.drawable.ic_play);
+            }
+            if (track != null) {
+                mSelectedBuiltInTrack = track;
+                if (mTvMusicName != null) {
+                    mTvMusicName.setText(track.name);
+                }
+            } else {
+                mSelectedBuiltInTrack = null;
+                if (mTvMusicName != null) {
+                    mTvMusicName.setText(R.string.focus_music_empty);
+                }
+            }
+        }
+    };
+
     @Override
     public void onStart() {
         super.onStart();
         mTimerViewModel.startListening();
+        com.tomaflow.app.ui.music.AppMusicPlayer.getInstance().addListener(mMusicListener);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        com.tomaflow.app.ui.music.AppMusicPlayer.getInstance().removeListener(mMusicListener);
     }
 }

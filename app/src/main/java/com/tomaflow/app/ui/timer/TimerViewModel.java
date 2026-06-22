@@ -23,8 +23,10 @@ import com.tomaflow.app.timer.TimerEngineService;
 public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.OnTimerEventListener {
 
     private final MutableLiveData<PomodoroTimer.TimerState> mTimerState = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> mTaskCompletedEvent = new MutableLiveData<>();
 
     private final SessionRepository mSessionRepository;
+    private final com.tomaflow.app.data.repository.TaskRepository mTaskRepository;
 
     private TimerEngineService mService;
     private boolean mBound = false;
@@ -53,11 +55,16 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
     public TimerViewModel(@NonNull Application application) {
         super(application);
         mSessionRepository = new SessionRepository(application);
+        mTaskRepository = new com.tomaflow.app.data.repository.TaskRepository(application);
     }
 
     /** Observe this in MainActivity to receive live timer updates. */
     public LiveData<PomodoroTimer.TimerState> getTimerState() {
         return mTimerState;
+    }
+
+    public MutableLiveData<Boolean> getTaskCompletedEvent() {
+        return mTaskCompletedEvent;
     }
 
     /**
@@ -66,6 +73,10 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
      */
     public void setCurrentTaskId(String taskId) {
         mCurrentTaskId = taskId;
+    }
+
+    public String getCurrentTaskId() {
+        return mCurrentTaskId;
     }
 
     public void startListening() {
@@ -103,6 +114,11 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
     @Override
     public void onFocusComplete(int sessionCount) {
         saveCurrentFocusSession("Completed");
+        if (mCurrentTaskId != null) {
+            mTaskRepository.decrementPomodoro(mCurrentTaskId, () -> {
+                mTaskCompletedEvent.postValue(true);
+            });
+        }
     }
 
     @Override
@@ -128,18 +144,6 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
         intent.setClass(getApplication(), TimerEngineService.class);
         intent.putExtra(AppConstants.INTENT_EXTRA_COMMAND, command);
 
-        getApplication().startService(intent);
-    }
-
-    /**
-     * [DEBUG] Set timer speed multiplier: 1=real-time, 2=2x, 4=4x, 8=8x, 16=16x.
-     * Safe to call while timer is running — remaining time is preserved.
-     */
-    public void setTimerSpeed(int multiplier) {
-        Intent intent = new Intent(TimerEngineService.ACTION_COMMAND);
-        intent.setClass(getApplication(), TimerEngineService.class);
-        intent.putExtra(AppConstants.INTENT_EXTRA_COMMAND, AppConstants.COMMAND_SET_SPEED);
-        intent.putExtra(AppConstants.INTENT_EXTRA_SPEED, multiplier);
         getApplication().startService(intent);
     }
 

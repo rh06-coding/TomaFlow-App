@@ -54,88 +54,8 @@
             android:textAppearance="@style/TextAppearance.Toma.Display"
             android:textSize="32sp" />
 
-        <!-- ════ DEBUG: Speed Control Bar ════ -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:gravity="center"
-            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="⚡ TEST SPEED"
-                android:textSize="9sp"
-                android:letterSpacing="0.12"
-                android:textColor="@color/toma_text_muted"
-                android:fontFamily="sans-serif-medium" />
 
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/speed_toggle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                app:singleSelection="true"
-                app:selectionRequired="true">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_speed_1x"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:text="1x"
-                    android:textSize="11sp"
-                    android:paddingHorizontal="10dp"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_speed_2x"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:text="2x"
-                    android:textSize="11sp"
-                    android:paddingHorizontal="10dp"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_speed_4x"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:text="4x"
-                    android:textSize="11sp"
-                    android:paddingHorizontal="10dp"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_speed_8x"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:text="8x"
-                    android:textSize="11sp"
-                    android:paddingHorizontal="10dp"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_speed_16x"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:text="16x"
-                    android:textSize="11sp"
-                    android:paddingHorizontal="10dp"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp" />
-
-            </com.google.android.material.button.MaterialButtonToggleGroup>
-        </LinearLayout>
 
         <!-- Timer ring -->
 
@@ -323,17 +243,15 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
                 <FrameLayout
-                    android:id="@+id/btn_complete_task"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:background="@drawable/bg_icon_chip_success">
+                    android:background="@drawable/bg_icon_chip_primary">
                     <ImageView
-                        android:id="@+id/iv_task_icon"
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_check"
-                        app:tint="@color/toma_success" />
+                        android:src="@drawable/ic_tasks"
+                        app:tint="@color/toma_primary" />
                 </FrameLayout>
                 <LinearLayout
                     android:layout_width="0dp"
@@ -356,6 +274,23 @@
                         android:text="Part of Project Sanctuary"
                         android:textColor="@color/toma_text_muted" />
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_task_pomos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_pill_primary_soft"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:drawableStart="@drawable/ic_tomato"
+                    android:drawablePadding="4dp"
+                    android:text="1"
+                    android:visibility="gone"
+                    android:textColor="@color/toma_primary"
+                    android:textStyle="bold"
+                    android:textSize="12sp" />
+
                 <ImageView
                     android:layout_width="22dp"
                     android:layout_height="22dp"

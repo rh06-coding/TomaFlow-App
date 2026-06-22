@@ -24,12 +24,12 @@ public final class AppConstants {
     public static final int NOTIFICATION_ID_TIMER = 1001;
     public static final int NOTIFICATION_ID_PHASE_COMPLETE = 1002;
 
-    // Auto-stop service after 5 min of no user interaction
+    // Tự động tắt dịch vụ sau 5 phút không có tương tác từ người dùng
     public static final long SERVICE_AUTO_STOP_DELAY_MS = 5 * 60 * 1000L;
 
-    // Vibration patterns: [delay, vibrate, delay, vibrate, ...] in ms
-    public static final long[] VIBRATION_PATTERN_PHASE_COMPLETE = {0, 100};           // single pulse
-    public static final long[] VIBRATION_PATTERN_SESSION_COMPLETE = {0, 200, 100, 200}; // double pulse
+    // Các mẫu rung (Vibration patterns): [độ_trễ, thời_gian_rung, độ_trễ, thời_gian_rung, ...] tính bằng ms
+    public static final long[] VIBRATION_PATTERN_PHASE_COMPLETE = {0, 100};           // Rung 1 lần
+    public static final long[] VIBRATION_PATTERN_SESSION_COMPLETE = {0, 200, 100, 200}; // Rung 2 lần
 
     public static final String INTENT_EXTRA_COMMAND = "timer_command";
     public static final String INTENT_EXTRA_TASK_ID = "task_id";
@@ -39,9 +39,6 @@ public final class AppConstants {
     public static final String COMMAND_RESUME = "com.tomaflow.app.COMMAND_RESUME";
     public static final String COMMAND_SKIP = "com.tomaflow.app.COMMAND_SKIP";
     public static final String COMMAND_RESET = "com.tomaflow.app.COMMAND_RESET";
-    /** Debug only: set timer speed multiplier (1/2/4/8/16). */
-    public static final String COMMAND_SET_SPEED    = "com.tomaflow.app.COMMAND_SET_SPEED";
-    public static final String INTENT_EXTRA_SPEED   = "timer_speed";
 
     public static final String DATABASE_NAME = "tomaflow.db";
     public static final int DATABASE_VERSION = 1;

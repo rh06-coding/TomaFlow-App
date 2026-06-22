@@ -166,6 +166,39 @@ public class TaskRepository {
         });
     }
 
+    public interface OnTaskCompletedCallback {
+        void onCompleted();
+    }
+
+    /**
+     * Giảm số lượng Pomodoro còn lại của công việc đi 1.
+     * Nếu số lượng Pomodoro chạm mốc <= 0, tự động đánh dấu công việc là "Completed"
+     * và gọi hàm callback để thông báo cho ViewModel.
+     */
+    public void decrementPomodoro(String taskId, OnTaskCompletedCallback callback) {
+        mExecutor.execute(() -> {
+            TaskEntity task = mTaskDao.getTaskByIdSync(taskId);
+            if (task != null && !"Completed".equals(task.status)) {
+                task.estPomodoros -= 1;
+                boolean isCompleted = false;
+                if (task.estPomodoros <= 0) {
+                    task.status = "Completed";
+                    isCompleted = true;
+                }
+                task.updatedAt = System.currentTimeMillis();
+                mTaskDao.update(task);
+                mRemoteDataSource.uploadTask(
+                        mUserRepository.getCurrentUserId(),
+                        task
+                );
+                
+                if (isCompleted && callback != null) {
+                    callback.onCompleted();
+                }
+            }
+        });
+    }
+
     /**
      * Kéo task từ Firestore về Room sau khi user đăng nhập hoặc mở màn Task.
      */

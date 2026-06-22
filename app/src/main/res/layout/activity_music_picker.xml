@@ -84,68 +84,28 @@
                 app:tint="@color/toma_text_muted" />
         </LinearLayout>
 
+        <!-- Built-in Tracks Section -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
-            android:text="@string/music_section_selected"
+            android:text="Nhạc mặc định"
             android:textAppearance="@style/TextAppearance.Toma.Label"
             android:textColor="@color/toma_primary" />
 
-        <!-- Selected track preview -->
         <LinearLayout
-            android:id="@+id/card_selected_track"
+            android:id="@+id/layout_builtin_tracks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bg_card_primary_soft"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="18dp">
-            <FrameLayout
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/bg_icon_chip_primary">
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_music"
-                    app:tint="@color/toma_primary" />
-            </FrameLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="14dp"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/tv_track_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/focus_music_empty"
-                    android:textColor="@color/toma_text"
-                    android:textStyle="bold"
-                    android:textSize="15sp"
-                    android:ellipsize="end"
-                    android:maxLines="1" />
-                <TextView
-                    android:id="@+id/tv_track_source"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/music_from_device"
-                    android:textColor="@color/toma_primary"
-                    android:textSize="12sp" />
-            </LinearLayout>
-            <ImageView
-                android:id="@+id/btn_clear_track"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:padding="6dp"
-                android:src="@drawable/ic_reset"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/toma_primary" />
-        </LinearLayout>
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:id="@+id/layout_local_tracks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical" />
 
     </LinearLayout>
 
