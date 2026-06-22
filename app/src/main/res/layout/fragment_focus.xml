@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/toma_background">
+    android:background="?android:attr/colorBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,9 +53,40 @@
             android:text="@string/focus_title"
             android:textAppearance="@style/TextAppearance.Toma.Display"
             android:textSize="32sp" />
-
-
-
+        <!-- Session Tab Switcher -->
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/session_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            app:singleSelection="true"
+            app:selectionRequired="true">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_tab_focus"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/focus_tab_focus"
+                android:textSize="12sp"
+                android:paddingHorizontal="14dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_tab_short"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/focus_tab_short"
+                android:textSize="12sp"
+                android:paddingHorizontal="14dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_tab_long"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/focus_tab_long"
+                android:textSize="12sp"
+                android:paddingHorizontal="14dp" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <!-- Timer ring -->
 
@@ -111,7 +142,7 @@
                 android:layout_height="48dp"
                 android:src="@drawable/ic_reset"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/toma_text"
+                app:tint="?attr/colorOnBackground"
                 android:contentDescription="Reset" />
             <FrameLayout
                 android:layout_width="80dp"
@@ -134,7 +165,7 @@
                 android:layout_height="48dp"
                 android:src="@drawable/ic_skip"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/toma_text"
+                app:tint="?attr/colorOnBackground"
                 android:contentDescription="Skip" />
         </LinearLayout>
 

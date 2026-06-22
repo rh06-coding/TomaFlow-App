@@ -110,7 +110,7 @@ public class PomodoroTimer {
         mShortBreakDurationMs = shortBreakMs;
         mLongBreakDurationMs  = longBreakMs;
         if (mState == State.IDLE) {
-            mRemainingMs = mFocusDurationMs;
+            mRemainingMs = getDurationForPhase(mPhase);
             notifyStateChanged();
         }
     }
@@ -130,6 +130,17 @@ public class PomodoroTimer {
         mPhase           = Phase.FOCUS;
         mRemainingMs     = focusDurationMs;
         mStartElapsedMs  = SystemClock.elapsedRealtime();
+        notifyStateChanged();
+    }
+
+    public void start() {
+        if (mState == State.RUNNING_FOCUS || mState == State.RUNNING_BREAK) return;
+        
+        mState = (mPhase == Phase.FOCUS) ? State.RUNNING_FOCUS : State.RUNNING_BREAK;
+        if (mRemainingMs <= 0) {
+            mRemainingMs = getDurationForPhase(mPhase);
+        }
+        mStartElapsedMs = SystemClock.elapsedRealtime();
         notifyStateChanged();
     }
 
@@ -173,6 +184,26 @@ public class PomodoroTimer {
         mStartElapsedMs = 0;
         notifyStateChanged();
     }
+
+    /** Jump directly to a Focus phase (paused, ready to start). */
+    public void jumpToFocus(long focusDurationMs) {
+        mFocusDurationMs = focusDurationMs;
+        mState           = State.IDLE;
+        mPhase           = Phase.FOCUS;
+        mRemainingMs     = focusDurationMs;
+        mStartElapsedMs  = 0;
+        notifyStateChanged();
+    }
+
+    /** Jump directly to a Break phase (paused, ready to start). */
+    public void jumpToBreak(long breakDurationMs, boolean isLong) {
+        mState          = State.IDLE;
+        mPhase          = isLong ? Phase.LONG_BREAK : Phase.SHORT_BREAK;
+        mRemainingMs    = breakDurationMs;
+        mStartElapsedMs = 0;
+        notifyStateChanged();
+    }
+
 
     // ── Tick (called once per second from TimerEngineService's HandlerThread) ─
 

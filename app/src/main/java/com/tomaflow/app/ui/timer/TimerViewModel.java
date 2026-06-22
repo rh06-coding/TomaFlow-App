@@ -24,6 +24,7 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
 
     private final MutableLiveData<PomodoroTimer.TimerState> mTimerState = new MutableLiveData<>();
     private final MutableLiveData<Boolean> mTaskCompletedEvent = new MutableLiveData<>();
+    private final MutableLiveData<Integer> mFocusCompleteEvent = new MutableLiveData<>(); // carries sessionCount
 
     private final SessionRepository mSessionRepository;
     private final com.tomaflow.app.data.repository.TaskRepository mTaskRepository;
@@ -65,6 +66,10 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
 
     public MutableLiveData<Boolean> getTaskCompletedEvent() {
         return mTaskCompletedEvent;
+    }
+
+    public MutableLiveData<Integer> getFocusCompleteEvent() {
+        return mFocusCompleteEvent;
     }
 
     /**
@@ -113,6 +118,7 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
 
     @Override
     public void onFocusComplete(int sessionCount) {
+        mFocusCompleteEvent.postValue(sessionCount);
         saveCurrentFocusSession("Completed");
         if (mCurrentTaskId != null) {
             mTaskRepository.decrementPomodoro(mCurrentTaskId, () -> {
@@ -132,8 +138,11 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
      * Valid commands: COMMAND_START_FOCUS, COMMAND_PAUSE, COMMAND_RESUME, COMMAND_SKIP, COMMAND_RESET.
      */
     public void sendCommand(String command) {
-        if (AppConstants.COMMAND_START_FOCUS.equals(command)) {
-            mFocusStartTime = System.currentTimeMillis();
+        if (AppConstants.COMMAND_START.equals(command)) {
+            PomodoroTimer.TimerState state = mTimerState.getValue();
+            if (state == null || state.phase == PomodoroTimer.Phase.FOCUS) {
+                mFocusStartTime = System.currentTimeMillis();
+            }
         }
 
         if (AppConstants.COMMAND_SKIP.equals(command) || AppConstants.COMMAND_RESET.equals(command)) {
@@ -144,6 +153,15 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
         intent.setClass(getApplication(), TimerEngineService.class);
         intent.putExtra(AppConstants.INTENT_EXTRA_COMMAND, command);
 
+        getApplication().startService(intent);
+    }
+
+    /** Jump directly to a specified phase without completing the current session. */
+    public void jumpToPhase(PomodoroTimer.Phase phase) {
+        Intent intent = new Intent(TimerEngineService.ACTION_COMMAND);
+        intent.setClass(getApplication(), TimerEngineService.class);
+        intent.putExtra(AppConstants.INTENT_EXTRA_COMMAND, AppConstants.COMMAND_JUMP_TO_PHASE);
+        intent.putExtra(AppConstants.INTENT_EXTRA_PHASE, phase.name());
         getApplication().startService(intent);
     }
 

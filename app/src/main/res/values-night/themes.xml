@@ -14,6 +14,15 @@
         <item name="android:navigationBarColor">@color/toma_background</item>
         <item name="android:textColorPrimary">@color/toma_text</item>
         <item name="android:textColorSecondary">@color/toma_text_muted</item>
+        <item name="materialCardViewStyle">@style/Widget.Toma.Card.Dark</item>
+    </style>
+
+    <!-- Card dark override -->
+    <style name="Widget.Toma.Card.Dark" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">@dimen/card_radius</item>
+        <item name="cardBackgroundColor">@color/toma_surface</item>
+        <item name="cardElevation">2dp</item>
+        <item name="contentPadding">@dimen/card_padding</item>
     </style>
 
 </resources>
