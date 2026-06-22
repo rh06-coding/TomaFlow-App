@@ -163,17 +163,16 @@ public class TimerEngineService extends Service {
         if (command == null) return;
 
         switch (command) {
-            case AppConstants.COMMAND_START_FOCUS:
-                long focusMs = mSettingsManager.getFocusDurationMs();
+            case AppConstants.COMMAND_START:
                 if (!mTimer.isRunning()) {
                     mTimer.setDurations(
-                            focusMs,
+                            mSettingsManager.getFocusDurationMs(),
                             mSettingsManager.getShortBreakDurationMs(),
                             mSettingsManager.getLongBreakDurationMs()
                     );
                 }
                 mNotificationHelper.cancelPhaseCompleteNotification();
-                mTimer.startFocus(focusMs);
+                mTimer.start();
                 // Kick off the tick loop on the timer thread
                 scheduleTick();
                 break;

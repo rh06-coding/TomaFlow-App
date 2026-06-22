@@ -34,7 +34,7 @@ public final class AppConstants {
     public static final String INTENT_EXTRA_COMMAND = "timer_command";
     public static final String INTENT_EXTRA_TASK_ID = "task_id";
 
-    public static final String COMMAND_START_FOCUS = "com.tomaflow.app.COMMAND_START_FOCUS";
+    public static final String COMMAND_START = "com.tomaflow.app.COMMAND_START";
     public static final String COMMAND_PAUSE = "com.tomaflow.app.COMMAND_PAUSE";
     public static final String COMMAND_RESUME = "com.tomaflow.app.COMMAND_RESUME";
     public static final String COMMAND_SKIP = "com.tomaflow.app.COMMAND_SKIP";

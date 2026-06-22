@@ -138,8 +138,11 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
      * Valid commands: COMMAND_START_FOCUS, COMMAND_PAUSE, COMMAND_RESUME, COMMAND_SKIP, COMMAND_RESET.
      */
     public void sendCommand(String command) {
-        if (AppConstants.COMMAND_START_FOCUS.equals(command)) {
-            mFocusStartTime = System.currentTimeMillis();
+        if (AppConstants.COMMAND_START.equals(command)) {
+            PomodoroTimer.TimerState state = mTimerState.getValue();
+            if (state == null || state.phase == PomodoroTimer.Phase.FOCUS) {
+                mFocusStartTime = System.currentTimeMillis();
+            }
         }
 
         if (AppConstants.COMMAND_SKIP.equals(command) || AppConstants.COMMAND_RESET.equals(command)) {

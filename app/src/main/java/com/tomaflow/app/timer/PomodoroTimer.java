@@ -133,6 +133,17 @@ public class PomodoroTimer {
         notifyStateChanged();
     }
 
+    public void start() {
+        if (mState == State.RUNNING_FOCUS || mState == State.RUNNING_BREAK) return;
+        
+        mState = (mPhase == Phase.FOCUS) ? State.RUNNING_FOCUS : State.RUNNING_BREAK;
+        if (mRemainingMs <= 0) {
+            mRemainingMs = getDurationForPhase(mPhase);
+        }
+        mStartElapsedMs = SystemClock.elapsedRealtime();
+        notifyStateChanged();
+    }
+
     public void pause() {
         if (mState == State.PAUSED_FOCUS || mState == State.PAUSED_BREAK || mState == State.IDLE) return;
 

@@ -244,12 +244,12 @@ public class FocusFragment extends Fragment {
         if (state == null) return;
 
         if (state.isRunning) {
-            mTimerViewModel.sendCommand(AppConstants.COMMAND_PAUSE);
+            mTimerViewModel.sendCommand(com.tomaflow.app.constants.AppConstants.COMMAND_PAUSE);
         } else {
-            if (state.state == PomodoroTimer.State.IDLE || state.state == PomodoroTimer.State.COMPLETED) {
-                mTimerViewModel.sendCommand(AppConstants.COMMAND_START_FOCUS);
+            if (state.state == PomodoroTimer.State.IDLE) {
+                mTimerViewModel.sendCommand(com.tomaflow.app.constants.AppConstants.COMMAND_START);
             } else {
-                mTimerViewModel.sendCommand(AppConstants.COMMAND_RESUME);
+                mTimerViewModel.sendCommand(com.tomaflow.app.constants.AppConstants.COMMAND_RESUME);
             }
         }
     }
@@ -339,7 +339,7 @@ public class FocusFragment extends Fragment {
                     // Update tab to reflect current phase from state
                     syncTabWithCurrentPhase();
                 } else {
-                    mTimerViewModel.sendCommand(com.tomaflow.app.constants.AppConstants.COMMAND_START_FOCUS);
+                    mTimerViewModel.sendCommand(com.tomaflow.app.constants.AppConstants.COMMAND_START);
                     if (mSessionToggle != null) mSessionToggle.check(R.id.btn_tab_focus);
                 }
             }
