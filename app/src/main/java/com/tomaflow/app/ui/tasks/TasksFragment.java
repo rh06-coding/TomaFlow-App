@@ -65,18 +65,14 @@ public class TasksFragment extends Fragment {
     }
 
     private void setupRecyclerViews() {
-        activeAdapter = new TaskAdapter(activeTasks, (task, isChecked) -> {
-            if (isChecked) {
-                mTaskViewModel.markTaskCompleted(task.taskId);
-            }
+        activeAdapter = new TaskAdapter(activeTasks, task -> {
+            mTaskViewModel.delete(task);
         });
         rvActive.setLayoutManager(new LinearLayoutManager(getContext()));
         rvActive.setAdapter(activeAdapter);
 
-        doneAdapter = new TaskAdapter(doneTasks, (task, isChecked) -> {
-            if (!isChecked) {
-                mTaskViewModel.markTaskPending(task.taskId);
-            }
+        doneAdapter = new TaskAdapter(doneTasks, task -> {
+            mTaskViewModel.delete(task);
         });
         rvDone.setLayoutManager(new LinearLayoutManager(getContext()));
         rvDone.setAdapter(doneAdapter);

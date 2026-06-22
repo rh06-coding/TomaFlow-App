@@ -19,14 +19,14 @@ import java.util.List;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
     private List<TaskEntity> taskList;
-    private OnTaskCheckedChangeListener listener;
+    private OnTaskDeleteListener listener;
 
-    public interface OnTaskCheckedChangeListener {
-        void onCheckedChange(TaskEntity task, boolean isChecked);
+    public interface OnTaskDeleteListener {
+        void onDeleteClick(TaskEntity task);
     }
 
 
-    public TaskAdapter(List<TaskEntity> taskList, OnTaskCheckedChangeListener listener) {
+    public TaskAdapter(List<TaskEntity> taskList, OnTaskDeleteListener listener) {
         this.taskList = taskList;
         this.listener = listener;
     }
@@ -53,15 +53,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             holder.tvPomos.setText(String.valueOf(task.estPomodoros));
         }
 
-        holder.cbDone.setOnCheckedChangeListener(null); // Prevent unwanted triggers during recycling
-        holder.cbDone.setChecked("Completed".equals(task.status));
-        holder.cbDone.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        holder.ivDelete.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onCheckedChange(task, isChecked);
+                listener.onDeleteClick(task);
             }
         });
-
-        // Removed send to focus logic
     }
 
     @Override
@@ -70,14 +66,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     }
 
     static class TaskViewHolder extends RecyclerView.ViewHolder {
-        CheckBox cbDone;
+        ImageView ivDelete;
         TextView tvTitle;
         TextView tvNote;
         TextView tvPomos;
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
-            cbDone = itemView.findViewById(R.id.cb_done);
+            ivDelete = itemView.findViewById(R.id.iv_delete);
             tvTitle = itemView.findViewById(R.id.tv_title);
             tvNote = itemView.findViewById(R.id.tv_note);
             tvPomos = itemView.findViewById(R.id.tv_pomos);

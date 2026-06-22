@@ -23,8 +23,10 @@ import com.tomaflow.app.timer.TimerEngineService;
 public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.OnTimerEventListener {
 
     private final MutableLiveData<PomodoroTimer.TimerState> mTimerState = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> mTaskCompletedEvent = new MutableLiveData<>();
 
     private final SessionRepository mSessionRepository;
+    private final com.tomaflow.app.data.repository.TaskRepository mTaskRepository;
 
     private TimerEngineService mService;
     private boolean mBound = false;
@@ -53,11 +55,16 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
     public TimerViewModel(@NonNull Application application) {
         super(application);
         mSessionRepository = new SessionRepository(application);
+        mTaskRepository = new com.tomaflow.app.data.repository.TaskRepository(application);
     }
 
     /** Observe this in MainActivity to receive live timer updates. */
     public LiveData<PomodoroTimer.TimerState> getTimerState() {
         return mTimerState;
+    }
+
+    public MutableLiveData<Boolean> getTaskCompletedEvent() {
+        return mTaskCompletedEvent;
     }
 
     /**
@@ -107,6 +114,11 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
     @Override
     public void onFocusComplete(int sessionCount) {
         saveCurrentFocusSession("Completed");
+        if (mCurrentTaskId != null) {
+            mTaskRepository.decrementPomodoro(mCurrentTaskId, () -> {
+                mTaskCompletedEvent.postValue(true);
+            });
+        }
     }
 
     @Override

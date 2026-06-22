@@ -57,6 +57,7 @@ public class FocusFragment extends Fragment {
     private TextView              mTvTomatoStatus;
     private TextView              mTvTaskTitle;
     private TextView              mTvTaskSubtitle;
+    private TextView              mTvTaskPomos;
 
     /** Pha trước đó — để phát hiện khi nào pha thay đổi. */
     private PomodoroTimer.Phase   mPreviousPhase  = null;
@@ -80,6 +81,7 @@ public class FocusFragment extends Fragment {
                         mTimerViewModel.setCurrentTaskId(null);
                         if (mTvTaskTitle != null) mTvTaskTitle.setText("Chọn công việc");
                         if (mTvTaskSubtitle != null) mTvTaskSubtitle.setText("Nhấn để chọn");
+                        if (mTvTaskPomos != null) mTvTaskPomos.setVisibility(View.GONE);
                     } else {
                         String taskId = result.getData().getStringExtra(com.tomaflow.app.ui.tasks.TaskPickerActivity.EXTRA_TASK_ID);
                         String taskName = result.getData().getStringExtra(com.tomaflow.app.ui.tasks.TaskPickerActivity.EXTRA_TASK_NAME);
@@ -119,11 +121,14 @@ public class FocusFragment extends Fragment {
             if (mTvTaskSubtitle != null) {
                 mTvTaskSubtitle.setText(mCurrentTask.description == null || mCurrentTask.description.trim().isEmpty() ? "Đang tập trung" : mCurrentTask.description);
             }
-            View btnCompleteTask = getView() != null ? getView().findViewById(R.id.btn_complete_task) : null;
-            if (btnCompleteTask != null) btnCompleteTask.setAlpha(1.0f);
+            if (mTvTaskPomos != null) {
+                mTvTaskPomos.setVisibility(View.VISIBLE);
+                mTvTaskPomos.setText(String.valueOf(mCurrentTask.estPomodoros));
+            }
         } else {
             if (mTvTaskTitle != null) mTvTaskTitle.setText("Chọn công việc");
             if (mTvTaskSubtitle != null) mTvTaskSubtitle.setText("Nhấn để chọn");
+            if (mTvTaskPomos != null) mTvTaskPomos.setVisibility(View.GONE);
         }
     }
 
@@ -164,12 +169,13 @@ public class FocusFragment extends Fragment {
         ImageButton btnSkip      = v.findViewById(R.id.btn_skip);
         CardView cardCurrentTask = v.findViewById(R.id.card_current_task);
 
-        View btnCompleteTask = v.findViewById(R.id.btn_complete_task);
         mTvTaskTitle    = v.findViewById(R.id.tv_task_title);
         mTvTaskSubtitle = v.findViewById(R.id.tv_task_subtitle);
+        mTvTaskPomos    = v.findViewById(R.id.tv_task_pomos);
 
         mTvTaskTitle.setText("Chọn công việc");
         mTvTaskSubtitle.setText("Nhấn để chọn");
+        if (mTvTaskPomos != null) mTvTaskPomos.setVisibility(View.GONE);
 
         mBtnPlayPause.setOnClickListener(v1 -> onPlayPauseClicked());
         btnReset.setOnClickListener(v1 -> onResetClicked());
@@ -206,20 +212,6 @@ public class FocusFragment extends Fragment {
                 }
             });
         }
-
-        btnCompleteTask.setOnClickListener(v1 -> {
-            if (mCurrentTask != null) {
-                mTaskViewModel.markTaskCompleted(mCurrentTask.taskId);
-                android.widget.Toast.makeText(getContext(), "Tuyệt vời! Task đã hoàn thành.", android.widget.Toast.LENGTH_SHORT).show();
-                mCurrentTask = null;
-                mTimerViewModel.setCurrentTaskId(null);
-                mTvTaskTitle.setText("Chọn công việc");
-                mTvTaskSubtitle.setText("Nhấn để chọn");
-            } else {
-                onTaskCardClicked(); // Mở picker nếu chưa có task
-            }
-        });
-
     }
 
     private void setupTimerObserver() {
@@ -281,9 +273,34 @@ public class FocusFragment extends Fragment {
                         break;
                     }
                 }
+            } else if (currentTaskId != null && mCurrentTask != null) {
+                // Update current task pomodoro count dynamically
+                for (TaskEntity t : tasks) {
+                    if (t.taskId.equals(currentTaskId)) {
+                        mCurrentTask = t;
+                        break;
+                    }
+                }
             }
             // Always refresh UI when tasks change to reflect latest state
             updateTaskUI();
+        });
+
+        mTimerViewModel.getTaskCompletedEvent().observe(getViewLifecycleOwner(), completed -> {
+            if (Boolean.TRUE.equals(completed)) {
+                new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Hoàn thành!")
+                    .setMessage("Tuyệt vời! Bạn đã hoàn thành công việc này.")
+                    .setPositiveButton("OK", null)
+                    .show();
+                
+                mCurrentTask = null;
+                mTimerViewModel.setCurrentTaskId(null);
+                updateTaskUI();
+                
+                // Consume event
+                mTimerViewModel.getTaskCompletedEvent().setValue(false);
+            }
         });
     }
 
