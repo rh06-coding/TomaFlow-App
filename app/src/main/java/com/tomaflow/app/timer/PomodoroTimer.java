@@ -110,7 +110,7 @@ public class PomodoroTimer {
         mShortBreakDurationMs = shortBreakMs;
         mLongBreakDurationMs  = longBreakMs;
         if (mState == State.IDLE) {
-            mRemainingMs = mFocusDurationMs;
+            mRemainingMs = getDurationForPhase(mPhase);
             notifyStateChanged();
         }
     }
