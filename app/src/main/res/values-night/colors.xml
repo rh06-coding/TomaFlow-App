@@ -8,6 +8,7 @@
 
     <!-- Surfaces -->
     <color name="toma_background">#0F0F14</color> <!-- Deep navy/black -->
+    <color name="toma_bg">#0F0F14</color>
     <color name="toma_surface">#1C1C26</color> <!-- Dark gray/blue for cards -->
     <color name="toma_surface_muted">#252533</color>
 
