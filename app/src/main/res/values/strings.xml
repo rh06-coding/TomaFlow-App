@@ -116,8 +116,8 @@
     <string name="focus_music_pause">Pause</string>
 
     <!-- Current task -->
-    <string name="focus_no_task">No task selected</string>
-    <string name="focus_no_task_sub">Open Tasks and pick one to focus on</string>
+    <string name="focus_no_task">Select a task</string>
+    <string name="focus_no_task_sub">Tap to choose a task</string>
     <string name="task_send_to_focus">Send to Focus</string>
     <string name="task_sent_to_focus">Sent \"%1$s\" to Focus</string>
 
@@ -153,4 +153,33 @@
     <string name="badge_nightowl_desc">Focus after 22:00</string>
     <string name="badge_earlybird_title">Early Bird</string>
     <string name="badge_earlybird_desc">Focus before 07:00</string>
+    <!-- Focus extra strings -->
+    <string name="focus_select_music_first">Please select a track first</string>
+    <string name="focus_task_default_sub">Focusing now</string>
+    <string name="focus_task_complete_title">Task Complete!</string>
+    <string name="focus_task_complete_msg">Great job! You\'ve completed this task.</string>
+    <string name="ok">OK</string>
+
+    <!-- Tomato growth stages -->
+    <string name="toma_stage_seed">Seed just planted…</string>
+    <string name="toma_stage_sprout">Sprout is emerging!</string>
+    <string name="toma_stage_grow">Plant is growing strong…</string>
+    <string name="toma_stage_flower">Flowering — fruit soon!</string>
+    <string name="toma_stage_ripe">Tomato almost ripe! 🍅</string>
+    <string name="toma_complete">🍅 Pomodoro complete!</string>
+    <string name="toma_wilt">Plant wilted… 😢 Try again!</string>
+
+    <!-- Session tab switcher -->
+    <string name="focus_tab_focus">Focus</string>
+    <string name="focus_tab_short">Short Break</string>
+    <string name="focus_tab_long">Long Break</string>
+
+    <!-- Phase complete dialog -->
+    <string name="phase_complete_focus_title">Focus Complete! 🍅</string>
+    <string name="phase_complete_focus_sub">Session #%1$d done. Time for a break!</string>
+    <string name="phase_complete_break_title">Break Over!</string>
+    <string name="phase_complete_break_sub">Ready to focus again?</string>
+    <string name="phase_complete_start_break">Start Break</string>
+    <string name="phase_complete_start_focus">Start Focus</string>
+    <string name="phase_complete_skip">Skip</string>
 </resources>

@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.tomaflow.app.R;
 import com.tomaflow.app.constants.AppConstants;
 import com.tomaflow.app.data.db.entity.TaskEntity;
@@ -40,9 +40,6 @@ public class FocusFragment extends Fragment {
     private static final int    COLOR_FOCUS_ARC      = 0xFFC8324A; // toma_primary
     private static final int    COLOR_SHORT_BREAK_ARC = 0xFF3FA66B; // toma_success
     private static final int    COLOR_LONG_BREAK_ARC  = 0xFF3B82F6; // toma_info
-    private static final int    COLOR_FOCUS_BG       = 0xFFF8F5FA; // toma_background
-    private static final int    COLOR_SHORT_BREAK_BG  = 0xFFEDF7F1;
-    private static final int    COLOR_LONG_BREAK_BG   = 0xFFEAF3FD;
 
     private TimerViewModel        mTimerViewModel;
     private TaskViewModel         mTaskViewModel;
@@ -63,6 +60,7 @@ public class FocusFragment extends Fragment {
     private PomodoroTimer.Phase   mPreviousPhase  = null;
     /** Trạng thái running trước — để phát hiện khi bắt đầu/dừng. */
     private boolean               mPreviousRunning = false;
+    private MaterialButtonToggleGroup mSessionToggle;
 
     private TextView mTvMusicName;
     private com.tomaflow.app.data.model.BuiltInTrack mSelectedBuiltInTrack;
@@ -79,8 +77,8 @@ public class FocusFragment extends Fragment {
                     if (isCleared) {
                         mCurrentTask = null;
                         mTimerViewModel.setCurrentTaskId(null);
-                        if (mTvTaskTitle != null) mTvTaskTitle.setText("Chọn công việc");
-                        if (mTvTaskSubtitle != null) mTvTaskSubtitle.setText("Nhấn để chọn");
+                        if (mTvTaskTitle != null) mTvTaskTitle.setText(getString(R.string.focus_no_task));
+                        if (mTvTaskSubtitle != null) mTvTaskSubtitle.setText(getString(R.string.focus_no_task_sub));
                         if (mTvTaskPomos != null) mTvTaskPomos.setVisibility(View.GONE);
                     } else {
                         String taskId = result.getData().getStringExtra(com.tomaflow.app.ui.tasks.TaskPickerActivity.EXTRA_TASK_ID);
@@ -119,15 +117,15 @@ public class FocusFragment extends Fragment {
                 mTvTaskTitle.setTextColor(getResources().getColor(R.color.toma_text, null));
             }
             if (mTvTaskSubtitle != null) {
-                mTvTaskSubtitle.setText(mCurrentTask.description == null || mCurrentTask.description.trim().isEmpty() ? "Đang tập trung" : mCurrentTask.description);
+                mTvTaskSubtitle.setText(mCurrentTask.description == null || mCurrentTask.description.trim().isEmpty() ? getString(R.string.focus_task_default_sub) : mCurrentTask.description);
             }
             if (mTvTaskPomos != null) {
                 mTvTaskPomos.setVisibility(View.VISIBLE);
                 mTvTaskPomos.setText(String.valueOf(mCurrentTask.estPomodoros));
             }
         } else {
-            if (mTvTaskTitle != null) mTvTaskTitle.setText("Chọn công việc");
-            if (mTvTaskSubtitle != null) mTvTaskSubtitle.setText("Nhấn để chọn");
+            if (mTvTaskTitle != null) mTvTaskTitle.setText(getString(R.string.focus_no_task));
+            if (mTvTaskSubtitle != null) mTvTaskSubtitle.setText(getString(R.string.focus_no_task_sub));
             if (mTvTaskPomos != null) mTvTaskPomos.setVisibility(View.GONE);
         }
     }
@@ -173,14 +171,30 @@ public class FocusFragment extends Fragment {
         mTvTaskSubtitle = v.findViewById(R.id.tv_task_subtitle);
         mTvTaskPomos    = v.findViewById(R.id.tv_task_pomos);
 
-        mTvTaskTitle.setText("Chọn công việc");
-        mTvTaskSubtitle.setText("Nhấn để chọn");
+        mTvTaskTitle.setText(getString(R.string.focus_no_task));
+        mTvTaskSubtitle.setText(getString(R.string.focus_no_task_sub));
         if (mTvTaskPomos != null) mTvTaskPomos.setVisibility(View.GONE);
 
         mBtnPlayPause.setOnClickListener(v1 -> onPlayPauseClicked());
         btnReset.setOnClickListener(v1 -> onResetClicked());
         btnSkip.setOnClickListener(v1 -> onSkipClicked());
         cardCurrentTask.setOnClickListener(v1 -> onTaskCardClicked());
+
+        // ── Session Tab Switcher ───────────────────────────────────────────────
+        mSessionToggle = v.findViewById(R.id.session_toggle);
+        if (mSessionToggle != null) {
+            mSessionToggle.check(R.id.btn_tab_focus); // default
+            mSessionToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+                if (!isChecked) return;
+                if (checkedId == R.id.btn_tab_focus) {
+                    mTimerViewModel.jumpToPhase(PomodoroTimer.Phase.FOCUS);
+                } else if (checkedId == R.id.btn_tab_short) {
+                    mTimerViewModel.jumpToPhase(PomodoroTimer.Phase.SHORT_BREAK);
+                } else if (checkedId == R.id.btn_tab_long) {
+                    mTimerViewModel.jumpToPhase(PomodoroTimer.Phase.LONG_BREAK);
+                }
+            });
+        }
 
         mTvMusicName = v.findViewById(R.id.tv_music_name);
         View btnPickMusic = v.findViewById(R.id.btn_pick_music);
@@ -207,7 +221,7 @@ public class FocusFragment extends Fragment {
                     } else if (player.getCurrentTrack() != null) {
                         player.resume(requireContext());
                     } else {
-                        android.widget.Toast.makeText(getContext(), "Vui lòng chọn nhạc trước", android.widget.Toast.LENGTH_SHORT).show();
+                        android.widget.Toast.makeText(getContext(), getString(R.string.focus_select_music_first), android.widget.Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -289,19 +303,64 @@ public class FocusFragment extends Fragment {
         mTimerViewModel.getTaskCompletedEvent().observe(getViewLifecycleOwner(), completed -> {
             if (Boolean.TRUE.equals(completed)) {
                 new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                    .setTitle("Hoàn thành!")
-                    .setMessage("Tuyệt vời! Bạn đã hoàn thành công việc này.")
-                    .setPositiveButton("OK", null)
+                    .setTitle(getString(R.string.focus_task_complete_title))
+                    .setMessage(getString(R.string.focus_task_complete_msg))
+                    .setPositiveButton(getString(R.string.ok), null)
                     .show();
-                
+
                 mCurrentTask = null;
                 mTimerViewModel.setCurrentTaskId(null);
                 updateTaskUI();
-                
+
                 // Consume event
                 mTimerViewModel.getTaskCompletedEvent().setValue(false);
             }
         });
+
+        // ── Phase complete dialog ─────────────────────────────────────────────
+        mTimerViewModel.getFocusCompleteEvent().observe(getViewLifecycleOwner(), sessionCount -> {
+            if (sessionCount == null || sessionCount <= 0) return;
+            // Consume immediately
+            mTimerViewModel.getFocusCompleteEvent().setValue(null);
+            showPhaseCompleteDialog(true, sessionCount);
+        });
+    }
+
+    private void showPhaseCompleteDialog(boolean isFocusComplete, int sessionCount) {
+        if (!isAdded() || getParentFragmentManager() == null) return;
+        PhaseCompleteDialog dialog = PhaseCompleteDialog.newInstance(isFocusComplete, sessionCount);
+        dialog.setListener(new PhaseCompleteDialog.OnPhaseCompleteAction() {
+            @Override
+            public void onPrimaryAction(boolean isFocus) {
+                // Start the next appropriate phase
+                if (isFocus) {
+                    // Focus done → start break by sending START_FOCUS will start break via skip logic
+                    // Actually just let the user click play; timer already transitioned.
+                    // Update tab to reflect current phase from state
+                    syncTabWithCurrentPhase();
+                } else {
+                    mTimerViewModel.sendCommand(com.tomaflow.app.constants.AppConstants.COMMAND_START_FOCUS);
+                    if (mSessionToggle != null) mSessionToggle.check(R.id.btn_tab_focus);
+                }
+            }
+            @Override
+            public void onSkip(boolean isFocus) {
+                mTimerViewModel.sendCommand(com.tomaflow.app.constants.AppConstants.COMMAND_SKIP);
+                syncTabWithCurrentPhase();
+            }
+        });
+        dialog.show(getParentFragmentManager(), "phase_complete");
+    }
+
+    private void syncTabWithCurrentPhase() {
+        if (mSessionToggle == null) return;
+        PomodoroTimer.TimerState state = mTimerViewModel.getTimerState().getValue();
+        if (state == null) return;
+        switch (state.phase) {
+            case SHORT_BREAK: mSessionToggle.check(R.id.btn_tab_short); break;
+            case LONG_BREAK:  mSessionToggle.check(R.id.btn_tab_long);  break;
+            default:          mSessionToggle.check(R.id.btn_tab_focus); break;
+        }
     }
 
     private void onTaskCardClicked() {
@@ -379,7 +438,7 @@ public class FocusFragment extends Fragment {
             mTomatoGrowthView.setProgress(1f);
             mTomatoGrowthView.celebrateComplete();
             if (mTvTomatoStatus != null) {
-                mTvTomatoStatus.setText("🍅 Pomodoro hoàn thành!");
+                mTvTomatoStatus.setText(getString(R.string.toma_complete));
             }
         }
     }
@@ -387,18 +446,18 @@ public class FocusFragment extends Fragment {
     private void updateTomatoLabel(float progress) {
         if (mTvTomatoStatus == null) return;
         String label;
-        if (progress < 0.20f)      label = "Hạt giống vừa được gieo...";
-        else if (progress < 0.40f) label = "Mầm xanh đang nhú lên!";
-        else if (progress < 0.60f) label = "Cây đang lớn mạnh...";
-        else if (progress < 0.80f) label = "Hoa nở rồi, sắp có quả!";
-        else                       label = "Cà chua sắp chín rồi! 🍅";
+        if (progress < 0.20f)      label = getString(R.string.toma_stage_seed);
+        else if (progress < 0.40f) label = getString(R.string.toma_stage_sprout);
+        else if (progress < 0.60f) label = getString(R.string.toma_stage_grow);
+        else if (progress < 0.80f) label = getString(R.string.toma_stage_flower);
+        else                       label = getString(R.string.toma_stage_ripe);
         mTvTomatoStatus.setText(label);
     }
 
     private void wiltTomato() {
         if (mTomatoGrowthView == null) return;
         mTomatoGrowthView.showDead();
-        if (mTvTomatoStatus != null) mTvTomatoStatus.setText("Cây đã chết... 😢 Hãy cố lần sau!");
+        if (mTvTomatoStatus != null) mTvTomatoStatus.setText(getString(R.string.toma_wilt));
         // Ẩn widget sau 2 giây
         if (mTomatoWidget != null) {
             mTomatoWidget.postDelayed(this::hideTomatoWidget, 2500);
@@ -430,6 +489,15 @@ public class FocusFragment extends Fragment {
         if (mTvSessionLabel == null) return;
 
         PomodoroTimer.Phase currentPhase = state.phase;
+
+        // Sync session toggle tab highlight
+        if (mSessionToggle != null && mPreviousPhase != currentPhase) {
+            switch (currentPhase) {
+                case SHORT_BREAK: mSessionToggle.check(R.id.btn_tab_short); break;
+                case LONG_BREAK:  mSessionToggle.check(R.id.btn_tab_long);  break;
+                default:          mSessionToggle.check(R.id.btn_tab_focus); break;
+            }
+        }
 
         // Chỉ trigger animation khi pha thực sự thay đổi
         if (mPreviousPhase != null && mPreviousPhase != currentPhase) {
@@ -483,10 +551,22 @@ public class FocusFragment extends Fragment {
     }
 
     private int bgColorForPhase(PomodoroTimer.Phase phase) {
-        switch (phase) {
-            case SHORT_BREAK: return COLOR_SHORT_BREAK_BG;
-            case LONG_BREAK:  return COLOR_LONG_BREAK_BG;
-            default:          return COLOR_FOCUS_BG;
+        // In dark mode, use dark-friendly background colors instead of hardcoded light colors
+        boolean isDark = (getResources().getConfiguration().uiMode
+                & android.content.res.Configuration.UI_MODE_NIGHT_MASK)
+                == android.content.res.Configuration.UI_MODE_NIGHT_YES;
+        if (isDark) {
+            switch (phase) {
+                case SHORT_BREAK: return 0xFF1B2E24; // toma_success_soft dark
+                case LONG_BREAK:  return 0xFF1E293B; // toma_info_soft dark
+                default:          return 0xFF0F0F14; // toma_background dark
+            }
+        } else {
+            switch (phase) {
+                case SHORT_BREAK: return 0xFFEDF7F1;
+                case LONG_BREAK:  return 0xFFEAF3FD;
+                default:          return 0xFFF8F5FA;
+            }
         }
     }
 

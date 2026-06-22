@@ -174,6 +174,26 @@ public class PomodoroTimer {
         notifyStateChanged();
     }
 
+    /** Jump directly to a Focus phase (paused, ready to start). */
+    public void jumpToFocus(long focusDurationMs) {
+        mFocusDurationMs = focusDurationMs;
+        mState           = State.IDLE;
+        mPhase           = Phase.FOCUS;
+        mRemainingMs     = focusDurationMs;
+        mStartElapsedMs  = 0;
+        notifyStateChanged();
+    }
+
+    /** Jump directly to a Break phase (paused, ready to start). */
+    public void jumpToBreak(long breakDurationMs, boolean isLong) {
+        mState          = State.IDLE;
+        mPhase          = isLong ? Phase.LONG_BREAK : Phase.SHORT_BREAK;
+        mRemainingMs    = breakDurationMs;
+        mStartElapsedMs = 0;
+        notifyStateChanged();
+    }
+
+
     // ── Tick (called once per second from TimerEngineService's HandlerThread) ─
 
     /**

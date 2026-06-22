@@ -90,8 +90,6 @@
     <string name="focus_music_pause">Tạm dừng</string>
 
     <!-- Current task -->
-    <string name="focus_no_task">Chưa chọn công việc</string>
-    <string name="focus_no_task_sub">Mở tab Công việc và chọn một mục để tập trung</string>
     <string name="task_send_to_focus">Đưa vào Tập trung</string>
     <string name="task_sent_to_focus">Đã đưa \"%1$s\" vào Tập trung</string>
 
@@ -128,4 +126,36 @@
     <string name="badge_nightowl_desc">Focus sau 22:00</string>
     <string name="badge_earlybird_title">Chim sớm</string>
     <string name="badge_earlybird_desc">Focus trước 07:00</string>
+
+    <!-- Focus extra strings -->
+    <string name="focus_no_task">Chọn công việc</string>
+    <string name="focus_no_task_sub">Nhấn để chọn task</string>
+    <string name="focus_select_music_first">Vui lòng chọn nhạc trước</string>
+    <string name="focus_task_default_sub">Đang tập trung</string>
+    <string name="focus_task_complete_title">Hoàn thành task!</string>
+    <string name="focus_task_complete_msg">Tuyệt vời! Bạn đã hoàn thành công việc này.</string>
+    <string name="ok">OK</string>
+
+    <!-- Tomato growth stages -->
+    <string name="toma_stage_seed">Hạt giống vừa được gieo…</string>
+    <string name="toma_stage_sprout">Mầm xanh đang nhú lên!</string>
+    <string name="toma_stage_grow">Cây đang lớn mạnh…</string>
+    <string name="toma_stage_flower">Hoa nở rồi, sắp có quả!</string>
+    <string name="toma_stage_ripe">Cà chua sắp chín rồi! 🍅</string>
+    <string name="toma_complete">🍅 Pomodoro hoàn thành!</string>
+    <string name="toma_wilt">Cây đã chết… 😢 Hãy cố lần sau!</string>
+
+    <!-- Session tab switcher -->
+    <string name="focus_tab_focus">Tập trung</string>
+    <string name="focus_tab_short">Nghỉ ngắn</string>
+    <string name="focus_tab_long">Nghỉ dài</string>
+
+    <!-- Phase complete dialog -->
+    <string name="phase_complete_focus_title">Xong rồi! 🍅</string>
+    <string name="phase_complete_focus_sub">Phiên #%1$d hoàn thành. Đến lúc nghỉ ngơi!</string>
+    <string name="phase_complete_break_title">Hết giờ nghỉ!</string>
+    <string name="phase_complete_break_sub">Sẵn sàng tập trung trở lại?</string>
+    <string name="phase_complete_start_break">Bắt đầu nghỉ</string>
+    <string name="phase_complete_start_focus">Tập trung tiếp</string>
+    <string name="phase_complete_skip">Bỏ qua</string>
 </resources>
