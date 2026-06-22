@@ -68,6 +68,10 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
         mCurrentTaskId = taskId;
     }
 
+    public String getCurrentTaskId() {
+        return mCurrentTaskId;
+    }
+
     public void startListening() {
         if (mBound && mService != null) {
             // Already bound (e.g. returning from another screen): re-pull the current

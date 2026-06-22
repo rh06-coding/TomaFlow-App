@@ -30,16 +30,31 @@ public class MusicPickerActivity extends AppCompatActivity {
     public static final String EXTRA_BUILTIN_TRACK_ID = "extra_builtin_track_id";
     public static final String EXTRA_CLEAR_TRACK = "extra_clear_track";
 
-    private TextView tvTrackName;
-    private View cardSelectedTrack;
-    private String selectedUri = null;
-
-    private final ActivityResultLauncher<String> pickAudioLauncher =
-            registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
-                if (uri != null) {
-                    handlePickedAudio(uri);
+    private final ActivityResultLauncher<Intent> pickAudioLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    Intent data = result.getData();
+                    java.util.List<Uri> uris = new java.util.ArrayList<>();
+                    if (data.getClipData() != null) {
+                        for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+                            uris.add(data.getClipData().getItemAt(i).getUri());
+                        }
+                    } else if (data.getData() != null) {
+                        uris.add(data.getData());
+                    }
+                    if (!uris.isEmpty()) {
+                        LocalMusicManager.copyUrisToLocal(this, uris);
+                        setupLocalTracks(); // refresh list
+                    }
                 }
             });
+
+    private LinearLayout layoutBuiltIn;
+    private LinearLayout layoutLocal;
+
+    private final AppMusicPlayer.OnPlaybackStateChanged mMusicListener = (isPlaying, track) -> {
+        refreshCheckmarks();
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,38 +63,45 @@ public class MusicPickerActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
+        toolbar.inflateMenu(R.menu.menu_music_picker);
+        toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.action_stop_music) {
+                AppMusicPlayer.getInstance().stop(this);
+                return true;
+            }
+            return false;
+        });
 
-        tvTrackName = findViewById(R.id.tv_track_name);
-        cardSelectedTrack = findViewById(R.id.card_selected_track);
+        layoutBuiltIn = findViewById(R.id.layout_builtin_tracks);
+        layoutLocal = findViewById(R.id.layout_local_tracks);
 
-        // Restore previously selected track if any
-        String prevUri = getIntent().getStringExtra(EXTRA_TRACK_URI);
-        String prevName = getIntent().getStringExtra(EXTRA_TRACK_NAME);
-        if (prevUri != null && prevName != null) {
-            tvTrackName.setText(prevName);
-            selectedUri = prevUri;
-        }
-
-        findViewById(R.id.btn_pick_from_device).setOnClickListener(v ->
-                pickAudioLauncher.launch("audio/*")
-        );
+        findViewById(R.id.btn_pick_from_device).setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.setType("audio/*");
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            pickAudioLauncher.launch(intent);
+        });
 
         setupBuiltInTracks();
+        setupLocalTracks();
+    }
 
-        findViewById(R.id.btn_clear_track).setOnClickListener(v -> {
-            selectedUri = null;
-            tvTrackName.setText(R.string.focus_music_empty);
-            Intent result = new Intent();
-            result.putExtra(EXTRA_CLEAR_TRACK, true);
-            setResult(RESULT_OK, result);
-            finish();
-        });
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AppMusicPlayer.getInstance().addListener(mMusicListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        AppMusicPlayer.getInstance().removeListener(mMusicListener);
     }
 
     private void setupBuiltInTracks() {
-        LinearLayout layoutBuiltIn = findViewById(R.id.layout_builtin_tracks);
         if (layoutBuiltIn == null) return;
-
+        layoutBuiltIn.removeAllViews();
         LayoutInflater inflater = getLayoutInflater();
         for (BuiltInTrack track : BuiltInTrackCatalog.TRACKS) {
             View itemView = inflater.inflate(R.layout.item_builtin_track, layoutBuiltIn, false);
@@ -91,52 +113,66 @@ public class MusicPickerActivity extends AppCompatActivity {
             tvName.setText(track.name);
             tvCategory.setText(track.category);
 
+            itemView.setTag(track.id);
+
             itemView.setOnClickListener(v -> {
-                handlePickedBuiltInTrack(track);
+                AppMusicPlayer.getInstance().play(this, track);
             });
 
             layoutBuiltIn.addView(itemView);
         }
     }
 
-    private void handlePickedBuiltInTrack(BuiltInTrack track) {
-        tvTrackName.setText(track.name);
-        selectedUri = "android.resource://" + getPackageName() + "/" + track.rawResId;
+    private void setupLocalTracks() {
+        if (layoutLocal == null) return;
+        layoutLocal.removeAllViews();
+        java.util.List<com.tomaflow.app.data.model.LocalTrack> tracks = LocalMusicManager.getLocalTracks(this);
+        LayoutInflater inflater = getLayoutInflater();
+        
+        for (com.tomaflow.app.data.model.LocalTrack track : tracks) {
+            View itemView = inflater.inflate(R.layout.item_builtin_track, layoutLocal, false);
+            TextView tvIcon = itemView.findViewById(R.id.tv_track_icon);
+            TextView tvName = itemView.findViewById(R.id.tv_track_name);
+            TextView tvCategory = itemView.findViewById(R.id.tv_track_category);
 
-        Intent result = new Intent();
-        result.putExtra(EXTRA_TRACK_URI, selectedUri);
-        result.putExtra(EXTRA_TRACK_NAME, track.name);
-        result.putExtra(EXTRA_BUILTIN_TRACK_ID, track.id);
-        setResult(RESULT_OK, result);
-        finish();
-    }
+            tvIcon.setText("🎧");
+            tvName.setText(track.title);
+            tvCategory.setText("Từ thiết bị");
 
-    private void handlePickedAudio(Uri uri) {
-        // Resolve display name
-        String name = resolveFileName(uri);
-        tvTrackName.setText(name);
-        selectedUri = uri.toString();
+            itemView.setTag(track.id);
 
-        // Return result to caller
-        Intent result = new Intent();
-        result.putExtra(EXTRA_TRACK_URI, selectedUri);
-        result.putExtra(EXTRA_TRACK_NAME, name);
-        setResult(RESULT_OK, result);
-        finish();
-    }
+            itemView.setOnClickListener(v -> {
+                AppMusicPlayer.getInstance().playFromPath(this, track.id, track.title, track.path);
+            });
 
-    private String resolveFileName(Uri uri) {
-        String name = null;
-        try (android.database.Cursor cursor = getContentResolver().query(
-                uri, new String[]{MediaStore.Audio.Media.DISPLAY_NAME}, null, null, null)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                int idx = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME);
-                name = cursor.getString(idx);
-            }
-        } catch (Exception ignored) {}
-        if (name == null) {
-            name = uri.getLastPathSegment();
+            layoutLocal.addView(itemView);
         }
-        return name != null ? name : "Unknown track";
+        
+        refreshCheckmarks();
+    }
+
+    private void refreshCheckmarks() {
+        BuiltInTrack currentTrack = AppMusicPlayer.getInstance().getCurrentTrack();
+        boolean isPlaying = AppMusicPlayer.getInstance().isPlaying();
+        String currentId = (currentTrack != null) ? currentTrack.id : null;
+
+        updateCheckmarksInLayout(layoutBuiltIn, currentId);
+        updateCheckmarksInLayout(layoutLocal, currentId);
+    }
+
+    private void updateCheckmarksInLayout(LinearLayout layout, String currentId) {
+        if (layout == null) return;
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            Object tag = child.getTag();
+            android.widget.ImageView ivCheck = child.findViewById(R.id.iv_check);
+            if (ivCheck != null) {
+                if (currentId != null && currentId.equals(tag)) {
+                    ivCheck.setVisibility(View.VISIBLE);
+                } else {
+                    ivCheck.setVisibility(View.GONE);
+                }
+            }
+        }
     }
 }
