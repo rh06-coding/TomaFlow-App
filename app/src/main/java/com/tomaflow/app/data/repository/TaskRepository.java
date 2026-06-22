@@ -170,6 +170,11 @@ public class TaskRepository {
         void onCompleted();
     }
 
+    /**
+     * Giảm số lượng Pomodoro còn lại của công việc đi 1.
+     * Nếu số lượng Pomodoro chạm mốc <= 0, tự động đánh dấu công việc là "Completed"
+     * và gọi hàm callback để thông báo cho ViewModel.
+     */
     public void decrementPomodoro(String taskId, OnTaskCompletedCallback callback) {
         mExecutor.execute(() -> {
             TaskEntity task = mTaskDao.getTaskByIdSync(taskId);

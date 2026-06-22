@@ -21,8 +21,8 @@ public class TaskEntity {
 
     public String title;
     public String description;
-    public int estPomodoros = 1; // Estimated Pomodoro sessions needed
-    public int estimatedMinutes = 0; // Estimated duration in minutes (0 = not set)
+    public int estPomodoros = 1; // Số lượng Pomodoro dự kiến cần để hoàn thành
+    public int estimatedMinutes = 0; // Thời gian ước tính tính bằng phút (0 = chưa thiết lập)
 
     // Trạng thái task: Pending, InProgress hoặc Completed.
     public String status;

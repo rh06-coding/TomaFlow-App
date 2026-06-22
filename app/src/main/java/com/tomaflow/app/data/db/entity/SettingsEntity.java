@@ -14,11 +14,11 @@ public class SettingsEntity {
 
     public int userId;
 
-    public int workDuration;// Thời gian focus, tính bằng phút.
-    public int shortBreak;  // Thời gian nghỉ ngắn, tính bằng phút.
-    public int longBreak; // Thời gian nghỉ dài, tính bằng phút.
-    public int longBreakInterval;
-    public boolean focusMusic;
+    public int workDuration;    // Thời gian focus, tính bằng phút.
+    public int shortBreak;      // Thời gian nghỉ ngắn, tính bằng phút.
+    public int longBreak;       // Thời gian nghỉ dài, tính bằng phút.
+    public int longBreakInterval; // Số chu kỳ Pomodoro trước khi nghỉ dài.
+    public boolean focusMusic;  // Bật/tắt nhạc khi tập trung.
     public long createdAt;
 
     public SettingsEntity() {

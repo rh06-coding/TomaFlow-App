@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Pure state machine for the Pomodoro timer.
+ * Bộ đếm thời gian (State machine) cốt lõi của Pomodoro.
  *
- * THREADING: All methods are called from TimerEngineService's dedicated HandlerThread
- * ("TomaFlow-TimerThread"). Listener callbacks are therefore also fired on that thread.
- * TimerEngineService is responsible for posting UI callbacks to the main thread.
+ * LUỒNG XỬ LÝ (THREADING): Tất cả các phương thức đều được gọi từ một HandlerThread riêng biệt của
+ * TimerEngineService ("TomaFlow-TimerThread"). Vì vậy, các callback của listener cũng được kích hoạt
+ * trên luồng đó. TimerEngineService có trách nhiệm đẩy các callback UI lên luồng chính (Main Thread).
  *
- * There is NO speed multiplier, NO main-thread dependency, NO AudioFocus.
+ * KHÔNG sử dụng hệ số nhân tốc độ, KHÔNG phụ thuộc vào luồng chính, KHÔNG có AudioFocus tại đây.
  */
 public class PomodoroTimer {
 

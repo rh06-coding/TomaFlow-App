@@ -15,6 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Trình quản lý nhạc nội bộ (Local Music Manager).
+ * Chịu trách nhiệm sao chép các tệp âm thanh từ thiết bị vào thư mục riêng của ứng dụng
+ * và cung cấp danh sách các bài hát này để hiển thị trên giao diện.
+ */
 public class LocalMusicManager {
 
     private static final String TAG = "LocalMusicManager";

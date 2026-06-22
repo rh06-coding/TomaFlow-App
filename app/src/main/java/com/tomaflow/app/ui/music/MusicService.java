@@ -18,9 +18,9 @@ import com.tomaflow.app.R;
 import com.tomaflow.app.data.model.BuiltInTrack;
 
 /**
- * Foreground service that keeps the music notification visible when the user
- * leaves the app or switches tabs. The actual MediaPlayer lives in AppMusicPlayer.
- * This service only manages the notification and the MediaSession token.
+ * Foreground Service giữ thông báo nhạc luôn hiển thị khi người dùng
+ * thoát ứng dụng hoặc chuyển tab. Đối tượng MediaPlayer thực sự nằm trong AppMusicPlayer.
+ * Service này chỉ quản lý thông báo (Notification) và MediaSession token.
  */
 public class MusicService extends Service {
 

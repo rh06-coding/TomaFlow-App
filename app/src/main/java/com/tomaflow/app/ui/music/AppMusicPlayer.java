@@ -16,15 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Singleton wrapper around MediaPlayer for background music.
+ * Lớp Singleton bọc MediaPlayer dùng để phát nhạc nền.
  *
- * KEY DESIGN:
- * - Uses AudioAttributes(USAGE_MEDIA, CONTENT_TYPE_MUSIC) — correct stream type,
- *   prevents system from misrouting audio or causing ducking/distortion.
- * - prepareAsync() so prepare never blocks the calling thread.
- * - cleanupPlayer() fully releases old player before creating a new one.
- * - MusicService is started ONCE after prepare completes, not on every state change.
- * - No interaction with AudioFocus — keep it simple.
+ * THIẾT KẾ QUAN TRỌNG:
+ * - Sử dụng AudioAttributes(USAGE_MEDIA, CONTENT_TYPE_MUSIC) để định tuyến luồng âm thanh chuẩn,
+ *   tránh hệ thống tự động giảm âm lượng (ducking) hoặc làm méo tiếng.
+ * - Sử dụng prepareAsync() để không bao giờ làm đóng băng luồng chính.
+ * - cleanupPlayer() giải phóng hoàn toàn bộ phát cũ trước khi tạo bộ phát mới.
+ * - MusicService chỉ được khởi chạy MỘT LẦN sau khi nhạc đã sẵn sàng (prepare).
+ * - Không xử lý AudioFocus để giữ luồng hoạt động đơn giản.
  */
 public class AppMusicPlayer {
 

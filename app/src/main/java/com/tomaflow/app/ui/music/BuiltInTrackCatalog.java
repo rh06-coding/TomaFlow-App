@@ -7,24 +7,24 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Catalog of built-in background music tracks.
+ * Danh mục các bài nhạc nền tích hợp sẵn trong ứng dụng.
  *
- * HOW TO ADD DEFAULT MUSIC:
- * ────────────────────────────────────────────────────────────────────
- * 1. Copy your .mp3 or .ogg file into:
+ * CÁCH THÊM NHẠC MẶC ĐỊNH:
+ * ========================================================================================
+ * 1. Copy file .mp3 hoặc .ogg của bạn vào thư mục:
  *       app/src/main/res/raw/
- *    Example: app/src/main/res/raw/lofi_chill.mp3
- *    (filename must be lowercase, no spaces, only letters/digits/underscores)
+ *    Ví dụ: app/src/main/res/raw/lofi_chill.mp3
+ *    (Tên file phải viết thường, không có dấu cách, chỉ gồm chữ cái/chữ số/dấu gạch dưới)
  *
- * 2. Add a new BuiltInTrack entry below, referencing R.raw.your_filename:
+ * 2. Thêm một mục BuiltInTrack mới ở dưới, tham chiếu đến R.raw.tên_file_của_bạn:
  *       new BuiltInTrack("lofi_chill", "Lo-Fi Chill", "Lofi", "🎵", R.raw.lofi_chill),
  *
- * 3. That's it — the track will appear automatically in MusicPickerActivity.
- * ────────────────────────────────────────────────────────────────────
+ * 3. Xong! Bài nhạc sẽ tự động xuất hiện trong MusicPickerActivity.
+ * ========================================================================================
  *
- * NOTE: No tracks are included by default because audio files are large.
- * Add your own tracks to res/raw/ and register them here.
- * The app handles an empty catalog gracefully (shows "no tracks" state).
+ * LƯU Ý: Mặc định không có bài nhạc nào được thêm vào vì file âm thanh thường khá nặng.
+ * Bạn có thể tự thêm file nhạc vào res/raw/ và đăng ký tại đây.
+ * Ứng dụng xử lý danh sách rỗng rất mượt mà (hiện trạng thái "Chưa có nhạc").
  */
 public final class BuiltInTrackCatalog {
 
