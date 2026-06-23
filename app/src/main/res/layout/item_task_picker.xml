@@ -2,10 +2,17 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="6dp"
+    android:layout_marginTop="6dp"
     android:layout_marginBottom="10dp"
     android:background="@drawable/bg_card_primary_soft"
+    android:elevation="6dp"
+    android:outlineAmbientShadowColor="#40000000"
+    android:outlineSpotShadowColor="#40000000"
+    tools:targetApi="p"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="16dp"
@@ -34,7 +41,7 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tên task"
+            tools:text="Tên task"
             android:textColor="@color/toma_text"
             android:textStyle="bold"
             android:textSize="15sp"
@@ -44,8 +51,8 @@
             android:id="@+id/tv_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mô tả"
-            android:textColor="@color/toma_primary"
+            tools:text="Mô tả"
+            android:textColor="@color/toma_text_muted"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -57,10 +64,19 @@
         android:paddingHorizontal="10dp"
         android:paddingVertical="4dp"
         android:drawableStart="@drawable/ic_tomato"
-        android:drawablePadding="4dp"
-        android:text="4"
+        android:gravity="center"
+        tools:text="4"
         android:textColor="@color/toma_primary"
         android:textStyle="bold"
         android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/iv_check"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/ic_check"
+        android:visibility="gone"
+        app:tint="@color/toma_primary" />
 
 </LinearLayout>

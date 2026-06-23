@@ -69,11 +69,14 @@ public class NotificationHelper {
         }
     }
 
-    /** Ongoing = true (can't swipe away), auto-cancel = false. */
     public Notification buildTimerNotification(TimerState timerState) {
         String timeStr = TimerUtils.formatMillisToMmSs(timerState.remainingMs);
         String phaseLabel = TimerUtils.getPhaseLabel(timerState.phase);
-        String contentText = String.format("%s - %s", phaseLabel, timeStr);
+        
+        com.tomaflow.app.data.model.BuiltInTrack track = com.tomaflow.app.ui.music.AppMusicPlayer.getInstance().getCurrentTrack();
+        boolean isMusicPlaying = com.tomaflow.app.ui.music.AppMusicPlayer.getInstance().isPlaying();
+        
+        String contentText = track != null ? "🎵 " + track.name : mContext.getString(R.string.focus_music_empty);
 
         Intent intent = new Intent(mContext, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -81,21 +84,47 @@ public class NotificationHelper {
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, AppConstants.NOTIFICATION_CHANNEL_TIMER)
-                .setContentTitle(mContext.getString(R.string.notification_timer_title))
+                .setContentTitle(phaseLabel)
                 .setContentText(contentText)
-                .setSmallIcon(R.drawable.ic_pause) // Should be a dedicated timer icon
+                .setSmallIcon(R.drawable.ic_pause)
                 .setContentIntent(pendingIntent)
                 .setOnlyAlertOnce(true)
                 .setOngoing(timerState.isRunning)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setPriority(NotificationCompat.PRIORITY_LOW);
 
+        if (timerState.isRunning) {
+            builder.setUsesChronometer(true);
+            builder.setWhen(System.currentTimeMillis() + timerState.remainingMs);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                builder.setChronometerCountDown(true);
+            }
+        } else {
+            builder.setUsesChronometer(false);
+            builder.setContentTitle(phaseLabel + " - " + timeStr);
+        }
+
+        // Action 0: Timer Play/Pause
         if (timerState.isRunning) {
             builder.addAction(R.drawable.ic_pause, mContext.getString(R.string.notification_action_pause), getServicePendingIntent(AppConstants.COMMAND_PAUSE));
         } else {
             builder.addAction(R.drawable.ic_play, mContext.getString(R.string.notification_action_resume), getServicePendingIntent(AppConstants.COMMAND_RESUME));
         }
-        builder.addAction(R.drawable.ic_play, mContext.getString(R.string.notification_action_skip), getServicePendingIntent(AppConstants.COMMAND_SKIP));
+
+        // Action 1: Skip
+        builder.addAction(R.drawable.ic_skip_next, mContext.getString(R.string.notification_action_skip), getServicePendingIntent(AppConstants.COMMAND_SKIP));
+
+        // Action 2: Music Play/Pause
+        Intent toggleMusicIntent = new Intent(mContext, com.tomaflow.app.ui.music.MusicService.class);
+        toggleMusicIntent.setAction(com.tomaflow.app.ui.music.MusicService.ACTION_TOGGLE_PLAY);
+        PendingIntent pendingToggleMusic = PendingIntent.getService(mContext, 3, toggleMusicIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        
+        builder.addAction(isMusicPlaying ? R.drawable.ic_pause : R.drawable.ic_play,
+                "Music", pendingToggleMusic);
+
+        builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
+                .setShowActionsInCompactView(0, 1, 2));
 
         return builder.build();
     }
@@ -113,7 +142,7 @@ public class NotificationHelper {
                 ? mContext.getString(R.string.notification_focus_complete_title) 
                 : mContext.getString(R.string.notification_break_complete_title);
         String message = phase == Phase.FOCUS 
-                ? mContext.getString(R.string.notification_focus_complete_msg, sessionCount)
+                ? mContext.getString(R.string.notification_focus_complete_short)
                 : mContext.getString(R.string.notification_break_complete_msg);
 
         Intent intent = new Intent(mContext, MainActivity.class);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -32,8 +33,14 @@
                 android:layout_marginStart="10dp"
                 android:text="@string/app_name"
                 android:textAppearance="@style/TextAppearance.Toma.Brand" />
-            <View android:layout_width="36dp" android:layout_height="36dp"
-                android:background="@drawable/bg_avatar_circle" />
+            <ImageView
+                android:id="@+id/btn_settings"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_avatar_circle"
+                android:src="@drawable/ic_settings"
+                android:padding="8dp"
+                app:tint="@color/toma_primary" />
         </LinearLayout>
 
         <!-- Avatar -->
@@ -49,10 +56,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="ER"
-                android:textColor="@color/toma_text"
+                tools:text="ER"
+                android:textColor="@color/toma_primary"
                 android:textSize="36sp"
                 android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/iv_profile_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="@drawable/bg_avatar_circle"
+                android:clipToOutline="true"
+                android:visibility="gone" />
             <FrameLayout
                 android:layout_width="36dp"
                 android:layout_height="36dp"
@@ -76,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
-            android:text="Elena Rodriguez"
+            tools:text="Elena Rodriguez"
             android:textAppearance="@style/TextAppearance.Toma.Display"
             android:textSize="28sp" />
 
@@ -103,10 +118,10 @@
                 <TextView
                     android:id="@+id/tv_level_value"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="Level 42" android:textColor="@color/toma_text"
+                    tools:text="Level 42" android:textColor="@color/toma_text"
                     android:textSize="20sp" android:textStyle="bold" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="RANKING" android:textAppearance="@style/TextAppearance.Toma.Label" />
+                    android:text="@string/profile_ranking" android:textAppearance="@style/TextAppearance.Toma.Label" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="0dp" android:layout_height="wrap_content"
@@ -114,10 +129,10 @@
                 <TextView
                     android:id="@+id/tv_hours_value"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="1,240" android:textColor="@color/toma_text"
+                    tools:text="1,240" android:textColor="@color/toma_text"
                     android:textSize="20sp" android:textStyle="bold" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="HOURS" android:textAppearance="@style/TextAppearance.Toma.Label" />
+                    android:text="@string/profile_hours" android:textAppearance="@style/TextAppearance.Toma.Label" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="0dp" android:layout_height="wrap_content"
@@ -125,11 +140,61 @@
                 <TextView
                     android:id="@+id/tv_streak_value"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="98%" android:textColor="@color/toma_text"
+                    tools:text="98%" android:textColor="@color/toma_text"
                     android:textSize="20sp" android:textStyle="bold" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="STREAK" android:textAppearance="@style/TextAppearance.Toma.Label" />
+                    android:text="@string/profile_streak" android:textAppearance="@style/TextAppearance.Toma.Label" />
             </LinearLayout>
+        </LinearLayout>
+
+        <!-- Leaderboard Card -->
+        <LinearLayout
+            android:id="@+id/card_leaderboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/bg_card_primary_soft"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <FrameLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_icon_chip_primary">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_star"
+                    app:tint="@color/toma_primary" />
+            </FrameLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="14dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/leaderboard_title"
+                    android:textColor="@color/toma_text"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View your global ranking"
+                    android:textColor="@color/toma_text_muted"
+                    android:textSize="13sp" />
+            </LinearLayout>
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_chevron_right"
+                app:tint="@color/toma_text_muted" />
         </LinearLayout>
 
         <!-- Badges header -->
@@ -221,3 +286,4 @@
             style="@style/Widget.Toma.Button.Logout" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
+

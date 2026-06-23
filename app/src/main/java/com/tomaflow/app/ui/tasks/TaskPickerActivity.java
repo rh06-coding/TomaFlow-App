@@ -3,10 +3,9 @@ package com.tomaflow.app.ui.tasks;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -32,7 +31,8 @@ public class TaskPickerActivity extends AppCompatActivity {
     private TaskViewModel mTaskViewModel;
     private TextView tvSelectedTaskName;
     private View cardSelectedTask;
-    private LinearLayout layoutTaskList;
+    private RecyclerView rvTaskList;
+    private TaskPickerAdapter mAdapter;
     private TextView tvEmptyTasks;
 
     private String mPrevId;
@@ -47,7 +47,7 @@ public class TaskPickerActivity extends AppCompatActivity {
 
         tvSelectedTaskName = findViewById(R.id.tv_selected_task_name);
         cardSelectedTask = findViewById(R.id.card_selected_task);
-        layoutTaskList = findViewById(R.id.layout_task_list);
+        rvTaskList = findViewById(R.id.rv_task_list);
         tvEmptyTasks = findViewById(R.id.tv_empty_tasks);
 
         mTaskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
@@ -60,55 +60,39 @@ public class TaskPickerActivity extends AppCompatActivity {
         }
 
         findViewById(R.id.btn_clear_task).setOnClickListener(v -> {
-            tvSelectedTaskName.setText("Chưa chọn công việc");
+            tvSelectedTaskName.setText(getString(R.string.focus_no_task));
             Intent result = new Intent();
             result.putExtra(EXTRA_CLEAR_TASK, true);
             setResult(RESULT_OK, result);
             finish();
         });
 
+        mAdapter = new TaskPickerAdapter(mPrevId, this::handlePickedTask);
+        rvTaskList.setAdapter(mAdapter);
+
         mTaskViewModel.getPendingTasks().observe(this, this::populateTasks);
     }
 
     private void populateTasks(List<TaskEntity> tasks) {
-        layoutTaskList.removeAllViews();
         if (tasks == null || tasks.isEmpty()) {
             tvEmptyTasks.setVisibility(View.VISIBLE);
+            rvTaskList.setVisibility(View.GONE);
+            mAdapter.submitList(null);
             return;
         }
 
-        boolean hasVisibleTasks = false;
-        LayoutInflater inflater = getLayoutInflater();
-
+        // Không hiển thị công việc đang được chọn ở danh sách Pending
+        List<TaskEntity> filteredTasks = new java.util.ArrayList<>();
         for (TaskEntity task : tasks) {
-            // Không hiển thị công việc đang được chọn ở danh sách Pending
-            if (mPrevId != null && mPrevId.equals(task.taskId)) {
-                continue;
+            if (mPrevId == null || !mPrevId.equals(task.taskId)) {
+                filteredTasks.add(task);
             }
-            
-            hasVisibleTasks = true;
-            View itemView = inflater.inflate(R.layout.item_task_picker, layoutTaskList, false);
-            TextView tvTitle = itemView.findViewById(R.id.tv_title);
-            TextView tvDesc = itemView.findViewById(R.id.tv_desc);
-            TextView tvPomos = itemView.findViewById(R.id.tv_pomos);
-
-            tvTitle.setText(task.title);
-            if (task.description == null || task.description.trim().isEmpty()) {
-                tvDesc.setVisibility(View.GONE);
-            } else {
-                tvDesc.setText(task.description);
-                tvDesc.setVisibility(View.VISIBLE);
-            }
-            tvPomos.setText(String.valueOf(task.estPomodoros));
-
-            itemView.setOnClickListener(v -> {
-                handlePickedTask(task);
-            });
-
-            layoutTaskList.addView(itemView);
         }
         
+        boolean hasVisibleTasks = !filteredTasks.isEmpty();
         tvEmptyTasks.setVisibility(hasVisibleTasks ? View.GONE : View.VISIBLE);
+        rvTaskList.setVisibility(hasVisibleTasks ? View.VISIBLE : View.GONE);
+        mAdapter.submitList(filteredTasks);
     }
 
     private void handlePickedTask(TaskEntity task) {

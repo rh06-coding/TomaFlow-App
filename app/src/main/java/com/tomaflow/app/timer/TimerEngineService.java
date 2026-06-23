@@ -38,7 +38,7 @@ public class TimerEngineService extends Service {
     private static final String TAG = "TimerEngineService";
     private static final long WAKELOCK_TIMEOUT_MS = 35 * 60 * 1000L;
     private static final long TICK_INTERVAL_MS = 1000L;
-    private static final long NOTIF_UPDATE_INTERVAL_MS = 5000L; // update notification max every 5s
+    private static final long NOTIF_UPDATE_INTERVAL_MS = 1000L; // update notification every second
 
     public static final String ACTION_COMMAND = "com.tomaflow.TIMER_COMMAND";
 
@@ -122,8 +122,9 @@ public class TimerEngineService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && ACTION_COMMAND.equals(intent.getAction())) {
             final String command = intent.getStringExtra(AppConstants.INTENT_EXTRA_COMMAND);
+            final String extraPhase = intent.getStringExtra(AppConstants.INTENT_EXTRA_PHASE);
             // Execute command on the timer thread to avoid main-thread contention
-            mTimerHandler.post(() -> handleCommand(command));
+            mTimerHandler.post(() -> handleCommand(command, extraPhase));
         }
         return START_STICKY;
     }
@@ -155,20 +156,23 @@ public class TimerEngineService extends Service {
     // ── Command handling (runs on mTimerThread) ───────────────────────────────
 
     private void handleCommand(String command) {
+        handleCommand(command, null);
+    }
+
+    private void handleCommand(String command, String extraPhase) {
         if (command == null) return;
 
         switch (command) {
-            case AppConstants.COMMAND_START_FOCUS:
-                long focusMs = mSettingsManager.getFocusDurationMs();
+            case AppConstants.COMMAND_START:
                 if (!mTimer.isRunning()) {
                     mTimer.setDurations(
-                            focusMs,
+                            mSettingsManager.getFocusDurationMs(),
                             mSettingsManager.getShortBreakDurationMs(),
                             mSettingsManager.getLongBreakDurationMs()
                     );
                 }
                 mNotificationHelper.cancelPhaseCompleteNotification();
-                mTimer.startFocus(focusMs);
+                mTimer.start();
                 // Kick off the tick loop on the timer thread
                 scheduleTick();
                 break;
@@ -195,6 +199,18 @@ public class TimerEngineService extends Service {
                 stopTick();
                 mNotificationHelper.cancelPhaseCompleteNotification();
                 mTimer.reset();
+                break;
+
+            case AppConstants.COMMAND_JUMP_TO_PHASE:
+                stopTick();
+                mNotificationHelper.cancelPhaseCompleteNotification();
+                if (PomodoroTimer.Phase.FOCUS.name().equals(extraPhase)) {
+                    mTimer.jumpToFocus(mSettingsManager.getFocusDurationMs());
+                } else if (PomodoroTimer.Phase.SHORT_BREAK.name().equals(extraPhase)) {
+                    mTimer.jumpToBreak(mSettingsManager.getShortBreakDurationMs(), false);
+                } else if (PomodoroTimer.Phase.LONG_BREAK.name().equals(extraPhase)) {
+                    mTimer.jumpToBreak(mSettingsManager.getLongBreakDurationMs(), true);
+                }
                 break;
         }
 
@@ -255,6 +271,14 @@ public class TimerEngineService extends Service {
                 mMainHandler.post(() -> broadcastState(state));
                 // Update foreground/wakeLock on main thread (required for startForeground)
                 mMainHandler.post(() -> updateForegroundStatus(state));
+                // DND toggle
+                mMainHandler.post(() -> {
+                    if (state.state == PomodoroTimer.State.RUNNING_FOCUS) {
+                        com.tomaflow.app.utils.DndManager.checkAndEnableDnd(TimerEngineService.this);
+                    } else {
+                        com.tomaflow.app.utils.DndManager.checkAndDisableDnd(TimerEngineService.this);
+                    }
+                });
                 // Persist state
                 mStateManager.saveState(state,
                         mTimer.getFocusDurationMs(),

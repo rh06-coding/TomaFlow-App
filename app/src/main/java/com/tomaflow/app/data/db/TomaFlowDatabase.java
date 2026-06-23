@@ -11,6 +11,8 @@ import androidx.room.RoomDatabase;
 import com.tomaflow.app.data.db.dao.SettingsDao;
 import com.tomaflow.app.data.db.dao.SessionDao;
 import com.tomaflow.app.data.db.dao.TaskDao;
+import com.tomaflow.app.data.db.dao.NoteDao;
+import com.tomaflow.app.data.db.entity.NoteEntity;
 import com.tomaflow.app.data.db.entity.SessionEntity;
 import com.tomaflow.app.data.db.entity.SettingsEntity;
 import com.tomaflow.app.data.db.entity.TaskEntity;
@@ -22,9 +24,10 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
         entities = {
                 TaskEntity.class,
                 SessionEntity.class,
-                SettingsEntity.class
+                SettingsEntity.class,
+                NoteEntity.class
         },
-        version = 3,
+        version = 4,
         exportSchema = false
 )
 public abstract class TomaFlowDatabase extends RoomDatabase {
@@ -34,6 +37,8 @@ public abstract class TomaFlowDatabase extends RoomDatabase {
     public abstract SessionDao sessionDao();
 
     public abstract SettingsDao settingsDao();
+    
+    public abstract NoteDao noteDao();
 
     private static volatile TomaFlowDatabase INSTANCE;
 
@@ -47,7 +52,7 @@ public abstract class TomaFlowDatabase extends RoomDatabase {
                                     TomaFlowDatabase.class,
                                     "tomaflow_database"
                             )
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                             .fallbackToDestructiveMigration()
                             .build();
                 }
@@ -71,6 +76,14 @@ public abstract class TomaFlowDatabase extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE Tasks ADD COLUMN estimatedMinutes INTEGER NOT NULL DEFAULT 0");
+        }
+    };
+
+    // Migration v4: create Notes table
+    private static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS `notes` (`noteId` TEXT NOT NULL, `title` TEXT, `content` TEXT, `mood` TEXT, `createdAt` INTEGER NOT NULL, PRIMARY KEY(`noteId`))");
         }
     };
 }

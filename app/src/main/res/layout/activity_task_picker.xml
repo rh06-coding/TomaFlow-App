@@ -42,23 +42,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Công việc đang chờ"
+                android:text="@string/task_picker_pending"
                 android:textAppearance="@style/TextAppearance.Toma.Label"
                 android:textColor="@color/toma_primary" />
 
-            <LinearLayout
-                android:id="@+id/layout_task_list"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_task_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:orientation="vertical" />
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
                 
             <TextView
                 android:id="@+id/tv_empty_tasks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Bạn chưa có công việc nào đang chờ.\nHãy thêm ở tab Tasks."
+                android:text="@string/task_picker_empty"
                 android:textColor="@color/toma_text_muted"
                 android:textSize="14sp"
                 android:gravity="center"
@@ -68,7 +69,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
-                android:text="Công việc đã chọn"
+                android:text="@string/task_picker_selected"
                 android:textAppearance="@style/TextAppearance.Toma.Label"
                 android:textColor="@color/toma_primary" />
 
@@ -102,7 +103,7 @@
                         android:id="@+id/tv_selected_task_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Chưa chọn công việc"
+                        android:text="@string/task_picker_none_selected"
                         android:textColor="@color/toma_text"
                         android:textStyle="bold"
                         android:textSize="15sp"
@@ -111,7 +112,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Nhấn chọn bên trên"
+                        android:text="@string/task_picker_none_desc"
                         android:textColor="@color/toma_primary"
                         android:textSize="12sp" />
                 </LinearLayout>

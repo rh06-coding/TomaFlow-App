@@ -56,8 +56,6 @@
             android:exported="false"
             android:name=".ui.stats.StatsActivity" />
 
-
-
         <!-- ── Settings screen (stub — to be implemented) ─ -->
         <activity
             android:exported="false"
@@ -77,6 +75,16 @@
         <activity
             android:exported="false"
             android:name=".ui.music.MusicPickerActivity" />
+
+        <!-- ── Premium ─────────────────────────────────── -->
+        <activity
+            android:name=".ui.premium.PremiumActivity"
+            android:exported="false" />
+
+        <!-- ── Leaderboard ─────────────────────────────── -->
+        <activity
+            android:name=".ui.leaderboard.LeaderboardActivity"
+            android:exported="false" />
 
         <!-- ── Music Service ─────────────────────────────── -->
         <service

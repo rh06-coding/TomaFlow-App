@@ -2,10 +2,17 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="6dp"
+    android:layout_marginTop="6dp"
     android:layout_marginBottom="8dp"
     android:background="@drawable/bg_card_muted"
+    android:elevation="6dp"
+    android:outlineAmbientShadowColor="#40000000"
+    android:outlineSpotShadowColor="#40000000"
+    tools:targetApi="p"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="16dp"
@@ -35,7 +42,7 @@
             android:id="@+id/tv_track_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lo-Fi Chill"
+            tools:text="Lo-Fi Chill"
             android:textColor="@color/toma_text"
             android:textStyle="bold"
             android:textSize="15sp" />
@@ -43,7 +50,7 @@
             android:id="@+id/tv_track_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lofi"
+            tools:text="Lofi"
             android:textColor="@color/toma_text_muted"
             android:textSize="12sp" />
     </LinearLayout>

@@ -116,8 +116,8 @@
     <string name="focus_music_pause">Pause</string>
 
     <!-- Current task -->
-    <string name="focus_no_task">No task selected</string>
-    <string name="focus_no_task_sub">Open Tasks and pick one to focus on</string>
+    <string name="focus_no_task">Select a task</string>
+    <string name="focus_no_task_sub">Tap to choose a task</string>
     <string name="task_send_to_focus">Send to Focus</string>
     <string name="task_sent_to_focus">Sent \"%1$s\" to Focus</string>
 
@@ -153,4 +153,130 @@
     <string name="badge_nightowl_desc">Focus after 22:00</string>
     <string name="badge_earlybird_title">Early Bird</string>
     <string name="badge_earlybird_desc">Focus before 07:00</string>
+    <!-- Focus extra strings -->
+    <string name="focus_select_music_first">Please select a track first</string>
+    <string name="focus_task_default_sub">Focusing now</string>
+    <string name="focus_task_complete_title">Task Complete!</string>
+    <string name="focus_task_complete_msg">Great job! You\'ve completed this task.</string>
+    <string name="ok">OK</string>
+
+    <!-- Tomato growth stages -->
+    <string name="toma_stage_seed">Seed just planted…</string>
+    <string name="toma_stage_sprout">Sprout is emerging!</string>
+    <string name="toma_stage_grow">Plant is growing strong…</string>
+    <string name="toma_stage_flower">Flowering — fruit soon!</string>
+    <string name="toma_stage_ripe">Tomato almost ripe! 🍅</string>
+    <string name="toma_complete">🍅 Pomodoro complete!</string>
+    <string name="toma_wilt">Plant wilted… 😢 Try again!</string>
+
+    <!-- Session tab switcher -->
+    <string name="focus_tab_focus">Focus</string>
+    <string name="focus_tab_short">Short Break</string>
+    <string name="focus_tab_long">Long Break</string>
+
+    <!-- Phase complete dialog -->
+    <string name="phase_complete_focus_title">Focus Complete! 🍅</string>
+    <string name="phase_complete_focus_sub">Session #%1$d done. Time for a break!</string>
+    <string name="phase_complete_break_title">Break Over!</string>
+    <string name="phase_complete_break_sub">Ready to focus again?</string>
+    <string name="phase_complete_start_break">Start Break</string>
+    <string name="phase_complete_start_focus">Start Focus</string>
+    <string name="phase_complete_skip">Skip</string>
+    <!-- Error & Toast messages -->
+    <string name="main_exit_toast">Press back again to exit</string>
+    <string name="error_required">Required</string>
+    <string name="error_password_length">Minimum 8 characters</string>
+    <string name="error_password_match">Passwords do not match</string>
+    <string name="auth_google_failed">Google sign in failed: </string>
+    <string name="auth_login_failed">Authentication failed.</string>
+    <string name="auth_login_failed_msg">Login failed: </string>
+    <string name="auth_email_required_reset">Enter email to reset password</string>
+    <string name="auth_reset_email_sent">Reset email sent</string>
+    <string name="auth_register_success">Registration successful! Please sign in.</string>
+    <string name="auth_register_failed">Registration failed: </string>
+    <string name="task_name_required">Please enter a task name</string>
+
+    <!-- UI Strings -->
+    <string name="task_complete_title">Task Complete!</string>
+    <string name="task_complete_desc">Great job! You\'ve successfully completed this task.</string>
+    <string name="task_complete_btn">Awesome</string>
+    <string name="phase_complete_focus_sub_short">1 Pomodoro Completed!</string>
+    <string name="notification_focus_complete_short">1 Pomodoro Completed!</string>
+
+    <string name="music_default_category">Default Music</string>
+    <string name="task_picker_pending">Pending Tasks</string>
+    <string name="task_picker_empty">No pending tasks.\nAdd them in the Tasks tab.</string>
+    <string name="task_picker_selected">Selected Task</string>
+    <string name="task_picker_none_selected">No task selected</string>
+    <string name="task_picker_none_desc">Tap to select above</string>
+    <string name="task_picker_sheet_title">Select Task</string>
+
+    <string name="task_add_title">Add New Task</string>
+    <string name="task_add_est_pomos">Est. Pomodoros</string>
+    <string name="task_add_min">min</string>
+    <string name="task_add_save">Save Task</string>
+    <string name="task_title_hint">Task Title</string>
+    <string name="task_note_hint">Note (Optional)</string>
+    <string name="task_pomodoros_label">Est. Pomodoros</string>
+    <string name="task_duration_unit">min</string>
+
+    <string name="stats_tab_week">WEEK</string>
+    <string name="stats_tab_month">MONTH</string>
+    <string name="stats_focus_label">FOCUS</string>
+    <string name="stats_breaks_label">BREAKS</string>
+    <string name="profile_ranking">RANKING</string>
+    <string name="profile_hours">HOURS</string>
+    <string name="profile_streak">STREAK</string>
+    <string name="dialog_btn_skip">Skip Break</string>
+
+    <string name="notification_action_music">Music</string>
+
+    <!-- Strict Mode -->
+    <string name="settings_strict_mode">Strict Mode</string>
+    <string name="settings_strict_mode_desc">Lock pause button during focus sessions</string>
+    <string name="strict_mode_blocked">Strict Mode is on. Stay focused!</string>
+
+    <!-- DND -->
+    <string name="settings_dnd">Focus Mode (Do Not Disturb)</string>
+    <string name="settings_dnd_desc">Silence notifications while focusing</string>
+    <string name="dnd_permission_needed">Allow notification access to enable Focus Mode</string>
+    <string name="dnd_permission_btn">Open Settings</string>
+
+    <!-- Note / Journal -->
+    <string name="stats_journal_title">Focus Journal</string>
+    <string name="stats_journal_empty">No entries yet. Add your first note!</string>
+    <string name="note_add_title">Add Note</string>
+    <string name="note_title_hint">Title (optional)</string>
+    <string name="note_content_hint">How did your focus session go?</string>
+    <string name="note_mood_label">Mood</string>
+    <string name="note_save">Save</string>
+    <string name="note_delete_confirm">Delete this note?</string>
+    <string name="mood_happy">😊 Great</string>
+    <string name="mood_focused">🎯 Focused</string>
+    <string name="mood_tired">😴 Tired</string>
+    <string name="mood_stressed">😤 Stressed</string>
+
+    <!-- Premium / VIP -->
+    <string name="premium_title">Upgrade to VIP</string>
+    <string name="premium_subtitle">Unlock your full potential</string>
+    <string name="premium_btn_upgrade">Upgrade Now</string>
+    <string name="premium_btn_later">Maybe later</string>
+    <string name="premium_gate_title">VIP Feature</string>
+    <string name="premium_gate_desc">This feature is available for VIP members.</string>
+    <string name="premium_badge">VIP 👑</string>
+    <string name="premium_success">You are now a VIP member! 🎉</string>
+    <string name="feature_normal_tasks_limit">Free plan: max 5 active tasks</string>
+
+    <!-- Share -->
+    <string name="share_achievement_title">Share Achievement</string>
+    <string name="share_text">I\'ve completed %1$d Pomodoros with TomaFlow! 🍅 #TomaFlow #Productivity</string>
+
+    <!-- Leaderboard -->
+    <string name="leaderboard_title">Leaderboard</string>
+    <string name="leaderboard_tab_global">Global</string>
+    <string name="leaderboard_tab_friends">Friends</string>
+    <string name="leaderboard_coming_soon">Friends feature coming soon!</string>
+    <string name="leaderboard_rank">Rank #%1$d</string>
+    <string name="leaderboard_empty">No data yet. Complete a session to appear here!</string>
+
 </resources>

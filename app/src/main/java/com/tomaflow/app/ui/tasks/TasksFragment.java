@@ -104,6 +104,12 @@ public class TasksFragment extends Fragment {
     }
 
     private void showAddTaskDialog() {
+        com.tomaflow.app.data.repository.SubscriptionManager sm = new com.tomaflow.app.data.repository.SubscriptionManager(requireContext());
+        if (!sm.isVip() && activeTasks.size() >= 5) {
+            com.tomaflow.app.ui.premium.PremiumGateDialog.newInstance().show(getChildFragmentManager(), "PremiumGateDialog");
+            return;
+        }
+
         BottomSheetDialog dialog = new BottomSheetDialog(requireContext());
         View view = getLayoutInflater().inflate(R.layout.bottom_sheet_add_task, null);
         dialog.setContentView(view);
@@ -136,7 +142,7 @@ public class TasksFragment extends Fragment {
             String title = etTitle.getText().toString().trim();
             String note = etNote.getText().toString().trim();
             if (title.isEmpty()) {
-                Toast.makeText(getContext(), "Vui lòng nhập tên công việc", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.task_name_required), Toast.LENGTH_SHORT).show();
                 return;
             }
             int durationMinutes = 0;

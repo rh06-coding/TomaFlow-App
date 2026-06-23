@@ -53,10 +53,10 @@ public class RegisterActivity extends AppCompatActivity {
         String pass    = mEdtPassword.getText().toString().trim();
         String confirm = mEdtConfirm.getText().toString().trim();
 
-        if (TextUtils.isEmpty(name))  { mEdtName.setError("Bắt buộc"); return; }
-        if (TextUtils.isEmpty(email)) { mEdtEmail.setError("Bắt buộc"); return; }
-        if (pass.length() < 8)        { mEdtPassword.setError("Tối thiểu 8 ký tự"); return; }
-        if (!Objects.equals(pass, confirm))    { mEdtConfirm.setError("Mật khẩu không khớp"); return; }
+        if (TextUtils.isEmpty(name))  { mEdtName.setError(getString(R.string.error_required)); return; }
+        if (TextUtils.isEmpty(email)) { mEdtEmail.setError(getString(R.string.error_required)); return; }
+        if (pass.length() < 8)        { mEdtPassword.setError(getString(R.string.error_password_length)); return; }
+        if (!Objects.equals(pass, confirm))    { mEdtConfirm.setError(getString(R.string.error_password_match)); return; }
 
         mBtnCreate.setEnabled(false);
         FirebaseAuth.getInstance()
@@ -69,13 +69,13 @@ public class RegisterActivity extends AppCompatActivity {
                 }
                 // Sign out so user must log in
                 FirebaseAuth.getInstance().signOut();
-                Toast.makeText(this, "Đăng ký thành công! Hãy đăng nhập.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.auth_register_success), Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
             })
             .addOnFailureListener(e -> {
                 mBtnCreate.setEnabled(true);
-                Toast.makeText(this, "Đăng ký thất bại: " + e.getMessage(),
+                Toast.makeText(this, getString(R.string.auth_register_failed) + e.getMessage(),
                     Toast.LENGTH_LONG).show();
             });
     }

@@ -2,9 +2,10 @@
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/toma_background">
+    android:background="?android:attr/colorBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,7 +13,8 @@
         android:orientation="vertical"
         android:paddingHorizontal="20dp"
         android:paddingTop="20dp"
-        android:paddingBottom="32dp">
+        android:paddingBottom="32dp"
+        android:clipToPadding="false">
 
         <!-- Header -->
         <LinearLayout
@@ -53,9 +55,40 @@
             android:text="@string/focus_title"
             android:textAppearance="@style/TextAppearance.Toma.Display"
             android:textSize="32sp" />
-
-
-
+        <!-- Session Tab Switcher -->
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/session_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            app:singleSelection="true"
+            app:selectionRequired="true">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_tab_focus"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/focus_tab_focus"
+                android:textSize="12sp"
+                android:paddingHorizontal="14dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_tab_short"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/focus_tab_short"
+                android:textSize="12sp"
+                android:paddingHorizontal="14dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_tab_long"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/focus_tab_long"
+                android:textSize="12sp"
+                android:paddingHorizontal="14dp" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <!-- Timer ring -->
 
@@ -111,7 +144,7 @@
                 android:layout_height="48dp"
                 android:src="@drawable/ic_reset"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/toma_text"
+                app:tint="?attr/colorOnBackground"
                 android:contentDescription="Reset" />
             <FrameLayout
                 android:layout_width="80dp"
@@ -134,7 +167,7 @@
                 android:layout_height="48dp"
                 android:src="@drawable/ic_skip"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/toma_text"
+                app:tint="?attr/colorOnBackground"
                 android:contentDescription="Skip" />
         </LinearLayout>
 
@@ -157,9 +190,9 @@
                 android:id="@+id/tv_tomato_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Your tomato is growing..."
-                android:textColor="@color/toma_text_muted"
+                android:layout_marginTop="24dp"
+                tools:text="Your tomato is growing..."
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp"
                 android:fontFamily="sans-serif-medium"
                 android:textAllCaps="false" />
@@ -170,7 +203,11 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp">
+            android:layout_marginTop="28dp"
+            app:cardElevation="6dp"
+            android:outlineAmbientShadowColor="#40000000"
+            android:outlineSpotShadowColor="#40000000"
+            tools:targetApi="p">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -236,7 +273,11 @@
             android:id="@+id/card_current_task"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="36dp">
+            android:layout_marginTop="36dp"
+            app:cardElevation="6dp"
+            android:outlineAmbientShadowColor="#40000000"
+            android:outlineSpotShadowColor="#40000000"
+            tools:targetApi="p">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -261,9 +302,9 @@
                     android:orientation="vertical">
                     <TextView
                         android:id="@+id/tv_task_title"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Design System Review"
+                        tools:text="Design System Review"
                         android:textColor="@color/toma_text"
                         android:textStyle="bold"
                         android:textSize="16sp" />
@@ -271,21 +312,21 @@
                         android:id="@+id/tv_task_subtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Part of Project Sanctuary"
+                        tools:text="Part of Project Sanctuary"
                         android:textColor="@color/toma_text_muted" />
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_task_pomos"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="24dp"
                     android:background="@drawable/bg_pill_primary_soft"
                     android:paddingHorizontal="10dp"
-                    android:paddingVertical="4dp"
                     android:layout_marginEnd="8dp"
                     android:drawableStart="@drawable/ic_tomato"
                     android:drawablePadding="4dp"
-                    android:text="1"
+                    android:gravity="center"
+                    tools:text="1"
                     android:visibility="gone"
                     android:textColor="@color/toma_primary"
                     android:textStyle="bold"
