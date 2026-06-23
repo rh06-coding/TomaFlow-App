@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +35,11 @@ public class ProfileFragment extends Fragment {
             btnBack.setOnClickListener(v -> androidx.navigation.Navigation.findNavController(v).navigateUp());
         }
 
+        View btnSettings = view.findViewById(R.id.btn_settings);
+        if (btnSettings != null) {
+            btnSettings.setOnClickListener(v -> androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_settings));
+        }
+
         if (user != null) {
             String name = user.getDisplayName();
             if (name == null || name.isEmpty()) {
@@ -52,6 +58,31 @@ public class ProfileFragment extends Fragment {
                 }
                 tvInitials.setText(initials.toUpperCase());
             }
+        }
+
+
+
+        View cardLeaderboard = view.findViewById(R.id.card_leaderboard);
+        if (cardLeaderboard != null) {
+            cardLeaderboard.setOnClickListener(v -> 
+                startActivity(new Intent(requireContext(), com.tomaflow.app.ui.leaderboard.LeaderboardActivity.class))
+            );
+        }
+
+        com.tomaflow.app.data.repository.SubscriptionManager sm = new com.tomaflow.app.data.repository.SubscriptionManager(requireContext());
+        TextView tvRole = view.findViewById(R.id.tv_profile_role);
+        if (sm.isVip()) {
+            tvRole.setText("VIP MEMBER 👑");
+            tvRole.setTextColor(ContextCompat.getColor(requireContext(), R.color.toma_warning));
+        } else {
+            tvRole.setText(getString(R.string.profile_role));
+            tvRole.setTextColor(ContextCompat.getColor(requireContext(), R.color.toma_primary));
+            
+            // Add upgrade button to the header
+            com.google.android.material.button.MaterialButton btnUpgrade = new com.google.android.material.button.MaterialButton(requireContext());
+            btnUpgrade.setText("Upgrade to VIP");
+            btnUpgrade.setOnClickListener(v -> startActivity(new Intent(requireContext(), com.tomaflow.app.ui.premium.PremiumActivity.class)));
+            ((ViewGroup) view.findViewById(R.id.container_avatar).getParent()).addView(btnUpgrade, 2);
         }
 
         view.findViewById(R.id.btn_logout).setOnClickListener(v -> {

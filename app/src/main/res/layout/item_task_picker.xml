@@ -70,4 +70,13 @@
         android:textStyle="bold"
         android:textSize="12sp" />
 
+    <ImageView
+        android:id="@+id/iv_check"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="12dp"
+        android:src="@drawable/ic_check"
+        android:visibility="gone"
+        app:tint="@color/toma_primary" />
+
 </LinearLayout>

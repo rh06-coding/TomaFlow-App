@@ -38,7 +38,7 @@ public class TimerEngineService extends Service {
     private static final String TAG = "TimerEngineService";
     private static final long WAKELOCK_TIMEOUT_MS = 35 * 60 * 1000L;
     private static final long TICK_INTERVAL_MS = 1000L;
-    private static final long NOTIF_UPDATE_INTERVAL_MS = 5000L; // update notification max every 5s
+    private static final long NOTIF_UPDATE_INTERVAL_MS = 1000L; // update notification every second
 
     public static final String ACTION_COMMAND = "com.tomaflow.TIMER_COMMAND";
 
@@ -271,6 +271,14 @@ public class TimerEngineService extends Service {
                 mMainHandler.post(() -> broadcastState(state));
                 // Update foreground/wakeLock on main thread (required for startForeground)
                 mMainHandler.post(() -> updateForegroundStatus(state));
+                // DND toggle
+                mMainHandler.post(() -> {
+                    if (state.state == PomodoroTimer.State.RUNNING_FOCUS) {
+                        com.tomaflow.app.utils.DndManager.checkAndEnableDnd(TimerEngineService.this);
+                    } else {
+                        com.tomaflow.app.utils.DndManager.checkAndDisableDnd(TimerEngineService.this);
+                    }
+                });
                 // Persist state
                 mStateManager.saveState(state,
                         mTimer.getFocusDurationMs(),
