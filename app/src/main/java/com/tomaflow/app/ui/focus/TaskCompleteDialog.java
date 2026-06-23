@@ -1,7 +1,5 @@
 package com.tomaflow.app.ui.focus;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
@@ -18,35 +16,27 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.tomaflow.app.R;
-import com.tomaflow.app.timer.PomodoroTimer;
 
-/**
- * Custom bottom sheet dialog shown when a Focus or Break phase completes.
- */
-public class PhaseCompleteDialog extends BottomSheetDialogFragment {
+public class TaskCompleteDialog extends BottomSheetDialogFragment {
 
-    private static final String ARG_IS_FOCUS    = "is_focus";
-    private static final String ARG_SESSION_COUNT = "session_count";
+    private static final String ARG_TASK_NAME = "task_name";
 
-    public interface OnPhaseCompleteAction {
-        void onPrimaryAction(boolean isFocusComplete);
-        void onSkip(boolean isFocusComplete);
+    public interface OnTaskCompleteAction {
+        void onDismiss();
     }
 
-    private boolean mIsFocusComplete;
-    private int mSessionCount;
-    private OnPhaseCompleteAction mListener;
+    private String mTaskName;
+    private OnTaskCompleteAction mListener;
 
-    public static PhaseCompleteDialog newInstance(boolean isFocusComplete, int sessionCount) {
-        PhaseCompleteDialog d = new PhaseCompleteDialog();
+    public static TaskCompleteDialog newInstance(String taskName) {
+        TaskCompleteDialog d = new TaskCompleteDialog();
         Bundle args = new Bundle();
-        args.putBoolean(ARG_IS_FOCUS, isFocusComplete);
-        args.putInt(ARG_SESSION_COUNT, sessionCount);
+        args.putString(ARG_TASK_NAME, taskName);
         d.setArguments(args);
         return d;
     }
 
-    public void setListener(OnPhaseCompleteAction listener) {
+    public void setListener(OnTaskCompleteAction listener) {
         mListener = listener;
     }
 
@@ -54,8 +44,7 @@ public class PhaseCompleteDialog extends BottomSheetDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mIsFocusComplete = getArguments().getBoolean(ARG_IS_FOCUS, true);
-            mSessionCount    = getArguments().getInt(ARG_SESSION_COUNT, 1);
+            mTaskName = getArguments().getString(ARG_TASK_NAME, "");
         }
     }
 
@@ -64,31 +53,16 @@ public class PhaseCompleteDialog extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_phase_complete, container, false);
+        return inflater.inflate(R.layout.dialog_task_complete, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        TextView tvTitle   = view.findViewById(R.id.tv_dialog_title);
-        TextView tvSub     = view.findViewById(R.id.tv_dialog_sub);
-        ImageView ivIcon   = view.findViewById(R.id.iv_phase_icon);
+        ImageView ivIcon   = view.findViewById(R.id.iv_task_icon);
         View pulseRing     = view.findViewById(R.id.pulse_ring);
         MaterialButton btnPrimary = view.findViewById(R.id.btn_primary_action);
-        MaterialButton btnSkip    = view.findViewById(R.id.btn_skip_dialog);
-
-        if (mIsFocusComplete) {
-            tvTitle.setText(getString(R.string.phase_complete_focus_title));
-            tvSub.setText(getString(R.string.phase_complete_focus_sub_short));
-            btnPrimary.setText(getString(R.string.phase_complete_start_break));
-            ivIcon.setImageResource(R.drawable.ic_tomato);
-        } else {
-            tvTitle.setText(getString(R.string.phase_complete_break_title));
-            tvSub.setText(getString(R.string.phase_complete_break_sub));
-            btnPrimary.setText(getString(R.string.phase_complete_start_focus));
-            ivIcon.setImageResource(R.drawable.ic_focus);
-        }
 
         // Pulse animation on the ring
         startPulseAnimation(pulseRing);
@@ -97,12 +71,7 @@ public class PhaseCompleteDialog extends BottomSheetDialogFragment {
 
         btnPrimary.setOnClickListener(v -> {
             dismiss();
-            if (mListener != null) mListener.onPrimaryAction(mIsFocusComplete);
-        });
-
-        btnSkip.setOnClickListener(v -> {
-            dismiss();
-            if (mListener != null) mListener.onSkip(mIsFocusComplete);
+            if (mListener != null) mListener.onDismiss();
         });
     }
 
@@ -132,11 +101,5 @@ public class PhaseCompleteDialog extends BottomSheetDialogFragment {
               .setDuration(400)
               .setInterpolator(new FastOutSlowInInterpolator())
               .start();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        // Animations are tied to the view, will stop automatically
     }
 }

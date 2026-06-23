@@ -113,7 +113,7 @@ public class NotificationHelper {
                 ? mContext.getString(R.string.notification_focus_complete_title) 
                 : mContext.getString(R.string.notification_break_complete_title);
         String message = phase == Phase.FOCUS 
-                ? mContext.getString(R.string.notification_focus_complete_msg, sessionCount)
+                ? mContext.getString(R.string.notification_focus_complete_short)
                 : mContext.getString(R.string.notification_break_complete_msg);
 
         Intent intent = new Intent(mContext, MainActivity.class);

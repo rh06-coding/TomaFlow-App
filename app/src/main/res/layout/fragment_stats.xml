@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -36,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:text="Stats"
+                android:text="@string/nav_stats"
                 android:textColor="@color/toma_primary"
                 android:textStyle="bold" />
             <View
@@ -78,7 +79,8 @@
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:text="WEEK"
+                    android:layout_weight="1"
+                    android:text="@string/stats_tab_week"
                     android:textColor="@color/toma_primary"
                     android:textStyle="bold" />
                 <com.google.android.material.button.MaterialButton
@@ -86,7 +88,8 @@
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:text="MONTH"
+                    android:layout_weight="1"
+                    android:text="@string/stats_tab_month"
                     android:textColor="@color/toma_text_muted"
                     android:textStyle="bold" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
@@ -116,7 +119,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="32h 14m"
+                    tools:text="32h 14m"
                     android:textColor="@color/toma_text"
                     android:textSize="28sp"
                     android:textStyle="bold" />
@@ -149,7 +152,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="74"
+                tools:text="74"
                 android:textColor="@color/toma_on_primary"
                 android:textSize="32sp"
                 android:textStyle="bold" />
@@ -179,7 +182,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Wed 8.2h"
+                    tools:text="Wed 8.2h"
                     android:textColor="@color/toma_text"
                     android:textSize="28sp"
                     android:textStyle="bold" />
@@ -211,12 +214,12 @@
                     android:layout_marginEnd="10dp"
                     android:drawableStart="@drawable/ic_tomato"
                     android:drawablePadding="4dp"
-                    android:text="FOCUS"
+                    android:text="@string/stats_focus_label"
                     android:textAppearance="@style/TextAppearance.Toma.Label" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="• BREAKS"
+                    android:text="@string/stats_breaks_label"
                     android:textAppearance="@style/TextAppearance.Toma.Label"
                     android:textColor="@color/toma_success" />
             </LinearLayout>
@@ -242,7 +245,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/stats_breakdown"
-                android:textAppearance="@style/TextAppearance.Toma.Title" />
+                android:textAppearance="@style/TextAppearance.Toma.Brand" />
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/pie_chart"
@@ -299,3 +302,4 @@
         </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
+

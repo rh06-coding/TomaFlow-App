@@ -43,7 +43,7 @@
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Finalize Design Tokens"
+                tools:text="Finalize Design Tokens"
                 android:textColor="@color/toma_text"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -51,7 +51,7 @@
                 android:id="@+id/tv_note"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Establish secondary color mappings"
+                tools:text="Establish secondary color mappings"
                 android:textColor="@color/toma_text_muted" />
         </LinearLayout>
 
@@ -64,7 +64,8 @@
             android:paddingVertical="6dp"
             android:drawableStart="@drawable/ic_tomato"
             android:drawablePadding="4dp"
-            android:text="4"
+            android:layout_gravity="center_vertical"
+            tools:text="4"
             android:textColor="@color/toma_primary"
             android:textStyle="bold" />
 

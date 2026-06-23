@@ -136,7 +136,7 @@ public class TasksFragment extends Fragment {
             String title = etTitle.getText().toString().trim();
             String note = etNote.getText().toString().trim();
             if (title.isEmpty()) {
-                Toast.makeText(getContext(), "Vui lòng nhập tên công việc", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.task_name_required), Toast.LENGTH_SHORT).show();
                 return;
             }
             int durationMinutes = 0;

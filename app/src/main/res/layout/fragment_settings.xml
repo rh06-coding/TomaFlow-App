@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -77,7 +78,7 @@
                         android:id="@+id/tv_focus_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="25m"
+                        tools:text="25m"
                         android:textColor="@color/toma_primary"
                         android:textStyle="bold"
                         android:textSize="22sp" />
@@ -99,12 +100,12 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="5 MIN"
+                        tools:text="5 MIN"
                         android:textAppearance="@style/TextAppearance.Toma.Label" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="90 MIN"
+                        tools:text="90 MIN"
                         android:textAppearance="@style/TextAppearance.Toma.Label" />
                 </LinearLayout>
             </LinearLayout>
@@ -139,7 +140,7 @@
                         android:id="@+id/tv_short_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="5m"
+                        tools:text="5m"
                         android:textColor="@color/toma_success"
                         android:textStyle="bold"
                         android:textSize="22sp" />
@@ -157,8 +158,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="1 MIN" android:textAppearance="@style/TextAppearance.Toma.Label" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="15 MIN" android:textAppearance="@style/TextAppearance.Toma.Label" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" tools:text="1 MIN" android:textAppearance="@style/TextAppearance.Toma.Label" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" tools:text="15 MIN" android:textAppearance="@style/TextAppearance.Toma.Label" />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -192,7 +193,7 @@
                         android:id="@+id/tv_long_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="15m"
+                        tools:text="15m"
                         android:textColor="@color/toma_info"
                         android:textStyle="bold"
                         android:textSize="22sp" />
@@ -210,8 +211,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="10 MIN" android:textAppearance="@style/TextAppearance.Toma.Label" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="45 MIN" android:textAppearance="@style/TextAppearance.Toma.Label" />
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" tools:text="10 MIN" android:textAppearance="@style/TextAppearance.Toma.Label" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" tools:text="45 MIN" android:textAppearance="@style/TextAppearance.Toma.Label" />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -429,3 +430,5 @@
         </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
+
+

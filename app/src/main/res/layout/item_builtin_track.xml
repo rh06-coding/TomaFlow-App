@@ -42,7 +42,7 @@
             android:id="@+id/tv_track_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lo-Fi Chill"
+            tools:text="Lo-Fi Chill"
             android:textColor="@color/toma_text"
             android:textStyle="bold"
             android:textSize="15sp" />
@@ -50,7 +50,7 @@
             android:id="@+id/tv_track_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Lofi"
+            tools:text="Lofi"
             android:textColor="@color/toma_text_muted"
             android:textSize="12sp" />
     </LinearLayout>
