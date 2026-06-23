@@ -2,11 +2,17 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="6dp"
+    android:layout_marginTop="6dp"
     android:layout_marginBottom="10dp"
     app:cardCornerRadius="22dp"
-    app:cardElevation="1dp"
+    app:cardElevation="6dp"
+    android:outlineAmbientShadowColor="#40000000"
+    android:outlineSpotShadowColor="#40000000"
+    tools:targetApi="p"
     app:contentPadding="16dp">
 
     <LinearLayout
