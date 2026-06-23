@@ -25,6 +25,7 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
     private final MutableLiveData<PomodoroTimer.TimerState> mTimerState = new MutableLiveData<>();
     private final MutableLiveData<Boolean> mTaskCompletedEvent = new MutableLiveData<>();
     private final MutableLiveData<Integer> mFocusCompleteEvent = new MutableLiveData<>(); // carries sessionCount
+    private final MutableLiveData<Integer> mBreakCompleteEvent = new MutableLiveData<>();
 
     private final SessionRepository mSessionRepository;
     private final com.tomaflow.app.data.repository.TaskRepository mTaskRepository;
@@ -70,6 +71,10 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
 
     public MutableLiveData<Integer> getFocusCompleteEvent() {
         return mFocusCompleteEvent;
+    }
+
+    public MutableLiveData<Integer> getBreakCompleteEvent() {
+        return mBreakCompleteEvent;
     }
 
     /**
@@ -129,6 +134,7 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
 
     @Override
     public void onBreakComplete(int sessionCount) {
+        mBreakCompleteEvent.postValue(sessionCount);
         // Break sessions are not stored for now.
         // Week 4 only requires saving focus sessions.
     }

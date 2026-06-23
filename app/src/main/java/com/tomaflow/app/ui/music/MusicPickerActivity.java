@@ -76,6 +76,11 @@ public class MusicPickerActivity extends AppCompatActivity {
         layoutLocal = findViewById(R.id.layout_local_tracks);
 
         findViewById(R.id.btn_pick_from_device).setOnClickListener(v -> {
+            com.tomaflow.app.data.repository.SubscriptionManager sm = new com.tomaflow.app.data.repository.SubscriptionManager(this);
+            if (!sm.isVip()) {
+                com.tomaflow.app.ui.premium.PremiumGateDialog.newInstance().show(getSupportFragmentManager(), "PremiumGateDialog");
+                return;
+            }
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.setType("audio/*");
             intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -116,6 +121,13 @@ public class MusicPickerActivity extends AppCompatActivity {
             itemView.setTag(track.id);
 
             itemView.setOnClickListener(v -> {
+                com.tomaflow.app.data.repository.SubscriptionManager sm = new com.tomaflow.app.data.repository.SubscriptionManager(this);
+                // Assume first track is free, others require VIP
+                boolean isFirstTrack = track.id.equals(BuiltInTrackCatalog.TRACKS.get(0).id);
+                if (!isFirstTrack && !sm.isVip()) {
+                    com.tomaflow.app.ui.premium.PremiumGateDialog.newInstance().show(getSupportFragmentManager(), "PremiumGateDialog");
+                    return;
+                }
                 AppMusicPlayer.getInstance().play(this, track);
             });
 

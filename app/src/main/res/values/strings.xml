@@ -227,5 +227,56 @@
     <string name="profile_ranking">RANKING</string>
     <string name="profile_hours">HOURS</string>
     <string name="profile_streak">STREAK</string>
+    <string name="dialog_btn_skip">Skip Break</string>
+
+    <string name="notification_action_music">Music</string>
+
+    <!-- Strict Mode -->
+    <string name="settings_strict_mode">Strict Mode</string>
+    <string name="settings_strict_mode_desc">Lock pause button during focus sessions</string>
+    <string name="strict_mode_blocked">Strict Mode is on. Stay focused!</string>
+
+    <!-- DND -->
+    <string name="settings_dnd">Focus Mode (Do Not Disturb)</string>
+    <string name="settings_dnd_desc">Silence notifications while focusing</string>
+    <string name="dnd_permission_needed">Allow notification access to enable Focus Mode</string>
+    <string name="dnd_permission_btn">Open Settings</string>
+
+    <!-- Note / Journal -->
+    <string name="stats_journal_title">Focus Journal</string>
+    <string name="stats_journal_empty">No entries yet. Add your first note!</string>
+    <string name="note_add_title">Add Note</string>
+    <string name="note_title_hint">Title (optional)</string>
+    <string name="note_content_hint">How did your focus session go?</string>
+    <string name="note_mood_label">Mood</string>
+    <string name="note_save">Save</string>
+    <string name="note_delete_confirm">Delete this note?</string>
+    <string name="mood_happy">😊 Great</string>
+    <string name="mood_focused">🎯 Focused</string>
+    <string name="mood_tired">😴 Tired</string>
+    <string name="mood_stressed">😤 Stressed</string>
+
+    <!-- Premium / VIP -->
+    <string name="premium_title">Upgrade to VIP</string>
+    <string name="premium_subtitle">Unlock your full potential</string>
+    <string name="premium_btn_upgrade">Upgrade Now</string>
+    <string name="premium_btn_later">Maybe later</string>
+    <string name="premium_gate_title">VIP Feature</string>
+    <string name="premium_gate_desc">This feature is available for VIP members.</string>
+    <string name="premium_badge">VIP 👑</string>
+    <string name="premium_success">You are now a VIP member! 🎉</string>
+    <string name="feature_normal_tasks_limit">Free plan: max 5 active tasks</string>
+
+    <!-- Share -->
+    <string name="share_achievement_title">Share Achievement</string>
+    <string name="share_text">I\'ve completed %1$d Pomodoros with TomaFlow! 🍅 #TomaFlow #Productivity</string>
+
+    <!-- Leaderboard -->
+    <string name="leaderboard_title">Leaderboard</string>
+    <string name="leaderboard_tab_global">Global</string>
+    <string name="leaderboard_tab_friends">Friends</string>
+    <string name="leaderboard_coming_soon">Friends feature coming soon!</string>
+    <string name="leaderboard_rank">Rank #%1$d</string>
+    <string name="leaderboard_empty">No data yet. Complete a session to appear here!</string>
 
 </resources>

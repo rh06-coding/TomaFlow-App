@@ -46,12 +46,13 @@
                 android:textAppearance="@style/TextAppearance.Toma.Label"
                 android:textColor="@color/toma_primary" />
 
-            <LinearLayout
-                android:id="@+id/layout_task_list"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_task_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:orientation="vertical" />
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
                 
             <TextView
                 android:id="@+id/tv_empty_tasks"

@@ -46,4 +46,20 @@ public class SettingsManager {
     private void putMinutes(String key, int minutes) {
         mPrefs.edit().putInt(key, minutes).apply();
     }
+
+    public boolean isStrictMode() {
+        return mPrefs.getBoolean("pref_strict_mode", false);
+    }
+
+    public void setStrictMode(boolean enabled) {
+        mPrefs.edit().putBoolean("pref_strict_mode", enabled).apply();
+    }
+
+    public boolean isDndMode() {
+        return mPrefs.getBoolean("pref_dnd_mode", false);
+    }
+
+    public void setDndMode(boolean enabled) {
+        mPrefs.edit().putBoolean("pref_dnd_mode", enabled).apply();
+    }
 }
