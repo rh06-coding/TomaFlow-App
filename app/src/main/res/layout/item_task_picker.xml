@@ -41,7 +41,7 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tên task"
+            tools:text="Tên task"
             android:textColor="@color/toma_text"
             android:textStyle="bold"
             android:textSize="15sp"
@@ -51,8 +51,8 @@
             android:id="@+id/tv_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mô tả"
-            android:textColor="@color/toma_primary"
+            tools:text="Mô tả"
+            android:textColor="@color/toma_text_muted"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -64,8 +64,8 @@
         android:paddingHorizontal="10dp"
         android:paddingVertical="4dp"
         android:drawableStart="@drawable/ic_tomato"
-        android:drawablePadding="4dp"
-        android:text="4"
+        android:gravity="center"
+        tools:text="4"
         android:textColor="@color/toma_primary"
         android:textStyle="bold"
         android:textSize="12sp" />

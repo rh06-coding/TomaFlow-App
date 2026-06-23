@@ -12,6 +12,7 @@ import com.tomaflow.app.data.repository.TaskRepository;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import com.tomaflow.app.utils.LanguageManager;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -51,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     } catch (ApiException e) {
                         Log.w(TAG, "Google sign in failed", e);
-                        Toast.makeText(this, "Google sign in failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.auth_google_failed) + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -92,6 +93,23 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(this, RegisterActivity.class)));
 
         btnForgot.setOnClickListener(v -> forgotPassword());
+
+        setupLanguageToggle();
+    }
+
+    private void setupLanguageToggle() {
+        TextView tvLangToggle = findViewById(R.id.tv_lang_toggle);
+        if (tvLangToggle == null) return;
+        
+        String currentLang = LanguageManager.getSavedLanguage(this);
+        tvLangToggle.setText(LanguageManager.LANG_VI.equals(currentLang) ? "EN" : "VI");
+
+        tvLangToggle.setOnClickListener(v -> {
+            String newLang = LanguageManager.LANG_VI.equals(currentLang) 
+                    ? LanguageManager.LANG_EN : LanguageManager.LANG_VI;
+            LanguageManager.setLanguage(this, newLang);
+            recreate();
+        });
     }
 
     private void signInWithGoogle() {
@@ -106,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         goToMain();
                     } else {
-                        Toast.makeText(LoginActivity.this, "Authentication Failed.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, getString(R.string.auth_login_failed), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -115,15 +133,15 @@ public class LoginActivity extends AppCompatActivity {
         String email = mEdtEmail.getText().toString().trim();
         String pass  = mEdtPassword.getText().toString().trim();
 
-        if (TextUtils.isEmpty(email)) { mEdtEmail.setError("Bắt buộc"); return; }
-        if (TextUtils.isEmpty(pass))  { mEdtPassword.setError("Bắt buộc"); return; }
+        if (TextUtils.isEmpty(email)) { mEdtEmail.setError(getString(R.string.error_required)); return; }
+        if (TextUtils.isEmpty(pass))  { mEdtPassword.setError(getString(R.string.error_required)); return; }
 
         mBtnSignIn.setEnabled(false);
         mAuth.signInWithEmailAndPassword(email, pass)
             .addOnSuccessListener(result -> goToMain())
             .addOnFailureListener(e -> {
                 mBtnSignIn.setEnabled(true);
-                Toast.makeText(this, "Đăng nhập thất bại: " + e.getMessage(),
+                Toast.makeText(this, getString(R.string.auth_login_failed_msg) + e.getMessage(),
                     Toast.LENGTH_LONG).show();
             });
     }
@@ -131,12 +149,12 @@ public class LoginActivity extends AppCompatActivity {
     private void forgotPassword() {
         String email = mEdtEmail.getText().toString().trim();
         if (TextUtils.isEmpty(email)) {
-            mEdtEmail.setError("Nhập email để reset mật khẩu");
+            mEdtEmail.setError(getString(R.string.auth_email_required_reset));
             return;
         }
         mAuth.sendPasswordResetEmail(email)
             .addOnSuccessListener(v ->
-                Toast.makeText(this, "Email reset đã gửi", Toast.LENGTH_SHORT).show())
+                Toast.makeText(this, getString(R.string.auth_reset_email_sent), Toast.LENGTH_SHORT).show())
             .addOnFailureListener(e ->
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }

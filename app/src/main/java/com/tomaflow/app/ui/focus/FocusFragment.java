@@ -302,15 +302,13 @@ public class FocusFragment extends Fragment {
 
         mTimerViewModel.getTaskCompletedEvent().observe(getViewLifecycleOwner(), completed -> {
             if (Boolean.TRUE.equals(completed)) {
-                new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                    .setTitle(getString(R.string.focus_task_complete_title))
-                    .setMessage(getString(R.string.focus_task_complete_msg))
-                    .setPositiveButton(getString(R.string.ok), null)
-                    .show();
-
-                mCurrentTask = null;
-                mTimerViewModel.setCurrentTaskId(null);
-                updateTaskUI();
+                TaskCompleteDialog dialog = TaskCompleteDialog.newInstance(mCurrentTask != null ? mCurrentTask.title : "");
+                dialog.setListener(() -> {
+                    mCurrentTask = null;
+                    mTimerViewModel.setCurrentTaskId(null);
+                    updateTaskUI();
+                });
+                dialog.show(getParentFragmentManager(), "task_complete");
 
                 // Consume event
                 mTimerViewModel.getTaskCompletedEvent().setValue(false);
