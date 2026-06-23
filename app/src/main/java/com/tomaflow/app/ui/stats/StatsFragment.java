@@ -64,6 +64,15 @@ public class StatsFragment extends Fragment {
         if (avatar != null) {
             avatar.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.nav_profile));
         }
+
+        View btnShare = view.findViewById(R.id.btn_share);
+        if (btnShare != null) {
+            btnShare.setOnClickListener(v -> {
+                String pomos = mTvPomos != null ? mTvPomos.getText().toString() : "0";
+                String time = mTvTotalFocus != null ? mTvTotalFocus.getText().toString() : "0h 0m";
+                com.tomaflow.app.utils.ShareHelper.shareStats(requireContext(), view, pomos, time);
+            });
+        }
         
         return view;
     }
@@ -93,6 +102,29 @@ public class StatsFragment extends Fragment {
         rangeToggle.check(R.id.btn_week);
         highlightActiveRange(view, R.id.btn_week);
         observeRange(RANGE_WEEK_DAYS);
+
+        // Journal logic
+        NoteViewModel noteViewModel = new androidx.lifecycle.ViewModelProvider(this).get(NoteViewModel.class);
+        NoteAdapter noteAdapter = new NoteAdapter();
+        androidx.recyclerview.widget.RecyclerView recyclerNotes = view.findViewById(R.id.recycler_notes);
+        recyclerNotes.setAdapter(noteAdapter);
+
+        TextView tvJournalEmpty = view.findViewById(R.id.tv_journal_empty);
+
+        noteViewModel.getAllNotes().observe(getViewLifecycleOwner(), notes -> {
+            noteAdapter.submitList(notes);
+            if (notes == null || notes.isEmpty()) {
+                tvJournalEmpty.setVisibility(View.VISIBLE);
+                recyclerNotes.setVisibility(View.GONE);
+            } else {
+                tvJournalEmpty.setVisibility(View.GONE);
+                recyclerNotes.setVisibility(View.VISIBLE);
+            }
+        });
+
+        view.findViewById(R.id.btn_add_note).setOnClickListener(v -> {
+            AddNoteBottomSheet.newInstance().show(getChildFragmentManager(), "AddNoteBottomSheet");
+        });
     }
 
     private void highlightActiveRange(View view, int checkedId) {

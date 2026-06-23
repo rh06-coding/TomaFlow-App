@@ -20,16 +20,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical">
-            <ImageView
-                android:id="@+id/btn_menu"
-                android:layout_width="28dp" android:layout_height="28dp"
-                android:src="@drawable/ic_menu" app:tint="@color/toma_text" />
             <TextView
                 android:id="@+id/tv_app_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="10dp"
                 android:text="@string/app_name"
                 android:textAppearance="@style/TextAppearance.Toma.Brand" />
             <TextView
@@ -40,6 +35,11 @@
                 android:text="@string/nav_stats"
                 android:textColor="@color/toma_primary"
                 android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/btn_share"
+                android:layout_width="28dp" android:layout_height="28dp"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_share" app:tint="@color/toma_primary" />
             <View
                 android:id="@+id/iv_avatar"
                 android:layout_width="36dp" android:layout_height="36dp"
@@ -95,99 +95,160 @@
             </com.google.android.material.button.MaterialButtonToggleGroup>
         </LinearLayout>
 
-        <!-- Total Focus Time -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_total_focus"
+        <!-- 3 Stats Cards in Horizontal Layout -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            app:contentPadding="20dp">
+            android:orientation="horizontal"
+            android:weightSum="3"
+            android:baselineAligned="false">
+
+            <!-- Total Focus Time -->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <ImageView android:layout_width="22dp" android:layout_height="22dp"
+                android:id="@+id/card_total_focus"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_card_muted"
+                android:orientation="vertical"
+                android:padding="12dp"
+                android:gravity="center">
+                <ImageView android:layout_width="20dp" android:layout_height="20dp"
                     android:src="@drawable/ic_focus" app:tint="@color/toma_primary" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="42dp"
-                    android:text="@string/stats_total"
-                    android:textAppearance="@style/TextAppearance.Toma.Label" />
                 <TextView
                     android:id="@+id/tv_total_focus_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    tools:text="32h 14m"
+                    android:layout_marginTop="6dp"
+                    tools:text="32h"
                     android:textColor="@color/toma_text"
-                    android:textSize="28sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Pomodoros Completed (primary) -->
-        <LinearLayout
-            android:id="@+id/card_pomos_completed"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_card_primary"
-            android:orientation="vertical"
-            android:padding="20dp">
-            <ImageView android:layout_width="22dp" android:layout_height="22dp"
-                android:src="@drawable/ic_check" app:tint="@color/toma_on_primary" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="42dp"
-                android:text="@string/stats_pomos"
-                android:textColor="@color/toma_on_primary"
-                android:alpha="0.85"
-                android:textSize="10sp"
-                android:textAllCaps="true"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/tv_pomos_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                tools:text="74"
-                android:textColor="@color/toma_on_primary"
-                android:textSize="32sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Best day -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_best_day"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:contentPadding="20dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <ImageView android:layout_width="22dp" android:layout_height="22dp"
-                    android:src="@drawable/ic_star" app:tint="@color/toma_success" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="42dp"
-                    android:text="@string/stats_best"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/stats_total"
+                    android:textSize="10sp"
                     android:textAppearance="@style/TextAppearance.Toma.Label" />
+            </LinearLayout>
+
+            <!-- Pomodoros Completed -->
+            <LinearLayout
+                android:id="@+id/card_pomos_completed"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="6dp"
+                android:background="@drawable/bg_card_primary"
+                android:orientation="vertical"
+                android:padding="12dp"
+                android:gravity="center">
+                <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                    android:src="@drawable/ic_check" app:tint="@color/toma_on_primary" />
+                <TextView
+                    android:id="@+id/tv_pomos_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    tools:text="74"
+                    android:textColor="@color/toma_on_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/stats_pomos"
+                    android:textColor="@color/toma_on_primary"
+                    android:alpha="0.85"
+                    android:textSize="10sp"
+                    android:textAllCaps="true"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Best day -->
+            <LinearLayout
+                android:id="@+id/card_best_day"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_card_muted"
+                android:orientation="vertical"
+                android:padding="12dp"
+                android:gravity="center">
+                <ImageView android:layout_width="20dp" android:layout_height="20dp"
+                    android:src="@drawable/ic_star" app:tint="@color/toma_success" />
                 <TextView
                     android:id="@+id/tv_best_day_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    tools:text="Wed 8.2h"
+                    android:layout_marginTop="6dp"
+                    tools:text="8.2h"
                     android:textColor="@color/toma_text"
-                    android:textSize="28sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/stats_best"
+                    android:textSize="10sp"
+                    android:textAppearance="@style/TextAppearance.Toma.Label" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+
+        <!-- Journal Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/stats_journal_title"
+                    android:textAppearance="@style/TextAppearance.Toma.Title" />
+                <ImageView
+                    android:id="@+id/btn_add_note"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:padding="4dp"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:src="@drawable/ic_add"
+                    app:tint="@color/toma_primary" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_journal_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_card_muted"
+                android:padding="20dp"
+                android:gravity="center"
+                android:text="@string/stats_journal_empty"
+                android:textAppearance="@style/TextAppearance.Toma.Body" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_notes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_note" />
+        </LinearLayout>
 
         <!-- Chart placeholder -->
         <LinearLayout
@@ -201,6 +262,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:baselineAligned="false"
                 android:gravity="center_vertical">
                 <TextView
                     android:layout_width="0dp"
@@ -208,20 +270,39 @@
                     android:layout_weight="1"
                     android:text="@string/stats_intensity"
                     android:textAppearance="@style/TextAppearance.Toma.Title" />
-                <TextView
+                    
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:drawableStart="@drawable/ic_tomato"
-                    android:drawablePadding="4dp"
-                    android:text="@string/stats_focus_label"
-                    android:textAppearance="@style/TextAppearance.Toma.Label" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/stats_breaks_label"
-                    android:textAppearance="@style/TextAppearance.Toma.Label"
-                    android:textColor="@color/toma_success" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    
+                    <ImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:src="@drawable/ic_tomato" />
+                        
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="10dp"
+                        android:text="@string/stats_focus_label"
+                        android:textAppearance="@style/TextAppearance.Toma.Label" />
+                        
+                    <View
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:background="@drawable/bg_icon_chip_success" />
+                        
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="@string/stats_breaks_label"
+                        android:textAppearance="@style/TextAppearance.Toma.Label"
+                        android:textColor="@color/toma_success" />
+                </LinearLayout>
             </LinearLayout>
 
             <!-- Weekly focus minutes per day -->

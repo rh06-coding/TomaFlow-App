@@ -203,5 +203,56 @@
     <string name="profile_ranking">XẾP HẠNG</string>
     <string name="profile_hours">SỐ GIỜ</string>
     <string name="profile_streak">CHUỖI</string>
+    <string name="dialog_btn_skip">Bỏ qua giải lao</string>
+
+    <string name="notification_action_music">Nhạc</string>
+
+    <!-- Strict Mode -->
+    <string name="settings_strict_mode">Chế độ nghiêm ngặt</string>
+    <string name="settings_strict_mode_desc">Khóa nút tạm dừng khi đang tập trung</string>
+    <string name="strict_mode_blocked">Chế độ nghiêm ngặt đang bật. Hãy tiếp tục tập trung!</string>
+
+    <!-- DND -->
+    <string name="settings_dnd">Chế độ tập trung (Không làm phiền)</string>
+    <string name="settings_dnd_desc">Tắt thông báo từ app khác khi đang tập trung</string>
+    <string name="dnd_permission_needed">Cho phép quyền truy cập thông báo để bật Chế độ tập trung</string>
+    <string name="dnd_permission_btn">Mở cài đặt</string>
+
+    <!-- Note / Journal -->
+    <string name="stats_journal_title">Nhật ký tập trung</string>
+    <string name="stats_journal_empty">Chưa có ghi chú nào. Thêm ghi chú đầu tiên!</string>
+    <string name="note_add_title">Thêm ghi chú</string>
+    <string name="note_title_hint">Tiêu đề (tuỳ chọn)</string>
+    <string name="note_content_hint">Buổi tập trung hôm nay thế nào?</string>
+    <string name="note_mood_label">Tâm trạng</string>
+    <string name="note_save">Lưu</string>
+    <string name="note_delete_confirm">Xóa ghi chú này?</string>
+    <string name="mood_happy">😊 Tuyệt vời</string>
+    <string name="mood_focused">🎯 Tập trung</string>
+    <string name="mood_tired">😴 Mệt mỏi</string>
+    <string name="mood_stressed">😤 Căng thẳng</string>
+
+    <!-- Premium / VIP -->
+    <string name="premium_title">Nâng cấp VIP</string>
+    <string name="premium_subtitle">Mở khoá toàn bộ tiềm năng của bạn</string>
+    <string name="premium_btn_upgrade">Nâng cấp ngay</string>
+    <string name="premium_btn_later">Để sau</string>
+    <string name="premium_gate_title">Tính năng VIP</string>
+    <string name="premium_gate_desc">Tính năng này dành riêng cho thành viên VIP.</string>
+    <string name="premium_badge">VIP 👑</string>
+    <string name="premium_success">Bạn đã là thành viên VIP! 🎉</string>
+    <string name="feature_normal_tasks_limit">Gói miễn phí: tối đa 5 công việc</string>
+
+    <!-- Share -->
+    <string name="share_achievement_title">Chia sẻ thành tích</string>
+    <string name="share_text">Mình vừa hoàn thành %1$d Pomodoro với TomaFlow! 🍅 #TomaFlow #NăngSuất</string>
+
+    <!-- Leaderboard -->
+    <string name="leaderboard_title">Bảng xếp hạng</string>
+    <string name="leaderboard_tab_global">Toàn cầu</string>
+    <string name="leaderboard_tab_friends">Bạn bè</string>
+    <string name="leaderboard_coming_soon">Tính năng bạn bè sắp ra mắt!</string>
+    <string name="leaderboard_rank">Hạng #%1$d</string>
+    <string name="leaderboard_empty">Chưa có dữ liệu. Hoàn thành 1 phiên để xuất hiện tại đây!</string>
 
 </resources>

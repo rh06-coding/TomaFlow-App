@@ -33,8 +33,14 @@
                 android:layout_marginStart="10dp"
                 android:text="@string/app_name"
                 android:textAppearance="@style/TextAppearance.Toma.Brand" />
-            <View android:layout_width="36dp" android:layout_height="36dp"
-                android:background="@drawable/bg_avatar_circle" />
+            <ImageView
+                android:id="@+id/btn_settings"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_avatar_circle"
+                android:src="@drawable/ic_settings"
+                android:padding="8dp"
+                app:tint="@color/toma_primary" />
         </LinearLayout>
 
         <!-- Avatar -->
@@ -54,6 +60,14 @@
                 android:textColor="@color/toma_primary"
                 android:textSize="36sp"
                 android:textStyle="bold" />
+            <ImageView
+                android:id="@+id/iv_profile_avatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="@drawable/bg_avatar_circle"
+                android:clipToOutline="true"
+                android:visibility="gone" />
             <FrameLayout
                 android:layout_width="36dp"
                 android:layout_height="36dp"
@@ -131,6 +145,56 @@
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:text="@string/profile_streak" android:textAppearance="@style/TextAppearance.Toma.Label" />
             </LinearLayout>
+        </LinearLayout>
+
+        <!-- Leaderboard Card -->
+        <LinearLayout
+            android:id="@+id/card_leaderboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/bg_card_primary_soft"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:clickable="true"
+            android:focusable="true">
+            <FrameLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_icon_chip_primary">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_star"
+                    app:tint="@color/toma_primary" />
+            </FrameLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="14dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/leaderboard_title"
+                    android:textColor="@color/toma_text"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View your global ranking"
+                    android:textColor="@color/toma_text_muted"
+                    android:textSize="13sp" />
+            </LinearLayout>
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_chevron_right"
+                app:tint="@color/toma_text_muted" />
         </LinearLayout>
 
         <!-- Badges header -->

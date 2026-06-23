@@ -244,6 +244,13 @@ public class FocusFragment extends Fragment {
         if (state == null) return;
 
         if (state.isRunning) {
+            if (state.phase == PomodoroTimer.Phase.FOCUS) {
+                com.tomaflow.app.timer.SettingsManager settings = new com.tomaflow.app.timer.SettingsManager(requireContext());
+                if (settings.isStrictMode()) {
+                    android.widget.Toast.makeText(requireContext(), R.string.strict_mode_blocked, android.widget.Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
             mTimerViewModel.sendCommand(com.tomaflow.app.constants.AppConstants.COMMAND_PAUSE);
         } else {
             if (state.state == PomodoroTimer.State.IDLE) {
@@ -255,8 +262,15 @@ public class FocusFragment extends Fragment {
     }
 
     private void onResetClicked() {
-        // Nếu đang chạy Focus thì cây héo
         PomodoroTimer.TimerState cur = mTimerViewModel.getTimerState().getValue();
+        if (cur != null && cur.phase == PomodoroTimer.Phase.FOCUS) {
+            com.tomaflow.app.timer.SettingsManager settings = new com.tomaflow.app.timer.SettingsManager(requireContext());
+            if (settings.isStrictMode()) {
+                android.widget.Toast.makeText(requireContext(), R.string.strict_mode_blocked, android.widget.Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
         if (cur != null && cur.isRunning && cur.phase == PomodoroTimer.Phase.FOCUS) {
             wiltTomato();
         }
@@ -264,8 +278,15 @@ public class FocusFragment extends Fragment {
     }
 
     private void onSkipClicked() {
-        // Nếu đang chạy Focus thì cây héo (skip = bỏ dở)
         PomodoroTimer.TimerState cur = mTimerViewModel.getTimerState().getValue();
+        if (cur != null && cur.phase == PomodoroTimer.Phase.FOCUS) {
+            com.tomaflow.app.timer.SettingsManager settings = new com.tomaflow.app.timer.SettingsManager(requireContext());
+            if (settings.isStrictMode()) {
+                android.widget.Toast.makeText(requireContext(), R.string.strict_mode_blocked, android.widget.Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
         if (cur != null && cur.isRunning && cur.phase == PomodoroTimer.Phase.FOCUS) {
             wiltTomato();
         }
@@ -315,12 +336,18 @@ public class FocusFragment extends Fragment {
             }
         });
 
-        // ── Phase complete dialog ─────────────────────────────────────────────
         mTimerViewModel.getFocusCompleteEvent().observe(getViewLifecycleOwner(), sessionCount -> {
             if (sessionCount == null || sessionCount <= 0) return;
             // Consume immediately
             mTimerViewModel.getFocusCompleteEvent().setValue(null);
             showPhaseCompleteDialog(true, sessionCount);
+        });
+
+        mTimerViewModel.getBreakCompleteEvent().observe(getViewLifecycleOwner(), sessionCount -> {
+            if (sessionCount == null || sessionCount <= 0) return;
+            // Consume immediately
+            mTimerViewModel.getBreakCompleteEvent().setValue(null);
+            showPhaseCompleteDialog(false, sessionCount);
         });
     }
 

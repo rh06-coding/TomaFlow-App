@@ -38,8 +38,34 @@ public class SettingsFragment extends Fragment {
         bindDarkMode(view);
         bindDurationSettings(view);
         bindLanguageToggle(view);
+        bindToggles(view);
 
         return view;
+    }
+
+    private void bindToggles(View view) {
+        MaterialSwitch strictSwitch = view.findViewById(R.id.switch_strict);
+        if (strictSwitch != null) {
+            strictSwitch.setChecked(mSettingsManager.isStrictMode());
+            strictSwitch.setOnCheckedChangeListener((btn, isChecked) -> {
+                com.tomaflow.app.data.repository.SubscriptionManager subManager =
+                        new com.tomaflow.app.data.repository.SubscriptionManager(requireContext());
+                if (isChecked && !subManager.isVip()) {
+                    btn.setChecked(false);
+                    com.tomaflow.app.ui.premium.PremiumGateDialog.newInstance().show(getChildFragmentManager(), "PremiumGateDialog");
+                } else {
+                    mSettingsManager.setStrictMode(isChecked);
+                }
+            });
+        }
+
+        MaterialSwitch dndSwitch = view.findViewById(R.id.switch_dnd);
+        if (dndSwitch != null) {
+            dndSwitch.setChecked(mSettingsManager.isDndMode());
+            dndSwitch.setOnCheckedChangeListener((btn, isChecked) -> {
+                mSettingsManager.setDndMode(isChecked);
+            });
+        }
     }
 
     private void bindLanguageToggle(View view) {
@@ -92,6 +118,18 @@ public class SettingsFragment extends Fragment {
         int minutes = (int) (durationMs / 60000L);
         label.setText(formatMinutes(minutes));
         slider.setValue(snapToSlider(slider, minutes));
+        
+        slider.setOnTouchListener((v, event) -> {
+            com.tomaflow.app.data.repository.SubscriptionManager sm = new com.tomaflow.app.data.repository.SubscriptionManager(requireContext());
+            if (!sm.isVip()) {
+                if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+                    com.tomaflow.app.ui.premium.PremiumGateDialog.newInstance().show(getChildFragmentManager(), "PremiumGateDialog");
+                }
+                return true;
+            }
+            return false;
+        });
+
         slider.addOnChangeListener((s, value, fromUser) -> {
             label.setText(formatMinutes((int) value));
             if (fromUser) {

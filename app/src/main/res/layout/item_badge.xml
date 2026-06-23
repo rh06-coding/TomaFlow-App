@@ -9,6 +9,7 @@
     android:layout_margin="6dp"
     app:cardCornerRadius="22dp"
     app:cardElevation="1dp"
+    app:cardBackgroundColor="@color/toma_surface"
     app:contentPadding="18dp">
 
     <LinearLayout
@@ -46,6 +47,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:minLines="2"
+            android:maxLines="2"
             tools:text="Early Bird"
             android:textColor="@color/toma_text"
             android:textStyle="bold"
@@ -57,6 +61,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:gravity="center"
+            android:minLines="2"
+            android:maxLines="2"
             tools:text="10 Sessions before 7 AM"
             android:textAppearance="@style/TextAppearance.Toma.Body"
             android:textSize="12sp" />
