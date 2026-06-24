@@ -65,22 +65,14 @@ public class StatsFragment extends Fragment {
         if (avatar != null) {
             avatar.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.nav_profile));
         }
-
-        View btnShare = view.findViewById(R.id.btn_share);
-        if (btnShare != null) {
-            btnShare.setOnClickListener(v -> {
-                String pomos = mTvPomos != null ? mTvPomos.getText().toString() : "0";
-                String time = mTvTotalFocus != null ? mTvTotalFocus.getText().toString() : "0h 0m";
-                com.tomaflow.app.utils.ShareHelper.shareStats(requireContext(), view, pomos, time);
-            });
-        }
-        
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        com.tomaflow.app.utils.HeaderUIHelper.setupHeader(view, getString(R.string.nav_stats), getViewLifecycleOwner());
 
         mSessionRepository = new SessionRepository(requireActivity().getApplication());
 

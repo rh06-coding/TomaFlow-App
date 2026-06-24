@@ -328,4 +328,5 @@
     <string name="auth_language_switch">VI | EN</string>
 
     <string name="task_items_count">%1$d ITEMS</string>
+    <string name="profile_edit">Edit Profile</string>
 </resources>

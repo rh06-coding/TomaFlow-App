@@ -1,13 +1,18 @@
 package com.tomaflow.app.utils;
 
+import android.app.Activity;
 import android.content.Context;
-import android.view.Gravity;
+import android.content.ContextWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tomaflow.app.R;
 
 public class TomaToast {
@@ -25,29 +30,54 @@ public class TomaToast {
     }
 
     public static void show(Context context, String message, boolean isError) {
-        try {
-            LayoutInflater inflater = LayoutInflater.from(context);
-            View layout = inflater.inflate(R.layout.layout_toma_toast, null);
+        View parentView = null;
+        if (context instanceof Activity) {
+            parentView = ((Activity) context).findViewById(android.R.id.content);
+        } else if (context instanceof ContextWrapper) {
+            Context base = ((ContextWrapper) context).getBaseContext();
+            if (base instanceof Activity) {
+                parentView = ((Activity) base).findViewById(android.R.id.content);
+            }
+        }
 
-            TextView tvMessage = layout.findViewById(R.id.tv_toast_message);
-            tvMessage.setText(message);
+        if (parentView == null) {
+            // Fallback
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            Snackbar snackbar = Snackbar.make(parentView, "", Snackbar.LENGTH_LONG);
+            Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
             
-            ImageView icon = layout.findViewById(R.id.iv_toast_icon);
-            if (isError) {
-                icon.setImageResource(R.drawable.ic_close);
-                icon.setColorFilter(context.getResources().getColor(R.color.toma_error, null));
-            } else {
-                icon.setImageResource(R.drawable.ic_check);
-                icon.setColorFilter(context.getResources().getColor(R.color.toma_primary, null));
+            layout.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
+            layout.setPadding(0, 0, 0, 0);
+            if (layout.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) layout.getLayoutParams();
+                params.setMargins(0, 0, 0, 0);
+                layout.setLayoutParams(params);
             }
 
-            Toast toast = new Toast(context.getApplicationContext());
-            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 100);
-            toast.setDuration(Toast.LENGTH_SHORT);
-            toast.setView(layout);
-            toast.show();
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View customView = inflater.inflate(R.layout.layout_toma_snackbar, null);
+
+            TextView tvMessage = customView.findViewById(R.id.snackbar_text);
+            tvMessage.setText(message);
+
+            ImageView icon = customView.findViewById(R.id.snackbar_icon);
+            View container = customView.findViewById(R.id.snackbar_container);
+
+            if (isError) {
+                icon.setImageResource(R.drawable.ic_close);
+                container.setBackgroundResource(R.drawable.bg_toma_snackbar_error);
+            } else {
+                icon.setImageResource(R.drawable.ic_check);
+                container.setBackgroundResource(R.drawable.bg_toma_snackbar_success);
+            }
+
+            layout.addView(customView, 0);
+            snackbar.show();
         } catch (Exception e) {
-            // Fallback
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
     }

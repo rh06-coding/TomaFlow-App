@@ -31,6 +31,8 @@ public class TasksFragment extends Fragment {
     private RecyclerView rvDone;
     private TextView tvActiveCountLabel;
     private TextView tvDoneCountLabel;
+    private TextView tvEstPomosValue;
+    private TextView tvCompletionRateValue;
     private TaskAdapter activeAdapter;
     private TaskAdapter doneAdapter;
     private final List<TaskEntity> activeTasks = new ArrayList<>();
@@ -42,11 +44,21 @@ public class TasksFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_tasks, container, false);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        com.tomaflow.app.utils.HeaderUIHelper.setupHeader(view, getString(R.string.nav_tasks), getViewLifecycleOwner());
 
         rvActive = view.findViewById(R.id.rv_active);
         rvDone = view.findViewById(R.id.rv_done);
         tvActiveCountLabel = view.findViewById(R.id.tv_active_count_label);
         tvDoneCountLabel = view.findViewById(R.id.tv_done_count_label);
+        tvEstPomosValue = view.findViewById(R.id.tv_est_pomos_value);
+        tvCompletionRateValue = view.findViewById(R.id.tv_completion_rate_value);
 
         mTaskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 
@@ -60,8 +72,6 @@ public class TasksFragment extends Fragment {
 
         FloatingActionButton fabAdd = view.findViewById(R.id.fab_add);
         fabAdd.setOnClickListener(v -> showAddTaskDialog());
-
-        return view;
     }
 
     private void setupRecyclerViews() {
@@ -97,18 +107,33 @@ public class TasksFragment extends Fragment {
         mTaskViewModel.getAllTasks().observe(getViewLifecycleOwner(), tasks -> {
             activeTasks.clear();
             doneTasks.clear();
+            int estPomos = 0;
             if (tasks != null) {
                 for (TaskEntity task : tasks) {
                     if ("Completed".equals(task.status)) {
                         doneTasks.add(task);
                     } else {
                         activeTasks.add(task);
+                        estPomos += task.estPomodoros;
                     }
                 }
             }
             activeAdapter.notifyDataSetChanged();
             doneAdapter.notifyDataSetChanged();
             updateCounts();
+            
+            if (tvEstPomosValue != null) {
+                tvEstPomosValue.setText(String.valueOf(estPomos));
+            }
+            if (tvCompletionRateValue != null) {
+                int total = activeTasks.size() + doneTasks.size();
+                if (total == 0) {
+                    tvCompletionRateValue.setText("0%");
+                } else {
+                    int rate = (int) (((float) doneTasks.size() / total) * 100);
+                    tvCompletionRateValue.setText(rate + "%");
+                }
+            }
         });
     }
 

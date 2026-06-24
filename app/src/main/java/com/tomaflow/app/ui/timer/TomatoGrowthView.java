@@ -95,8 +95,14 @@ public class TomatoGrowthView extends FrameLayout {
         if (targetStage == mCurrentStage) return;
 
         @DrawableRes int drawable = STAGE_DRAWABLES[targetStage];
-        crossfadeTo(drawable, targetStage > mCurrentStage);
-        mCurrentStage = targetStage;
+        if (mCurrentStage == -2) {
+            mImgFront.setImageResource(drawable);
+            mImgFront.setAlpha(1f);
+            mCurrentStage = targetStage;
+        } else {
+            crossfadeTo(drawable, targetStage > mCurrentStage);
+            mCurrentStage = targetStage;
+        }
     }
 
     /**
