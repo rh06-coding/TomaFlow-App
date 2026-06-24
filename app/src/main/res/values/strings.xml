@@ -279,4 +279,5 @@
     <string name="leaderboard_rank">Rank #%1$d</string>
     <string name="leaderboard_empty">No data yet. Complete a session to appear here!</string>
 
+    <string name="task_items_count">%1$d ITEMS</string>
 </resources>

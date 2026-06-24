@@ -99,8 +99,8 @@ public class TasksFragment extends Fragment {
     }
 
     private void updateCounts() {
-        tvActiveCountLabel.setText(activeTasks.size() + " ITEMS");
-        tvDoneCountLabel.setText(doneTasks.size() + " ITEMS");
+        tvActiveCountLabel.setText(getString(R.string.task_items_count, activeTasks.size()));
+        tvDoneCountLabel.setText(getString(R.string.task_items_count, doneTasks.size()));
     }
 
     private void showAddTaskDialog() {

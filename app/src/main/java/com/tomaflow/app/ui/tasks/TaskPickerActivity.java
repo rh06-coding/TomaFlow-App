@@ -60,7 +60,7 @@ public class TaskPickerActivity extends AppCompatActivity {
         }
 
         findViewById(R.id.btn_clear_task).setOnClickListener(v -> {
-            tvSelectedTaskName.setText(getString(R.string.focus_no_task));
+            tvSelectedTaskName.setText(getString(R.string.task_picker_none_selected));
             Intent result = new Intent();
             result.putExtra(EXTRA_CLEAR_TASK, true);
             setResult(RESULT_OK, result);
