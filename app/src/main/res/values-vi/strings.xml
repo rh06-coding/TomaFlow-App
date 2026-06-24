@@ -235,6 +235,7 @@
     <string name="action_edit">Sửa</string>
     <string name="action_delete">Xoá</string>
     <string name="error_empty_content">Vui lòng nhập nội dung</string>
+    <string name="friend_system_coming_soon">Hệ thống bạn bè sẽ có trong bản cập nhật tới!</string>
     <string name="journal_entry_default">Nhật ký</string>
     <string name="rewards_farm_title">Nông trại của tôi</string>
     <string name="day_mon">T2</string>

@@ -26,7 +26,7 @@ public class DndManager {
             }
         } else {
             // Need permission
-            Toast.makeText(context, R.string.dnd_permission_needed, Toast.LENGTH_LONG).show();
+            com.tomaflow.app.utils.TomaToast.show(context, R.string.dnd_permission_needed, true);
             Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             try {

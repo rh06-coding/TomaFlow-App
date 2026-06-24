@@ -273,6 +273,7 @@
     <string name="action_edit">Edit</string>
     <string name="action_delete">Delete</string>
     <string name="error_empty_content">Please enter some content</string>
+    <string name="friend_system_coming_soon">Friend system coming in the next update!</string>
     <string name="journal_entry_default">Journal Entry</string>
     <string name="rewards_farm_title">My Tomato Farm</string>
     <string name="day_mon">M</string>

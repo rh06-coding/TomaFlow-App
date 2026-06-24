@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                     if (System.currentTimeMillis() - lastPressedTime < 2000) {
                         finish();
                     } else {
-                        Toast.makeText(MainActivity.this, getString(R.string.main_exit_toast), Toast.LENGTH_SHORT).show();
+                        com.tomaflow.app.utils.TomaToast.show(MainActivity.this, getString(R.string.main_exit_toast));
                         lastPressedTime = System.currentTimeMillis();
                     }
                 }

@@ -22,14 +22,14 @@ public class PremiumActivity extends AppCompatActivity {
         findViewById(R.id.btn_upgrade).setOnClickListener(v -> {
             SubscriptionManager sm = new SubscriptionManager(this);
             sm.setVip(true);
-            Toast.makeText(this, getString(R.string.premium_success), Toast.LENGTH_SHORT).show();
+            com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.premium_success));
             finish();
         });
         
         findViewById(R.id.btn_restore).setOnClickListener(v -> {
             SubscriptionManager sm = new SubscriptionManager(this);
             sm.setVip(true);
-            Toast.makeText(this, getString(R.string.premium_success), Toast.LENGTH_SHORT).show();
+            com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.premium_success));
             finish();
         });
     }
