@@ -115,7 +115,14 @@ public class StatsFragment extends Fragment {
 
             @Override
             public void onDelete(com.tomaflow.app.data.db.entity.NoteEntity note) {
-                noteViewModel.delete(note);
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.confirm_delete_note_title)
+                    .setMessage(R.string.confirm_delete_note_msg)
+                    .setPositiveButton(R.string.action_delete, (dialog, which) -> {
+                        noteViewModel.delete(note);
+                    })
+                    .setNegativeButton(R.string.action_cancel, null)
+                    .show();
             }
         });
         androidx.recyclerview.widget.RecyclerView recyclerNotes = view.findViewById(R.id.recycler_notes);

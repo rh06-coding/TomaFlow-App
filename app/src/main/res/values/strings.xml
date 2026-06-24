@@ -201,11 +201,12 @@
     <string name="error_required">Required</string>
     <string name="error_password_length">Minimum 8 characters</string>
     <string name="error_password_match">Passwords do not match</string>
-    <string name="auth_google_failed">Google sign in failed: </string>
+    <string name="auth_google_failed">Google sign in failed</string>
     <string name="auth_login_failed">Authentication failed.</string>
-    <string name="auth_login_failed_msg">Login failed: </string>
+    <string name="auth_login_failed_msg">Login failed</string>
     <string name="auth_email_required_reset">Enter email to reset password</string>
     <string name="auth_reset_email_sent">Reset email sent</string>
+    <string name="auth_reset_email_failed">Failed to send reset email.</string>
     <string name="auth_register_success">Registration successful! Please sign in.</string>
     <string name="auth_register_failed">Registration failed: </string>
     <string name="task_name_required">Please enter a task name</string>
@@ -272,6 +273,11 @@
 
     <string name="action_edit">Edit</string>
     <string name="action_delete">Delete</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="confirm_delete_task_title">Delete Task</string>
+    <string name="confirm_delete_task_msg">Are you sure you want to delete this task?</string>
+    <string name="confirm_delete_note_title">Delete Note</string>
+    <string name="confirm_delete_note_msg">Are you sure you want to delete this note?</string>
     <string name="error_empty_content">Please enter some content</string>
     <string name="friend_system_coming_soon">Friend system coming in the next update!</string>
     <string name="journal_entry_default">Journal Entry</string>
@@ -294,6 +300,12 @@
     <string name="premium_badge">VIP 👑</string>
     <string name="premium_success">You are now a VIP member! 🎉</string>
     <string name="feature_normal_tasks_limit">Free plan: max 5 active tasks</string>
+    <string name="premium_feature_1">All background music</string>
+    <string name="premium_feature_2">Custom music from device</string>
+    <string name="premium_feature_3">Customize session duration</string>
+    <string name="premium_feature_4">Strict Mode to prevent distractions</string>
+    <string name="premium_feature_5">Unlimited active tasks</string>
+    <string name="btn_restore_purchases">Restore Purchases</string>
 
     <!-- Share -->
     <string name="share_achievement_title">Share Achievement</string>
@@ -306,6 +318,14 @@
     <string name="leaderboard_coming_soon">Friends feature coming soon!</string>
     <string name="leaderboard_rank">Rank #%1$d</string>
     <string name="leaderboard_empty">No data yet. Complete a session to appear here!</string>
+    <string name="friend_system_msg_full">We are working on adding social features. Soon you\'ll be able to focus together with your friends!</string>
+    <string name="btn_add_friends">Add Friends</string>
+    
+    <!-- Profile -->
+    <string name="profile_view_ranking">View your global ranking</string>
+    
+    <!-- Auth -->
+    <string name="auth_language_switch">VI | EN</string>
 
     <string name="task_items_count">%1$d ITEMS</string>
 </resources>

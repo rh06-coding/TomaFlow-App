@@ -90,7 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="We are working on adding social features. Soon you'll be able to focus together with your friends!"
+                android:text="@string/friend_system_msg_full"
                 android:textAppearance="@style/TextAppearance.Toma.Body"
                 android:gravity="center" />
 
@@ -99,7 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="32dp"
-                android:text="Add Friends"
+                android:text="@string/btn_add_friends"
                 style="@style/Widget.Toma.Button.Primary" />
         </LinearLayout>
 
