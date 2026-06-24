@@ -14,11 +14,13 @@ import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.tomaflow.app.MainActivity;
 import com.tomaflow.app.R;
 import com.tomaflow.app.constants.AppConstants;
+import com.tomaflow.app.timer.PomodoroTimer;
 import com.tomaflow.app.timer.PomodoroTimer.Phase;
 import com.tomaflow.app.timer.PomodoroTimer.TimerState;
 import com.tomaflow.app.timer.TimerEngineService;
@@ -69,62 +71,94 @@ public class NotificationHelper {
         }
     }
 
-    public Notification buildTimerNotification(TimerState timerState) {
-        String timeStr = TimerUtils.formatMillisToMmSs(timerState.remainingMs);
-        String phaseLabel = TimerUtils.getPhaseLabel(timerState.phase);
-        
-        com.tomaflow.app.data.model.BuiltInTrack track = com.tomaflow.app.ui.music.AppMusicPlayer.getInstance().getCurrentTrack();
-        boolean isMusicPlaying = com.tomaflow.app.ui.music.AppMusicPlayer.getInstance().isPlaying();
-        
-        String contentText = track != null ? "🎵 " + track.name : mContext.getString(R.string.focus_music_empty);
+    public Notification buildCombinedNotification(@Nullable TimerState timerState) {
+        if (timerState == null) {
+            com.tomaflow.app.timer.TimerStateManager manager = new com.tomaflow.app.timer.TimerStateManager(mContext);
+            timerState = manager.restoreState().toTimerState();
+        }
+
+        com.tomaflow.app.ui.music.AppMusicPlayer player = com.tomaflow.app.ui.music.AppMusicPlayer.getInstance();
+        com.tomaflow.app.data.model.BuiltInTrack track = player.getCurrentTrack();
+        boolean isMusicPlaying = player.isPlaying();
+
+        boolean isTimerActive = timerState.state != PomodoroTimer.State.IDLE && timerState.state != PomodoroTimer.State.COMPLETED;
+        boolean isTimerRunning = timerState.isRunning;
+
+        String title;
+        String contentText;
+
+        if (isTimerActive) {
+            String timeStr = TimerUtils.formatMillisToMmSs(timerState.remainingMs);
+            String phaseLabel = TimerUtils.getPhaseLabel(timerState.phase);
+            title = phaseLabel + " - " + timeStr;
+            contentText = track != null ? "🎵 " + track.name : "TomaFlow Pomodoro";
+        } else {
+            title = track != null ? track.name : mContext.getString(R.string.app_name);
+            contentText = track != null ? (isMusicPlaying ? "Đang phát nhạc nền" : "Đã tạm dừng nhạc") : "TomaFlow";
+        }
 
         Intent intent = new Intent(mContext, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
+        int iconRes = track != null ? R.drawable.ic_music : R.drawable.ic_pause;
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, AppConstants.NOTIFICATION_CHANNEL_TIMER)
-                .setContentTitle(phaseLabel)
+                .setContentTitle(title)
                 .setContentText(contentText)
-                .setSmallIcon(R.drawable.ic_pause)
+                .setSmallIcon(iconRes)
                 .setContentIntent(pendingIntent)
                 .setOnlyAlertOnce(true)
-                .setOngoing(timerState.isRunning)
+                .setOngoing(isTimerRunning || isMusicPlaying)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setPriority(NotificationCompat.PRIORITY_LOW);
 
-        if (timerState.isRunning) {
-            builder.setUsesChronometer(true);
-            builder.setWhen(System.currentTimeMillis() + timerState.remainingMs);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                builder.setChronometerCountDown(true);
+        // We explicitly manage the time string in the title, so no chronometer needed.
+        builder.setUsesChronometer(false);
+
+        int actionCount = 0;
+
+        if (isTimerActive) {
+            // Action: Timer Play/Pause
+            if (isTimerRunning) {
+                builder.addAction(R.drawable.ic_pause, mContext.getString(R.string.notification_action_pause), getServicePendingIntent(AppConstants.COMMAND_PAUSE));
+            } else {
+                builder.addAction(R.drawable.ic_play, mContext.getString(R.string.notification_action_resume), getServicePendingIntent(AppConstants.COMMAND_RESUME));
             }
-        } else {
-            builder.setUsesChronometer(false);
-            builder.setContentTitle(phaseLabel + " - " + timeStr);
+            // Action: Skip
+            builder.addAction(R.drawable.ic_skip_next, mContext.getString(R.string.notification_action_skip), getServicePendingIntent(AppConstants.COMMAND_SKIP));
+            actionCount += 2;
         }
 
-        // Action 0: Timer Play/Pause
-        if (timerState.isRunning) {
-            builder.addAction(R.drawable.ic_pause, mContext.getString(R.string.notification_action_pause), getServicePendingIntent(AppConstants.COMMAND_PAUSE));
-        } else {
-            builder.addAction(R.drawable.ic_play, mContext.getString(R.string.notification_action_resume), getServicePendingIntent(AppConstants.COMMAND_RESUME));
+        if (track != null) {
+            Intent toggleMusicIntent = new Intent(mContext, com.tomaflow.app.ui.music.MusicService.class);
+            toggleMusicIntent.setAction(com.tomaflow.app.ui.music.MusicService.ACTION_TOGGLE_PLAY);
+            PendingIntent pendingToggleMusic = PendingIntent.getService(mContext, 3, toggleMusicIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            
+            int musicIcon = isMusicPlaying ? R.drawable.ic_music_pause : R.drawable.ic_music_play;
+            builder.addAction(musicIcon, "Music", pendingToggleMusic);
+            actionCount++;
+
+            if (!isTimerActive) {
+                Intent stopIntent = new Intent(mContext, com.tomaflow.app.ui.music.MusicService.class);
+                stopIntent.setAction(com.tomaflow.app.ui.music.MusicService.ACTION_STOP);
+                PendingIntent pendingStop = PendingIntent.getService(mContext, 4, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                builder.addAction(R.drawable.ic_reset, "Stop", pendingStop);
+                actionCount++;
+            }
         }
 
-        // Action 1: Skip
-        builder.addAction(R.drawable.ic_skip_next, mContext.getString(R.string.notification_action_skip), getServicePendingIntent(AppConstants.COMMAND_SKIP));
+        androidx.media.app.NotificationCompat.MediaStyle mediaStyle = new androidx.media.app.NotificationCompat.MediaStyle()
+                .setMediaSession(player.getSessionToken(mContext));
 
-        // Action 2: Music Play/Pause
-        Intent toggleMusicIntent = new Intent(mContext, com.tomaflow.app.ui.music.MusicService.class);
-        toggleMusicIntent.setAction(com.tomaflow.app.ui.music.MusicService.ACTION_TOGGLE_PLAY);
-        PendingIntent pendingToggleMusic = PendingIntent.getService(mContext, 3, toggleMusicIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        
-        builder.addAction(isMusicPlaying ? R.drawable.ic_pause : R.drawable.ic_play,
-                "Music", pendingToggleMusic);
+        if (actionCount == 4) mediaStyle.setShowActionsInCompactView(0, 1, 2);
+        else if (actionCount == 3) mediaStyle.setShowActionsInCompactView(0, 1, 2);
+        else if (actionCount == 2) mediaStyle.setShowActionsInCompactView(0, 1);
+        else if (actionCount == 1) mediaStyle.setShowActionsInCompactView(0);
 
-        builder.setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                .setShowActionsInCompactView(0, 1, 2));
+        builder.setStyle(mediaStyle);
 
         return builder.build();
     }

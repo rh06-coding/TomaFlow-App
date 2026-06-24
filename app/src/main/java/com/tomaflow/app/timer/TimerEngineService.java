@@ -355,7 +355,7 @@ public class TimerEngineService extends Service {
                 && state.state != PomodoroTimer.State.COMPLETED);
 
         if (isActive) {
-            android.app.Notification notif = mNotificationHelper.buildTimerNotification(state);
+            android.app.Notification notif = mNotificationHelper.buildCombinedNotification(state);
             if (!mIsForeground) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     startForeground(AppConstants.NOTIFICATION_ID_TIMER, notif,
