@@ -218,6 +218,17 @@
                     android:layout_weight="1"
                     android:text="@string/stats_journal_title"
                     android:textAppearance="@style/TextAppearance.Toma.Title" />
+                <TextView
+                    android:id="@+id/btn_view_all_notes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/profile_view_all"
+                    android:textColor="@color/toma_primary"
+                    android:textStyle="bold"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="12dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="6dp"/>
                 <ImageView
                     android:id="@+id/btn_add_note"
                     android:layout_width="32dp"

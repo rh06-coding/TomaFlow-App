@@ -255,17 +255,29 @@
     <string name="leaderboard_rank">Hạng #%1$d</string>
     <string name="leaderboard_empty">Chưa có dữ liệu. Hoàn thành 1 phiên để xuất hiện tại đây!</string>
 
-    <!-- Confirmation Dialog -->
-    <string name="confirm_reset_title">Đặt lại bộ đếm?</string>
-    <string name="confirm_reset_msg">Bạn có chắc chắn muốn đặt lại phiên hiện tại? Tiến trình của phiên này sẽ bị mất.</string>
-    <string name="confirm_skip_title">Bỏ qua phiên?</string>
-    <string name="confirm_skip_msg">Bạn có chắc chắn muốn bỏ qua phiên hiện tại? Tiến trình của phiên này sẽ bị mất.</string>
-    <string name="confirm_yes">Có, đặt lại</string>
-    <string name="confirm_yes_skip">Có, bỏ qua</string>
-    <string name="confirm_no">Hủy</string>
+    <string name="auth_google">Đăng nhập bằng Google</string>
+    <string name="reg_confirm_password">Xác nhận mật khẩu</string>
+    <string name="stats_breakdown">Phân tích phiên</string>
+    <string name="stats_no_data">Chưa có phiên nào</string>
+    <string name="stats_completed">Hoàn thành</string>
+    <string name="stats_failed">Thất bại</string>
+    <string name="settings_dark_mode">Chế độ tối</string>
+    <string name="settings_dark_mode_desc">Chuyển đổi giữa giao diện sáng và tối.</string>
+    <string name="nav_rewards">THÀNH TÍCH</string>
+    <string name="notification_channel_timer_name">Bộ đếm Pomodoro</string>
+    <string name="notification_channel_timer_desc">Hiển thị bộ đếm và nút điều khiển</string>
+    <string name="notification_channel_sound_name">Chuông hẹn giờ</string>
+    <string name="notification_channel_sound_desc">Phát âm thanh khi kết thúc một giai đoạn</string>
+    <string name="notification_timer_title">Bộ đếm TomaFlow</string>
+    <string name="notification_action_pause">Tạm dừng</string>
+    <string name="notification_action_resume">Tiếp tục</string>
+    <string name="notification_action_skip">Bỏ qua</string>
+    <string name="notification_focus_complete_title">Xong phiên tập trung!</string>
+    <string name="notification_break_complete_title">Hết giờ nghỉ!</string>
+    <string name="notification_focus_complete_msg">Phiên tập trung #%1$d hoàn thành. Đến lúc nghỉ ngơi!</string>
+    <string name="notification_break_complete_msg">Hết giờ nghỉ. Sẵn sàng tập trung?</string>
+    <string name="placeholder_task_title">Chưa có công việc</string>
+    <string name="placeholder_task_subtitle">Chọn công việc để bắt đầu tập trung</string>
 
-    <!-- Auto-start Break -->
-    <string name="settings_auto_start_break">Tự khởi động giờ nghỉ</string>
-    <string name="settings_auto_start_break_desc">Tự động bắt đầu phiên giải lao sau khi hoàn thành tập trung</string>
-
+    <string name="task_items_count">%1$d MỤC</string>
 </resources>

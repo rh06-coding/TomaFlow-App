@@ -172,6 +172,10 @@ public class LoginActivity extends AppCompatActivity {
         com.tomaflow.app.data.repository.RewardsRepository rewardsRepository = new com.tomaflow.app.data.repository.RewardsRepository(getApplication());
         rewardsRepository.syncRewardsFromFirestore();
 
+        // Kéo nhật ký từ Firestore về Room
+        com.tomaflow.app.data.repository.NoteRepository noteRepository = new com.tomaflow.app.data.repository.NoteRepository(getApplication());
+        noteRepository.syncNotesFromFirestore();
+
         navigateToMain();
     }
 

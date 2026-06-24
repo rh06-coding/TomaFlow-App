@@ -28,17 +28,9 @@ public class MusicService extends Service {
     public static final String ACTION_TOGGLE_PLAY         = "com.tomaflow.app.action.TOGGLE_PLAY";
     public static final String ACTION_STOP                = "com.tomaflow.app.action.STOP_MUSIC";
 
-    private static final String CHANNEL_ID      = "tomaflow_music_channel";
-    private static final int    NOTIFICATION_ID = 2002;
-
-    private MediaSessionCompat mMediaSession;
-
     @Override
     public void onCreate() {
         super.onCreate();
-        createNotificationChannel();
-        mMediaSession = new MediaSessionCompat(this, "TomaFlowMusic");
-        mMediaSession.setActive(true);
     }
 
     @Override
@@ -74,68 +66,25 @@ public class MusicService extends Service {
     }
 
     private void updateNotification(AppMusicPlayer player) {
-        BuiltInTrack track = player.getCurrentTrack();
-        if (track == null) {
+        if (player.getCurrentTrack() == null) {
             stopForeground(true);
             stopSelf();
             return;
         }
 
-        boolean isPlaying = player.isPlaying();
-
-        // Open app intent
-        Intent openApp = new Intent(this, MainActivity.class);
-        PendingIntent pendingOpen = PendingIntent.getActivity(this, 0, openApp,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        // Toggle intent
-        Intent toggleIntent = new Intent(this, MusicService.class);
-        toggleIntent.setAction(ACTION_TOGGLE_PLAY);
-        PendingIntent pendingToggle = PendingIntent.getService(this, 1, toggleIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        // Stop intent
-        Intent stopIntent = new Intent(this, MusicService.class);
-        stopIntent.setAction(ACTION_STOP);
-        PendingIntent pendingStop = PendingIntent.getService(this, 2, stopIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        Notification notif = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_music)
-                .setContentTitle(track.name)
-                .setContentText(isPlaying ? "Đang phát nhạc nền" : "Đã tạm dừng")
-                .setContentIntent(pendingOpen)
-                .setOngoing(isPlaying)
-                .addAction(isPlaying ? R.drawable.ic_pause : R.drawable.ic_play,
-                        isPlaying ? "Pause" : "Play", pendingToggle)
-                .addAction(R.drawable.ic_reset, "Stop", pendingStop)
-                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
-                        .setMediaSession(mMediaSession.getSessionToken())
-                        .setShowActionsInCompactView(0, 1))
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .build();
+        com.tomaflow.app.utils.NotificationHelper helper = new com.tomaflow.app.utils.NotificationHelper(this);
+        Notification notif = helper.buildCombinedNotification(null);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(NOTIFICATION_ID, notif,
+            startForeground(com.tomaflow.app.constants.AppConstants.NOTIFICATION_ID_TIMER, notif,
                     android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
         } else {
-            startForeground(NOTIFICATION_ID, notif);
-        }
-    }
-
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel ch = new NotificationChannel(
-                    CHANNEL_ID, "Nhạc nền Focus", NotificationManager.IMPORTANCE_LOW);
-            ch.setDescription("Điều khiển nhạc nền Pomodoro");
-            NotificationManager nm = getSystemService(NotificationManager.class);
-            if (nm != null) nm.createNotificationChannel(ch);
+            startForeground(com.tomaflow.app.constants.AppConstants.NOTIFICATION_ID_TIMER, notif);
         }
     }
 
     @Override
     public void onDestroy() {
-        if (mMediaSession != null) mMediaSession.release();
         super.onDestroy();
     }
 

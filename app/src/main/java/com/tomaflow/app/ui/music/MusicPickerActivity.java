@@ -149,7 +149,7 @@ public class MusicPickerActivity extends AppCompatActivity {
 
             tvIcon.setText("🎧");
             tvName.setText(track.title);
-            tvCategory.setText("Từ thiết bị");
+            tvCategory.setText(getString(R.string.music_from_device));
 
             itemView.setTag(track.id);
 

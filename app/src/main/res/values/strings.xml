@@ -279,17 +279,5 @@
     <string name="leaderboard_rank">Rank #%1$d</string>
     <string name="leaderboard_empty">No data yet. Complete a session to appear here!</string>
 
-    <!-- Confirmation Dialog -->
-    <string name="confirm_reset_title">Reset timer?</string>
-    <string name="confirm_reset_msg">Are you sure you want to reset the current session? Your progress in this session will be lost.</string>
-    <string name="confirm_skip_title">Skip session?</string>
-    <string name="confirm_skip_msg">Are you sure you want to skip the current session? Your progress in this session will be lost.</string>
-    <string name="confirm_yes">Yes, Reset</string>
-    <string name="confirm_yes_skip">Yes, Skip</string>
-    <string name="confirm_no">Cancel</string>
-
-    <!-- Auto-start Break -->
-    <string name="settings_auto_start_break">Auto-start Breaks</string>
-    <string name="settings_auto_start_break_desc">Automatically start a break session when focus finishes</string>
-
+    <string name="task_items_count">%1$d ITEMS</string>
 </resources>

@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.navigation.Navigation;
+import android.content.Intent;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -112,19 +113,28 @@ public class StatsFragment extends Fragment {
         TextView tvJournalEmpty = view.findViewById(R.id.tv_journal_empty);
 
         noteViewModel.getAllNotes().observe(getViewLifecycleOwner(), notes -> {
-            noteAdapter.submitList(notes);
             if (notes == null || notes.isEmpty()) {
                 tvJournalEmpty.setVisibility(View.VISIBLE);
                 recyclerNotes.setVisibility(View.GONE);
+                noteAdapter.submitList(null);
             } else {
                 tvJournalEmpty.setVisibility(View.GONE);
                 recyclerNotes.setVisibility(View.VISIBLE);
+                // Only show the latest note
+                noteAdapter.submitList(notes.subList(0, 1));
             }
         });
 
         view.findViewById(R.id.btn_add_note).setOnClickListener(v -> {
             AddNoteBottomSheet.newInstance().show(getChildFragmentManager(), "AddNoteBottomSheet");
         });
+
+        View btnViewAll = view.findViewById(R.id.btn_view_all_notes);
+        if (btnViewAll != null) {
+            btnViewAll.setOnClickListener(v -> {
+                startActivity(new Intent(requireContext(), JournalActivity.class));
+            });
+        }
     }
 
     private void highlightActiveRange(View view, int checkedId) {
@@ -223,11 +233,11 @@ public class StatsFragment extends Fragment {
             breakEntries.add(new BarEntry(i, breakByDay[i]));
         }
 
-        BarDataSet focusSet = new BarDataSet(focusEntries, "Focus");
+        BarDataSet focusSet = new BarDataSet(focusEntries, getString(R.string.stats_focus_label));
         focusSet.setColor(ContextCompat.getColor(requireContext(), R.color.toma_primary));
         focusSet.setDrawValues(false);
 
-        BarDataSet breakSet = new BarDataSet(breakEntries, "Break");
+        BarDataSet breakSet = new BarDataSet(breakEntries, getString(R.string.stats_breaks_label));
         breakSet.setColor(ContextCompat.getColor(requireContext(), R.color.toma_success));
         breakSet.setDrawValues(false);
 

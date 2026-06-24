@@ -56,6 +56,10 @@
             android:exported="false"
             android:name=".ui.stats.StatsActivity" />
 
+        <activity
+            android:exported="false"
+            android:name=".ui.stats.JournalActivity" />
+
         <!-- ── Settings screen (stub — to be implemented) ─ -->
         <activity
             android:exported="false"
