@@ -25,11 +25,11 @@ public class TomaToast {
         show(context, context.getString(messageResId), false);
     }
 
-    public static void show(Context context, int messageResId, boolean isError) {
-        show(context, context.getString(messageResId), isError);
+    public static void show(Context context, int messageResId, boolean isSuccess) {
+        show(context, context.getString(messageResId), isSuccess);
     }
 
-    public static void show(Context context, String message, boolean isError) {
+    public static void show(Context context, String message, boolean isSuccess) {
         View parentView = null;
         if (context instanceof Activity) {
             parentView = ((Activity) context).findViewById(android.R.id.content);
@@ -67,7 +67,7 @@ public class TomaToast {
             ImageView icon = customView.findViewById(R.id.snackbar_icon);
             View container = customView.findViewById(R.id.snackbar_container);
 
-            if (isError) {
+            if (!isSuccess) {
                 icon.setImageResource(R.drawable.ic_close);
                 container.setBackgroundResource(R.drawable.bg_toma_snackbar_error);
             } else {

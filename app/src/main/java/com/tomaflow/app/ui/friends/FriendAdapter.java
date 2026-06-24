@@ -18,11 +18,17 @@ import com.tomaflow.app.data.model.UserProfile;
 public class FriendAdapter extends ListAdapter<UserProfile, FriendAdapter.FriendViewHolder> {
 
     public interface OnFriendActionListener {
-        void onActionClick(UserProfile user);
+        void onActionClick(UserProfile user, String action);
     }
 
     private final OnFriendActionListener listener;
-    private final String actionText; // "Add", "Sent", "Friend"
+    private final String actionText; // Default fallback action
+    private java.util.Map<String, String> userStatusMap = new java.util.HashMap<>();
+
+    public void setUserStatusMap(java.util.Map<String, String> map) {
+        this.userStatusMap = map;
+        notifyDataSetChanged();
+    }
 
     public FriendAdapter(String actionText, OnFriendActionListener listener) {
         super(new DiffUtil.ItemCallback<UserProfile>() {
@@ -51,7 +57,18 @@ public class FriendAdapter extends ListAdapter<UserProfile, FriendAdapter.Friend
     @Override
     public void onBindViewHolder(@NonNull FriendViewHolder holder, int position) {
         UserProfile user = getItem(position);
-        holder.bind(user, listener, actionText);
+        String dynamicAction = actionText;
+        if (userStatusMap != null && userStatusMap.containsKey(user.uid)) {
+            String status = userStatusMap.get(user.uid);
+            if ("ACCEPTED".equals(status)) {
+                dynamicAction = "Friend";
+            } else if ("SENT".equals(status)) {
+                dynamicAction = "Sent";
+            } else if ("RECEIVED".equals(status)) {
+                dynamicAction = "Accept";
+            }
+        }
+        holder.bind(user, listener, dynamicAction);
     }
 
     static class FriendViewHolder extends RecyclerView.ViewHolder {
@@ -70,16 +87,22 @@ public class FriendAdapter extends ListAdapter<UserProfile, FriendAdapter.Friend
             btnAction = itemView.findViewById(R.id.btn_action);
         }
 
-        public void bind(UserProfile user, OnFriendActionListener listener, String actionText) {
+        public void bind(UserProfile user, OnFriendActionListener listener, String dynamicAction) {
             tvName.setText(user.name != null ? user.name : user.email);
             tvUsername.setText(user.username != null ? "@" + user.username : "");
             
-            btnAction.setText(actionText);
+            btnAction.setText(dynamicAction);
             btnAction.setOnClickListener(v -> {
-                if (listener != null) listener.onActionClick(user);
+                if (listener != null) listener.onActionClick(user, dynamicAction);
             });
             
-            if (actionText.equals("Sent") || actionText.equals("Friend")) {
+            itemView.setOnClickListener(v -> {
+                android.content.Intent intent = new android.content.Intent(itemView.getContext(), com.tomaflow.app.ui.friends.FriendProfileActivity.class);
+                intent.putExtra(com.tomaflow.app.ui.friends.FriendProfileActivity.EXTRA_USER_ID, user.uid);
+                itemView.getContext().startActivity(intent);
+            });
+            
+            if (dynamicAction.equals("Sent")) {
                 btnAction.setEnabled(false);
             } else {
                 btnAction.setEnabled(true);
