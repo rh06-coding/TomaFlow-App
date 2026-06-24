@@ -62,4 +62,12 @@ public class SettingsManager {
     public void setDndMode(boolean enabled) {
         mPrefs.edit().putBoolean("pref_dnd_mode", enabled).apply();
     }
+
+    public boolean isAutoStartBreak() {
+        return mPrefs.getBoolean("pref_auto_start_break", false);
+    }
+
+    public void setAutoStartBreak(boolean enabled) {
+        mPrefs.edit().putBoolean("pref_auto_start_break", enabled).apply();
+    }
 }

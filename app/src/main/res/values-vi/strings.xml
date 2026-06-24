@@ -255,4 +255,17 @@
     <string name="leaderboard_rank">Hạng #%1$d</string>
     <string name="leaderboard_empty">Chưa có dữ liệu. Hoàn thành 1 phiên để xuất hiện tại đây!</string>
 
+    <!-- Confirmation Dialog -->
+    <string name="confirm_reset_title">Đặt lại bộ đếm?</string>
+    <string name="confirm_reset_msg">Bạn có chắc chắn muốn đặt lại phiên hiện tại? Tiến trình của phiên này sẽ bị mất.</string>
+    <string name="confirm_skip_title">Bỏ qua phiên?</string>
+    <string name="confirm_skip_msg">Bạn có chắc chắn muốn bỏ qua phiên hiện tại? Tiến trình của phiên này sẽ bị mất.</string>
+    <string name="confirm_yes">Có, đặt lại</string>
+    <string name="confirm_yes_skip">Có, bỏ qua</string>
+    <string name="confirm_no">Hủy</string>
+
+    <!-- Auto-start Break -->
+    <string name="settings_auto_start_break">Tự khởi động giờ nghỉ</string>
+    <string name="settings_auto_start_break_desc">Tự động bắt đầu phiên giải lao sau khi hoàn thành tập trung</string>
+
 </resources>

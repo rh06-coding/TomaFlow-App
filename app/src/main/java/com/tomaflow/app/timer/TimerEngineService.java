@@ -78,6 +78,7 @@ public class TimerEngineService extends Service {
      * Re-syncs durations from settings when IDLE so the initial display is correct.
      */
     public PomodoroTimer.TimerState getTimerState() {
+        mTimer.setAutoStartBreak(mSettingsManager.isAutoStartBreak());
         if (mTimer.getStateValue() == PomodoroTimer.State.IDLE) {
             mTimer.setDurations(
                     mSettingsManager.getFocusDurationMs(),
@@ -107,6 +108,7 @@ public class TimerEngineService extends Service {
         mTimer             = new PomodoroTimer();
         mStateManager      = new TimerStateManager(this);
         mSettingsManager   = new SettingsManager(this);
+        mTimer.setAutoStartBreak(mSettingsManager.isAutoStartBreak());
         mNotificationHelper = new NotificationHelper(this);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mSessionRepository = new SessionRepository(getApplication());
@@ -162,6 +164,8 @@ public class TimerEngineService extends Service {
     private void handleCommand(String command, String extraPhase) {
         if (command == null) return;
 
+        mTimer.setAutoStartBreak(mSettingsManager.isAutoStartBreak());
+
         switch (command) {
             case AppConstants.COMMAND_START:
                 if (!mTimer.isRunning()) {
@@ -210,6 +214,16 @@ public class TimerEngineService extends Service {
                     mTimer.jumpToBreak(mSettingsManager.getShortBreakDurationMs(), false);
                 } else if (PomodoroTimer.Phase.LONG_BREAK.name().equals(extraPhase)) {
                     mTimer.jumpToBreak(mSettingsManager.getLongBreakDurationMs(), true);
+                }
+                break;
+
+            case AppConstants.COMMAND_RELOAD_SETTINGS:
+                if (!mTimer.isRunning()) {
+                    mTimer.setDurations(
+                            mSettingsManager.getFocusDurationMs(),
+                            mSettingsManager.getShortBreakDurationMs(),
+                            mSettingsManager.getLongBreakDurationMs()
+                    );
                 }
                 break;
         }
@@ -398,6 +412,7 @@ public class TimerEngineService extends Service {
 
     private void restoreState() {
         TimerStateManager.RestoredState restored = mStateManager.restoreState();
+        mTimer.setAutoStartBreak(mSettingsManager.isAutoStartBreak());
 
         if (restored.state != PomodoroTimer.State.IDLE) {
             mTimer.setDurations(restored.focusDurationMs,

@@ -39,6 +39,7 @@ public final class AppConstants {
     public static final String COMMAND_RESUME = "com.tomaflow.app.COMMAND_RESUME";
     public static final String COMMAND_SKIP = "com.tomaflow.app.COMMAND_SKIP";
     public static final String COMMAND_RESET = "com.tomaflow.app.COMMAND_RESET";
+    public static final String COMMAND_RELOAD_SETTINGS = "com.tomaflow.app.COMMAND_RELOAD_SETTINGS";
     public static final String COMMAND_JUMP_TO_PHASE = "com.tomaflow.app.COMMAND_JUMP_TO_PHASE";
     public static final String INTENT_EXTRA_PHASE = "extra_phase";
 

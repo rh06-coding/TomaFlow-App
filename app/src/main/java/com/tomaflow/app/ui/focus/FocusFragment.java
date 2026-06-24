@@ -269,12 +269,20 @@ public class FocusFragment extends Fragment {
                 android.widget.Toast.makeText(requireContext(), R.string.strict_mode_blocked, android.widget.Toast.LENGTH_SHORT).show();
                 return;
             }
+            new AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.confirm_reset_title)
+                    .setMessage(R.string.confirm_reset_msg)
+                    .setPositiveButton(R.string.confirm_yes, (dialog, which) -> {
+                        if (cur.isRunning) {
+                            wiltTomato();
+                        }
+                        mTimerViewModel.sendCommand(AppConstants.COMMAND_RESET);
+                    })
+                    .setNegativeButton(R.string.confirm_no, null)
+                    .show();
+        } else {
+            mTimerViewModel.sendCommand(AppConstants.COMMAND_RESET);
         }
-
-        if (cur != null && cur.isRunning && cur.phase == PomodoroTimer.Phase.FOCUS) {
-            wiltTomato();
-        }
-        mTimerViewModel.sendCommand(AppConstants.COMMAND_RESET);
     }
 
     private void onSkipClicked() {
@@ -285,12 +293,20 @@ public class FocusFragment extends Fragment {
                 android.widget.Toast.makeText(requireContext(), R.string.strict_mode_blocked, android.widget.Toast.LENGTH_SHORT).show();
                 return;
             }
+            new AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.confirm_skip_title)
+                    .setMessage(R.string.confirm_skip_msg)
+                    .setPositiveButton(R.string.confirm_yes_skip, (dialog, which) -> {
+                        if (cur.isRunning) {
+                            wiltTomato();
+                        }
+                        mTimerViewModel.sendCommand(AppConstants.COMMAND_SKIP);
+                    })
+                    .setNegativeButton(R.string.confirm_no, null)
+                    .show();
+        } else {
+            mTimerViewModel.sendCommand(AppConstants.COMMAND_SKIP);
         }
-
-        if (cur != null && cur.isRunning && cur.phase == PomodoroTimer.Phase.FOCUS) {
-            wiltTomato();
-        }
-        mTimerViewModel.sendCommand(AppConstants.COMMAND_SKIP);
     }
 
     private List<TaskEntity> mPendingTasks;
@@ -359,9 +375,10 @@ public class FocusFragment extends Fragment {
             public void onPrimaryAction(boolean isFocus) {
                 // Start the next appropriate phase
                 if (isFocus) {
-                    // Focus done → start break by sending START_FOCUS will start break via skip logic
-                    // Actually just let the user click play; timer already transitioned.
-                    // Update tab to reflect current phase from state
+                    PomodoroTimer.TimerState state = mTimerViewModel.getTimerState().getValue();
+                    if (state != null && !state.isRunning) {
+                        mTimerViewModel.sendCommand(com.tomaflow.app.constants.AppConstants.COMMAND_RESUME);
+                    }
                     syncTabWithCurrentPhase();
                 } else {
                     mTimerViewModel.sendCommand(com.tomaflow.app.constants.AppConstants.COMMAND_START);
