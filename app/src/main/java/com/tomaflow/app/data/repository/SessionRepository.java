@@ -104,6 +104,7 @@ public class SessionRepository {
             @Override
             public void onSuccess(List<SessionEntity> sessions) {
                 sExecutor.execute(() -> {
+                    mSessionDao.deleteAll();
                     for (SessionEntity session : sessions) {
                         // Insert/Replace vào Room local
                         mSessionDao.insert(session);

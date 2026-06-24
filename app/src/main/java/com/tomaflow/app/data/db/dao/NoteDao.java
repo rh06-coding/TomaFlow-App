@@ -19,6 +19,9 @@ public interface NoteDao {
     @Delete
     void deleteNote(NoteEntity note);
 
+    @Query("DELETE FROM notes")
+    void deleteAll();
+
     @Query("SELECT * FROM notes ORDER BY createdAt DESC")
     LiveData<List<NoteEntity>> getAllNotes();
 }

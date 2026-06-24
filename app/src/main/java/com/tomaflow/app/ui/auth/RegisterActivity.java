@@ -75,7 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
             })
             .addOnFailureListener(e -> {
                 mBtnCreate.setEnabled(true);
-                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_register_failed) + e.getMessage(), true);
+                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_register_failed), true);
             });
     }
 }

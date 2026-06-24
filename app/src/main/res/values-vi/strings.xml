@@ -165,9 +165,10 @@
     <string name="error_password_match">Mật khẩu không khớp</string>
     <string name="auth_google_failed">Đăng nhập Google thất bại: </string>
     <string name="auth_login_failed">Đăng nhập thất bại.</string>
-    <string name="auth_login_failed_msg">Đăng nhập thất bại: </string>
+    <string name="auth_login_failed_msg">Đăng nhập thất bại</string>
     <string name="auth_email_required_reset">Nhập email để reset mật khẩu</string>
-    <string name="auth_reset_email_sent">Email reset đã gửi</string>
+    <string name="auth_reset_email_sent">Đã gửi email khôi phục</string>
+    <string name="auth_reset_email_failed">Không thể gửi email khôi phục.</string>
     <string name="auth_register_success">Đăng ký thành công! Hãy đăng nhập.</string>
     <string name="auth_register_failed">Đăng ký thất bại: </string>
     <string name="task_name_required">Vui lòng nhập tên công việc</string>
@@ -207,6 +208,13 @@
 
     <string name="notification_action_music">Nhạc</string>
 
+    <string name="confirm_no">Không</string>
+    <string name="confirm_yes">Có, Đặt lại</string>
+    <string name="confirm_reset_title">Đặt lại thời gian?</string>
+    <string name="confirm_reset_msg">Bạn có chắc chắn muốn đặt lại phiên hiện tại không?</string>
+    <string name="confirm_yes_skip">Có, Bỏ qua</string>
+    <string name="confirm_skip_title">Bỏ qua phiên?</string>
+    <string name="confirm_skip_msg">Bạn có chắc chắn muốn bỏ qua phiên hiện tại không?</string>
     <!-- Strict Mode -->
     <string name="settings_strict_mode">Chế độ nghiêm ngặt</string>
     <string name="settings_strict_mode_desc">Khóa nút tạm dừng khi đang tập trung</string>
@@ -234,6 +242,11 @@
 
     <string name="action_edit">Sửa</string>
     <string name="action_delete">Xoá</string>
+    <string name="action_cancel">Hủy</string>
+    <string name="confirm_delete_task_title">Xóa nhiệm vụ</string>
+    <string name="confirm_delete_task_msg">Bạn có chắc chắn muốn xóa nhiệm vụ này không?</string>
+    <string name="confirm_delete_note_title">Xóa ghi chú</string>
+    <string name="confirm_delete_note_msg">Bạn có chắc chắn muốn xóa ghi chú này không?</string>
     <string name="error_empty_content">Vui lòng nhập nội dung</string>
     <string name="friend_system_coming_soon">Hệ thống bạn bè sẽ có trong bản cập nhật tới!</string>
     <string name="journal_entry_default">Nhật ký</string>
@@ -248,14 +261,20 @@
 
     <!-- Premium / VIP -->
     <string name="premium_title">Nâng cấp VIP</string>
-    <string name="premium_subtitle">Mở khoá toàn bộ tiềm năng của bạn</string>
+    <string name="premium_subtitle">Mở khóa toàn bộ tính năng</string>
     <string name="premium_btn_upgrade">Nâng cấp ngay</string>
     <string name="premium_btn_later">Để sau</string>
     <string name="premium_gate_title">Tính năng VIP</string>
-    <string name="premium_gate_desc">Tính năng này dành riêng cho thành viên VIP.</string>
+    <string name="premium_gate_desc">Tính năng này dành cho thành viên VIP.</string>
     <string name="premium_badge">VIP 👑</string>
-    <string name="premium_success">Bạn đã là thành viên VIP! 🎉</string>
-    <string name="feature_normal_tasks_limit">Gói miễn phí: tối đa 5 công việc</string>
+    <string name="premium_success">Bạn đã trở thành thành viên VIP! 🎉</string>
+    <string name="feature_normal_tasks_limit">Gói miễn phí: tối đa 5 nhiệm vụ</string>
+    <string name="premium_feature_1">Tất cả nhạc nền</string>
+    <string name="premium_feature_2">Nhạc tùy chỉnh từ thiết bị</string>
+    <string name="premium_feature_3">Tùy chỉnh thời gian tập trung</string>
+    <string name="premium_feature_4">Chế độ nghiêm ngặt chống phân tâm</string>
+    <string name="premium_feature_5">Không giới hạn nhiệm vụ đang làm</string>
+    <string name="btn_restore_purchases">Khôi phục thanh toán</string>
 
     <!-- Share -->
     <string name="share_achievement_title">Chia sẻ thành tích</string>
@@ -267,8 +286,15 @@
     <string name="leaderboard_tab_friends">Bạn bè</string>
     <string name="leaderboard_coming_soon">Tính năng bạn bè sắp ra mắt!</string>
     <string name="leaderboard_rank">Hạng #%1$d</string>
-    <string name="leaderboard_empty">Chưa có dữ liệu. Hoàn thành 1 phiên để xuất hiện tại đây!</string>
+    <string name="leaderboard_empty">Chưa có dữ liệu. Hãy hoàn thành phiên tập trung!</string>
+    <string name="friend_system_msg_full">Chúng tôi đang phát triển tính năng xã hội. Sắp tới bạn có thể tập trung cùng bạn bè!</string>
+    <string name="btn_add_friends">Thêm bạn bè</string>
 
+    <!-- Profile -->
+    <string name="profile_view_ranking">Xem thứ hạng toàn cầu của bạn</string>
+
+    <!-- Auth -->
+    <string name="auth_language_switch">VI | EN</string>
     <string name="auth_google">Đăng nhập bằng Google</string>
     <string name="reg_confirm_password">Xác nhận mật khẩu</string>
     <string name="stats_breakdown">Phân tích phiên</string>
