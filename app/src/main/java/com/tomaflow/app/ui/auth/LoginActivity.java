@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     } catch (ApiException e) {
                         Log.w(TAG, "Google sign in failed", e);
-                        Toast.makeText(this, getString(R.string.auth_google_failed) + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_google_failed) + e.getMessage(), true);
                     }
                 }
             }
@@ -124,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         goToMain();
                     } else {
-                        Toast.makeText(LoginActivity.this, getString(R.string.auth_login_failed), Toast.LENGTH_SHORT).show();
+                        com.tomaflow.app.utils.TomaToast.show(LoginActivity.this, getString(R.string.auth_login_failed), true);
                     }
                 });
     }
@@ -141,8 +141,7 @@ public class LoginActivity extends AppCompatActivity {
             .addOnSuccessListener(result -> goToMain())
             .addOnFailureListener(e -> {
                 mBtnSignIn.setEnabled(true);
-                Toast.makeText(this, getString(R.string.auth_login_failed_msg) + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
+                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_login_failed_msg) + e.getMessage(), true);
             });
     }
 
@@ -154,9 +153,9 @@ public class LoginActivity extends AppCompatActivity {
         }
         mAuth.sendPasswordResetEmail(email)
             .addOnSuccessListener(v ->
-                Toast.makeText(this, getString(R.string.auth_reset_email_sent), Toast.LENGTH_SHORT).show())
+                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_reset_email_sent)))
             .addOnFailureListener(e ->
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+                com.tomaflow.app.utils.TomaToast.show(this, e.getMessage(), true));
     }
 
     private void goToMain() {

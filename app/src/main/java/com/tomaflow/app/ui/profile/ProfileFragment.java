@@ -86,10 +86,27 @@ public class ProfileFragment extends Fragment {
         }
 
         view.findViewById(R.id.btn_logout).setOnClickListener(v -> {
-            auth.signOut();
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            new Thread(() -> {
+                // Stop services if running
+                requireContext().stopService(new Intent(requireContext(), com.tomaflow.app.timer.TimerEngineService.class));
+                requireContext().stopService(new Intent(requireContext(), com.tomaflow.app.ui.music.MusicService.class));
+
+                // Clear local database
+                com.tomaflow.app.data.db.TomaFlowDatabase.getInstance(requireContext()).clearAllTables();
+                
+                // Clear SharedPreferences
+                requireContext().getSharedPreferences("tomaflow_subscription", android.content.Context.MODE_PRIVATE).edit().clear().apply();
+                requireContext().getSharedPreferences("rewards_prefs", android.content.Context.MODE_PRIVATE).edit().clear().apply();
+                requireContext().getSharedPreferences(com.tomaflow.app.constants.AppConstants.PREFERENCES_FILE_NAME, android.content.Context.MODE_PRIVATE).edit().clear().apply();
+                
+                auth.signOut();
+                
+                requireActivity().runOnUiThread(() -> {
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                });
+            }).start();
         });
 
         return view;

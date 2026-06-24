@@ -142,7 +142,7 @@ public class TasksFragment extends Fragment {
             String title = etTitle.getText().toString().trim();
             String note = etNote.getText().toString().trim();
             if (title.isEmpty()) {
-                Toast.makeText(getContext(), getString(R.string.task_name_required), Toast.LENGTH_SHORT).show();
+                com.tomaflow.app.utils.TomaToast.show(getContext(), R.string.task_name_required, true);
                 return;
             }
             int durationMinutes = 0;

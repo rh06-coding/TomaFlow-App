@@ -69,14 +69,13 @@ public class RegisterActivity extends AppCompatActivity {
                 }
                 // Sign out so user must log in
                 FirebaseAuth.getInstance().signOut();
-                Toast.makeText(this, getString(R.string.auth_register_success), Toast.LENGTH_SHORT).show();
+                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_register_success));
                 startActivity(new Intent(this, LoginActivity.class));
                 finish();
             })
             .addOnFailureListener(e -> {
                 mBtnCreate.setEnabled(true);
-                Toast.makeText(this, getString(R.string.auth_register_failed) + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
+                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_register_failed) + e.getMessage(), true);
             });
     }
 }

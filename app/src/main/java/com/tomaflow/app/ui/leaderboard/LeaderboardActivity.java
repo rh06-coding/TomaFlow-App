@@ -60,7 +60,7 @@ public class LeaderboardActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.btn_add_friend).setOnClickListener(v -> 
-            Toast.makeText(this, "Friend system coming in the next update!", Toast.LENGTH_SHORT).show()
+            com.tomaflow.app.utils.TomaToast.show(this, R.string.friend_system_coming_soon)
         );
     }
 
