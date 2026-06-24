@@ -294,4 +294,5 @@
     <string name="placeholder_task_subtitle">Chọn công việc để bắt đầu tập trung</string>
 
     <string name="task_items_count">%1$d MỤC</string>
+    <string name="profile_edit">Chỉnh sửa hồ sơ</string>
 </resources>

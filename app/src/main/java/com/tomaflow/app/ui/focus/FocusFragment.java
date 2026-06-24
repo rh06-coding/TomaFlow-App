@@ -139,6 +139,9 @@ public class FocusFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        com.tomaflow.app.utils.HeaderUIHelper.setupHeader(view, getString(R.string.nav_focus), getViewLifecycleOwner());
+
         mTimerViewModel = new ViewModelProvider(requireActivity()).get(TimerViewModel.class);
         mTaskViewModel  = new ViewModelProvider(requireActivity()).get(TaskViewModel.class);
 

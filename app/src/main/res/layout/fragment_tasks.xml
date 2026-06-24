@@ -19,20 +19,7 @@
             android:paddingBottom="48dp">
 
             <!-- Header -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/app_name"
-                    android:textAppearance="@style/TextAppearance.Toma.Brand" />
-                <View android:id="@+id/iv_avatar"
-                    android:layout_width="36dp" android:layout_height="36dp"
-                    android:background="@drawable/bg_avatar_circle" />
-            </LinearLayout>
+            <include layout="@layout/layout_main_header" />
 
             <TextView
                 android:layout_width="wrap_content"
