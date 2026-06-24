@@ -22,6 +22,9 @@ public interface SessionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(SessionEntity session);
 
+    @Query("DELETE FROM Sessions")
+    void deleteAll();
+
     @Query("select * from Sessions order by startTime desc")
     LiveData<List<SessionEntity>> getAllSessions();
 

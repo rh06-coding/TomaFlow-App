@@ -76,13 +76,27 @@ public class TasksFragment extends Fragment {
 
     private void setupRecyclerViews() {
         activeAdapter = new TaskAdapter(activeTasks, task -> {
-            mTaskViewModel.delete(task);
+            new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.confirm_delete_task_title)
+                .setMessage(R.string.confirm_delete_task_msg)
+                .setPositiveButton(R.string.action_delete, (dialog, which) -> {
+                    mTaskViewModel.delete(task);
+                })
+                .setNegativeButton(R.string.action_cancel, null)
+                .show();
         });
         rvActive.setLayoutManager(new LinearLayoutManager(getContext()));
         rvActive.setAdapter(activeAdapter);
 
         doneAdapter = new TaskAdapter(doneTasks, task -> {
-            mTaskViewModel.delete(task);
+            new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.confirm_delete_task_title)
+                .setMessage(R.string.confirm_delete_task_msg)
+                .setPositiveButton(R.string.action_delete, (dialog, which) -> {
+                    mTaskViewModel.delete(task);
+                })
+                .setNegativeButton(R.string.action_cancel, null)
+                .show();
         });
         rvDone.setLayoutManager(new LinearLayoutManager(getContext()));
         rvDone.setAdapter(doneAdapter);

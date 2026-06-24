@@ -214,6 +214,7 @@ public class TaskRepository {
             @Override
             public void onSuccess(List<TaskEntity> tasks) {
                 mExecutor.execute(() -> {
+                    mTaskDao.deleteAll();
                     for (TaskEntity task : tasks) {
                         if (task.taskId.isEmpty()) {
                             continue;

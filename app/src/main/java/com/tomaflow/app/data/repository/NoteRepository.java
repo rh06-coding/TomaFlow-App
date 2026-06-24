@@ -64,6 +64,7 @@ public class NoteRepository {
             @Override
             public void onSuccess(List<NoteEntity> remoteNotes) {
                 executorService.execute(() -> {
+                    noteDao.deleteAll();
                     for (NoteEntity note : remoteNotes) {
                         noteDao.insertNote(note);
                     }

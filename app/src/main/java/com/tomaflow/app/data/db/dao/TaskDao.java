@@ -28,6 +28,9 @@ public interface TaskDao {
     @Delete
     void delete(TaskEntity task);
 
+    @Query("delete from Tasks")
+    void deleteAll();
+
     @Query("delete from Tasks where taskId = :taskId")
     void deleteById(String taskId);
 
