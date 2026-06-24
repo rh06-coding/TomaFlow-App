@@ -66,6 +66,18 @@ public class SettingsFragment extends Fragment {
                 mSettingsManager.setDndMode(isChecked);
             });
         }
+
+        MaterialSwitch autoStartBreakSwitch = view.findViewById(R.id.switch_auto_start_break);
+        if (autoStartBreakSwitch != null) {
+            autoStartBreakSwitch.setChecked(mSettingsManager.isAutoStartBreak());
+            autoStartBreakSwitch.setOnCheckedChangeListener((btn, isChecked) -> {
+                mSettingsManager.setAutoStartBreak(isChecked);
+                android.content.Intent intent = new android.content.Intent(com.tomaflow.app.timer.TimerEngineService.ACTION_COMMAND);
+                intent.setClass(requireContext(), com.tomaflow.app.timer.TimerEngineService.class);
+                intent.putExtra(com.tomaflow.app.constants.AppConstants.INTENT_EXTRA_COMMAND, com.tomaflow.app.constants.AppConstants.COMMAND_RELOAD_SETTINGS);
+                requireContext().startService(intent);
+            });
+        }
     }
 
     private void bindLanguageToggle(View view) {
