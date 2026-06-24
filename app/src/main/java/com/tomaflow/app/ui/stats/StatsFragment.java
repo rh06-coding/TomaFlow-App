@@ -106,7 +106,18 @@ public class StatsFragment extends Fragment {
 
         // Journal logic
         NoteViewModel noteViewModel = new androidx.lifecycle.ViewModelProvider(this).get(NoteViewModel.class);
-        NoteAdapter noteAdapter = new NoteAdapter();
+        NoteAdapter noteAdapter = new NoteAdapter(new NoteAdapter.OnNoteClickListener() {
+            @Override
+            public void onEdit(com.tomaflow.app.data.db.entity.NoteEntity note) {
+                AddNoteBottomSheet bottomSheet = AddNoteBottomSheet.newInstance(note.noteId, note.title, note.content, note.mood);
+                bottomSheet.show(getChildFragmentManager(), "AddNoteBottomSheet");
+            }
+
+            @Override
+            public void onDelete(com.tomaflow.app.data.db.entity.NoteEntity note) {
+                noteViewModel.delete(note);
+            }
+        });
         androidx.recyclerview.widget.RecyclerView recyclerNotes = view.findViewById(R.id.recycler_notes);
         recyclerNotes.setAdapter(noteAdapter);
 
@@ -126,7 +137,7 @@ public class StatsFragment extends Fragment {
         });
 
         view.findViewById(R.id.btn_add_note).setOnClickListener(v -> {
-            AddNoteBottomSheet.newInstance().show(getChildFragmentManager(), "AddNoteBottomSheet");
+            AddNoteBottomSheet.newInstance(null, null, null, null).show(getChildFragmentManager(), "AddNoteBottomSheet");
         });
 
         View btnViewAll = view.findViewById(R.id.btn_view_all_notes);
@@ -171,9 +182,7 @@ public class StatsFragment extends Fragment {
         mBarChart.setScaleEnabled(false);
         mBarChart.setFitBars(true);
         mBarChart.getAxisRight().setEnabled(false);
-        mBarChart.getLegend().setEnabled(true);
-        mBarChart.getLegend().setTextColor(
-                ContextCompat.getColor(requireContext(), R.color.toma_text));
+        mBarChart.getLegend().setEnabled(false);
 
         int textColor = ContextCompat.getColor(requireContext(), R.color.toma_text_muted);
 

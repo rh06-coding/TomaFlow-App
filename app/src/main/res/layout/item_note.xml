@@ -51,8 +51,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     tools:text="2 hrs ago"
-                    android:textSize="12sp"
-                    android:textColor="@color/toma_text_muted" />
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/toma_primary" />
             </LinearLayout>
 
             <TextView
@@ -65,17 +66,53 @@
                 tools:text="I felt really focused and got a lot done today. The ambient music helped me stay in the zone."
                 android:textAppearance="@style/TextAppearance.Toma.Body" />
 
-            <TextView
-                android:id="@+id/tv_note_mood"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/bg_pill_muted"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
-                tools:text="🎯 Focused"
-                android:textSize="12sp"
-                android:textColor="@color/toma_text" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_note_mood"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_pill_muted"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    tools:text="🎯 Focused"
+                    android:textSize="12sp"
+                    android:textColor="@color/toma_text" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/btn_note_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:text="@string/action_edit"
+                    android:textColor="@color/toma_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:background="?attr/selectableItemBackground" />
+
+                <TextView
+                    android:id="@+id/btn_note_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="6dp"
+                    android:text="@string/action_delete"
+                    android:textColor="#F44336"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:background="?attr/selectableItemBackground" />
+            </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>

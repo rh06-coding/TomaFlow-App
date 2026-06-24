@@ -197,58 +197,7 @@
                 app:tint="@color/toma_text_muted" />
         </LinearLayout>
 
-        <!-- Badges header -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:gravity="center_vertical">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/profile_badges"
-                android:textAppearance="@style/TextAppearance.Toma.Title" />
-            <TextView
-                android:id="@+id/btn_view_all_badges"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/profile_view_all"
-                android:textColor="@color/toma_primary"
-                android:textStyle="bold"
-                android:textSize="11sp" />
-        </LinearLayout>
 
-        <!-- Badge grid 2x2 -->
-        <GridLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:columnCount="2"
-            android:rowCount="2"
-            android:useDefaultMargins="false">
-
-            <include layout="@layout/item_badge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp" />
-            <include layout="@layout/item_badge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp" />
-            <include layout="@layout/item_badge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp" />
-            <include layout="@layout/item_badge"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
-                android:layout_margin="6dp" />
-        </GridLayout>
 
         <!-- Cloud Sync -->
         <LinearLayout

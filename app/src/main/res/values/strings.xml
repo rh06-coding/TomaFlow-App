@@ -169,6 +169,7 @@
     <string name="toma_stage_grow">Plant is growing strong…</string>
     <string name="toma_stage_flower">Flowering — fruit soon!</string>
     <string name="toma_stage_ripe">Tomato almost ripe! 🍅</string>
+    <string name="toma_stage_dirt">Dirt empty</string>
     <string name="toma_complete">🍅 Pomodoro complete!</string>
     <string name="toma_wilt">Plant wilted… 😢 Try again!</string>
 
@@ -268,6 +269,19 @@
     <string name="mood_focused">🎯 Focused</string>
     <string name="mood_tired">😴 Tired</string>
     <string name="mood_stressed">😤 Stressed</string>
+
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
+    <string name="error_empty_content">Please enter some content</string>
+    <string name="journal_entry_default">Journal Entry</string>
+    <string name="rewards_farm_title">My Tomato Farm</string>
+    <string name="day_mon">M</string>
+    <string name="day_tue">T</string>
+    <string name="day_wed">W</string>
+    <string name="day_thu">T</string>
+    <string name="day_fri">F</string>
+    <string name="day_sat">S</string>
+    <string name="day_sun">S</string>
 
     <!-- Premium / VIP -->
     <string name="premium_title">Upgrade to VIP</string>
