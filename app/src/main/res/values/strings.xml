@@ -169,6 +169,7 @@
     <string name="toma_stage_grow">Plant is growing strong…</string>
     <string name="toma_stage_flower">Flowering — fruit soon!</string>
     <string name="toma_stage_ripe">Tomato almost ripe! 🍅</string>
+    <string name="toma_stage_dirt">Dirt empty</string>
     <string name="toma_complete">🍅 Pomodoro complete!</string>
     <string name="toma_wilt">Plant wilted… 😢 Try again!</string>
 
