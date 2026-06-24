@@ -30,7 +30,18 @@ public class JournalActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> finish());
 
         NoteViewModel noteViewModel = new ViewModelProvider(this).get(NoteViewModel.class);
-        NoteAdapter noteAdapter = new NoteAdapter();
+        NoteAdapter noteAdapter = new NoteAdapter(new NoteAdapter.OnNoteClickListener() {
+            @Override
+            public void onEdit(com.tomaflow.app.data.db.entity.NoteEntity note) {
+                AddNoteBottomSheet bottomSheet = AddNoteBottomSheet.newInstance(note.noteId, note.title, note.content, note.mood);
+                bottomSheet.show(getSupportFragmentManager(), "AddNoteBottomSheet");
+            }
+
+            @Override
+            public void onDelete(com.tomaflow.app.data.db.entity.NoteEntity note) {
+                noteViewModel.delete(note);
+            }
+        });
         RecyclerView recyclerNotes = findViewById(R.id.recycler_notes);
         recyclerNotes.setAdapter(noteAdapter);
 

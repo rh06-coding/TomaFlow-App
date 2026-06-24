@@ -232,6 +232,19 @@
     <string name="mood_tired">😴 Mệt mỏi</string>
     <string name="mood_stressed">😤 Căng thẳng</string>
 
+    <string name="action_edit">Sửa</string>
+    <string name="action_delete">Xoá</string>
+    <string name="error_empty_content">Vui lòng nhập nội dung</string>
+    <string name="journal_entry_default">Nhật ký</string>
+    <string name="rewards_farm_title">Nông trại của tôi</string>
+    <string name="day_mon">T2</string>
+    <string name="day_tue">T3</string>
+    <string name="day_wed">T4</string>
+    <string name="day_thu">T5</string>
+    <string name="day_fri">T6</string>
+    <string name="day_sat">T7</string>
+    <string name="day_sun">CN</string>
+
     <!-- Premium / VIP -->
     <string name="premium_title">Nâng cấp VIP</string>
     <string name="premium_subtitle">Mở khoá toàn bộ tiềm năng của bạn</string>

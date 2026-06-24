@@ -12,8 +12,9 @@
         android:id="@+id/tv_farm_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/toma_text_muted"
-        android:textSize="12sp"
+        android:textColor="@color/toma_primary"
+        android:textSize="13sp"
+        android:textStyle="bold"
         tools:text="14" />
 
     <FrameLayout

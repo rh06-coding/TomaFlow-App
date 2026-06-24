@@ -210,7 +210,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="My Tomato Farm"
+                    android:text="@string/rewards_farm_title"
                     android:textColor="@color/toma_text"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -249,13 +249,13 @@
                 android:layout_marginTop="16dp"
                 android:orientation="horizontal"
                 android:weightSum="7">
-                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="M" android:gravity="center" android:textColor="@color/toma_text_muted" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="T" android:gravity="center" android:textColor="@color/toma_text_muted" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="W" android:gravity="center" android:textColor="@color/toma_text_muted" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="T" android:gravity="center" android:textColor="@color/toma_text_muted" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="F" android:gravity="center" android:textColor="@color/toma_text_muted" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="S" android:gravity="center" android:textColor="@color/toma_text_muted" android:textStyle="bold"/>
-                <TextView android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:text="S" android:gravity="center" android:textColor="@color/toma_text_muted" android:textStyle="bold"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/day_mon" android:textSize="12sp" android:textColor="@color/toma_text_muted"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/day_tue" android:textSize="12sp" android:textColor="@color/toma_text_muted"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/day_wed" android:textSize="12sp" android:textColor="@color/toma_text_muted"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/day_thu" android:textSize="12sp" android:textColor="@color/toma_text_muted"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/day_fri" android:textSize="12sp" android:textColor="@color/toma_text_muted"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/day_sat" android:textSize="12sp" android:textColor="@color/toma_text_muted"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/day_sun" android:textSize="12sp" android:textColor="@color/toma_text_muted"/>
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView

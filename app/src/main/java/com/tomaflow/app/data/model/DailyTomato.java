@@ -14,11 +14,11 @@ public class DailyTomato {
 
     public enum Stage {
         DIRT(0, 0, R.string.toma_stage_dirt, 0), // 0 is no icon or placeholder
-        SEED(1, 24, R.string.toma_stage_seed, R.drawable.ic_toma_seed),
-        SPROUT(25, 49, R.string.toma_stage_sprout, R.drawable.ic_toma_sprout),
-        PLANT(50, 99, R.string.toma_stage_grow, R.drawable.ic_toma_plant),
-        FLOWER(100, 149, R.string.toma_stage_flower, R.drawable.ic_toma_flower),
-        RIPE(150, Integer.MAX_VALUE, R.string.toma_stage_ripe, R.drawable.ic_toma_ripe);
+        SEED(1, 29, R.string.toma_stage_seed, R.drawable.ic_toma_seed),
+        SPROUT(30, 59, R.string.toma_stage_sprout, R.drawable.ic_toma_sprout),
+        PLANT(60, 119, R.string.toma_stage_grow, R.drawable.ic_toma_plant),
+        FLOWER(120, 239, R.string.toma_stage_flower, R.drawable.ic_toma_flower),
+        RIPE(240, Integer.MAX_VALUE, R.string.toma_stage_ripe, R.drawable.ic_toma_ripe);
 
         public final int minMinutes;
         public final int maxMinutes;

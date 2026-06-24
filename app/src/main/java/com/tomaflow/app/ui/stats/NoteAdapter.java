@@ -19,7 +19,14 @@ import java.util.Locale;
 
 public class NoteAdapter extends ListAdapter<NoteEntity, NoteAdapter.NoteViewHolder> {
 
-    public NoteAdapter() {
+    public interface OnNoteClickListener {
+        void onEdit(NoteEntity note);
+        void onDelete(NoteEntity note);
+    }
+
+    private OnNoteClickListener listener;
+
+    public NoteAdapter(OnNoteClickListener listener) {
         super(new DiffUtil.ItemCallback<NoteEntity>() {
             @Override
             public boolean areItemsTheSame(@NonNull NoteEntity oldItem, @NonNull NoteEntity newItem) {
@@ -33,6 +40,7 @@ public class NoteAdapter extends ListAdapter<NoteEntity, NoteAdapter.NoteViewHol
                        oldItem.mood.equals(newItem.mood);
             }
         });
+        this.listener = listener;
     }
 
     @NonNull
@@ -45,11 +53,11 @@ public class NoteAdapter extends ListAdapter<NoteEntity, NoteAdapter.NoteViewHol
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
         NoteEntity note = getItem(position);
-        holder.bind(note);
+        holder.bind(note, listener);
     }
 
     static class NoteViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvDate, tvContent, tvMood;
+        TextView tvTitle, tvDate, tvContent, tvMood, btnEdit, btnDelete;
         View vMoodStrip;
 
         public NoteViewHolder(@NonNull View itemView) {
@@ -59,10 +67,21 @@ public class NoteAdapter extends ListAdapter<NoteEntity, NoteAdapter.NoteViewHol
             tvContent = itemView.findViewById(R.id.tv_note_content);
             tvMood = itemView.findViewById(R.id.tv_note_mood);
             vMoodStrip = itemView.findViewById(R.id.v_mood_strip);
+            btnEdit = itemView.findViewById(R.id.btn_note_edit);
+            btnDelete = itemView.findViewById(R.id.btn_note_delete);
         }
 
-        public void bind(NoteEntity note) {
-            tvTitle.setText(note.title == null || note.title.isEmpty() ? "Journal Entry" : note.title);
+        public void bind(NoteEntity note, OnNoteClickListener listener) {
+            btnEdit.setOnClickListener(v -> {
+                if (listener != null) listener.onEdit(note);
+            });
+            btnDelete.setOnClickListener(v -> {
+                if (listener != null) listener.onDelete(note);
+            });
+
+            android.content.Context context = itemView.getContext();
+
+            tvTitle.setText(note.title == null || note.title.isEmpty() ? context.getString(R.string.journal_entry_default) : note.title);
             tvContent.setText(note.content);
             
             SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault());
@@ -75,19 +94,19 @@ public class NoteAdapter extends ListAdapter<NoteEntity, NoteAdapter.NoteViewHol
                 switch (note.mood) {
                     case "happy":
                         colorRes = R.color.toma_success;
-                        moodText = "😊 Tuyệt vời";
+                        moodText = context.getString(R.string.mood_happy);
                         break;
                     case "focused":
                         colorRes = R.color.toma_info;
-                        moodText = "🎯 Tập trung";
+                        moodText = context.getString(R.string.mood_focused);
                         break;
                     case "tired":
                         colorRes = R.color.toma_warning;
-                        moodText = "😴 Mệt mỏi";
+                        moodText = context.getString(R.string.mood_tired);
                         break;
                     case "stressed":
                         colorRes = R.color.toma_error;
-                        moodText = "😤 Căng thẳng";
+                        moodText = context.getString(R.string.mood_stressed);
                         break;
                     default:
                         moodText = note.mood;
@@ -96,7 +115,7 @@ public class NoteAdapter extends ListAdapter<NoteEntity, NoteAdapter.NoteViewHol
             
             tvMood.setText(moodText);
             vMoodStrip.setBackgroundResource(colorRes);
-            tvMood.setTextColor(itemView.getContext().getResources().getColor(colorRes, null));
+            tvMood.setTextColor(context.getResources().getColor(colorRes, null));
         }
     }
 }
