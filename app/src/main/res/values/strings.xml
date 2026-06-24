@@ -82,6 +82,9 @@
     <string name="settings_notify_desc">Sound and haptic alerts for phase shifts.</string>
     <string name="settings_sanctuary">Focus Sanctuary</string>
     <string name="settings_sanctuary_desc">Your workspace is tuned for peak cognitive performance.</string>
+    
+    <string name="settings_auto_start_break">Auto-start Breaks</string>
+    <string name="settings_auto_start_break_desc">Automatically start the break timer when a focus session ends.</string>
 
     <string name="settings_dark_mode">Dark Mode</string>
     <string name="settings_dark_mode_desc">Switch between light and dark themes.</string>
@@ -182,6 +185,16 @@
     <string name="phase_complete_start_break">Start Break</string>
     <string name="phase_complete_start_focus">Start Focus</string>
     <string name="phase_complete_skip">Skip</string>
+    
+    <!-- Confirm Dialogs -->
+    <string name="confirm_no">No</string>
+    <string name="confirm_yes">Yes, Reset</string>
+    <string name="confirm_reset_title">Reset Timer?</string>
+    <string name="confirm_reset_msg">Are you sure you want to reset the current session?</string>
+    <string name="confirm_yes_skip">Yes, Skip</string>
+    <string name="confirm_skip_title">Skip Session?</string>
+    <string name="confirm_skip_msg">Are you sure you want to skip the current session?</string>
+    
     <!-- Error & Toast messages -->
     <string name="main_exit_toast">Press back again to exit</string>
     <string name="error_required">Required</string>
