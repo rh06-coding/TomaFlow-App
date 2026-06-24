@@ -23,6 +23,7 @@
     <color name="toma_info_soft">#E2ECFD</color>
     <color name="toma_warning">#F59E0B</color>
     <color name="toma_error">#EF4444</color>
+    <color name="toma_error_soft">#FEE2E2</color>
 
     <color name="toma_divider">#E7E3EC</color>
 

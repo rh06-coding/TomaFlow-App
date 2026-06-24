@@ -88,9 +88,16 @@ public class ProfileFragment extends Fragment {
 
         View cardLeaderboard = view.findViewById(R.id.card_leaderboard);
         if (cardLeaderboard != null) {
-            cardLeaderboard.setOnClickListener(v -> 
-                startActivity(new Intent(requireContext(), com.tomaflow.app.ui.leaderboard.LeaderboardActivity.class))
-            );
+            cardLeaderboard.setOnClickListener(v -> {
+                com.tomaflow.app.utils.TomaToast.show(requireContext(), "Leaderboard coming soon!", true);
+            });
+        }
+        
+        View cardFriends = view.findViewById(R.id.card_friends);
+        if (cardFriends != null) {
+            cardFriends.setOnClickListener(v -> {
+                startActivity(new Intent(requireContext(), com.tomaflow.app.ui.friends.FriendsActivity.class));
+            });
         }
 
         com.tomaflow.app.data.repository.SubscriptionManager sm = new com.tomaflow.app.data.repository.SubscriptionManager(requireContext());
