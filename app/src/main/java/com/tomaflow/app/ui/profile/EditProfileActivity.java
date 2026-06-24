@@ -117,9 +117,11 @@ public class EditProfileActivity extends AppCompatActivity {
                     Glide.with(this).load(currentAvatarUrl).circleCrop().into(ivAvatar);
                 }
             } else {
-                // Generate username if null
-                String generated = "user_" + System.currentTimeMillis() % 10000;
-                etUsername.setText(generated);
+                // Generate stable username if null
+                if (etUsername.getText().toString().isEmpty()) {
+                    String generated = "user_" + user.getUid().substring(0, 6).toLowerCase();
+                    etUsername.setText(generated);
+                }
             }
             
             // Set initials if no avatar
