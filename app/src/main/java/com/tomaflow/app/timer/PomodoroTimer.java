@@ -54,6 +54,7 @@ public class PomodoroTimer {
     private long  mRemainingMs    = DEFAULT_FOCUS_MS;
     private long  mStartElapsedMs = 0;
     private int   mSessionCount   = 0;
+    private boolean mAutoStartBreak = false;
 
     // ── Listener interface ────────────────────────────────────────────────────
 
@@ -117,6 +118,10 @@ public class PomodoroTimer {
 
     public void setCyclesBeforeLongBreak(int cycles) {
         mCyclesBeforeLongBreak = cycles;
+    }
+
+    public void setAutoStartBreak(boolean autoStart) {
+        mAutoStartBreak = autoStart;
     }
 
     // ── Commands ──────────────────────────────────────────────────────────────
@@ -286,9 +291,9 @@ public class PomodoroTimer {
 
         mPhase           = isLongBreak ? Phase.LONG_BREAK : Phase.SHORT_BREAK;
         long breakDuration = isLongBreak ? mLongBreakDurationMs : mShortBreakDurationMs;
-        mState           = State.RUNNING_BREAK;
+        mState           = mAutoStartBreak ? State.RUNNING_BREAK : State.PAUSED_BREAK;
         mRemainingMs     = breakDuration;
-        mStartElapsedMs  = SystemClock.elapsedRealtime();
+        mStartElapsedMs  = mAutoStartBreak ? SystemClock.elapsedRealtime() : 0;
         notifyStateChanged();
     }
 
