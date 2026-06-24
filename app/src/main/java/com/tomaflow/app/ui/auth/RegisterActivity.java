@@ -66,6 +66,13 @@ public class RegisterActivity extends AppCompatActivity {
                     UserProfileChangeRequest profile = new UserProfileChangeRequest.Builder()
                         .setDisplayName(name).build();
                     result.getUser().updateProfile(profile);
+
+                    String uid = result.getUser().getUid();
+                    String generatedUsername = "user_" + uid.substring(0, 6).toLowerCase();
+                    com.tomaflow.app.data.model.UserProfile userProfile = new com.tomaflow.app.data.model.UserProfile(
+                            uid, email, "", generatedUsername, name, "", "");
+                    com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users")
+                            .document(uid).set(userProfile);
                 }
                 // Sign out so user must log in
                 FirebaseAuth.getInstance().signOut();

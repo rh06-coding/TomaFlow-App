@@ -67,10 +67,24 @@ public class FriendsListFragment extends Fragment {
         rvFriends = view.findViewById(R.id.rv_friends);
         rvFriends.setLayoutManager(new LinearLayoutManager(getContext()));
         
-        adapter = new FriendAdapter("Add", user -> {
-            friendRepository.sendFriendRequest(user.uid)
-                .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Friend request sent to " + user.name, true))
-                .addOnFailureListener(e -> TomaToast.show(requireContext(), "Failed to send request", false));
+        adapter = new FriendAdapter("Add", (user, action) -> {
+            if ("Friend".equals(action)) {
+                new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Unfriend")
+                    .setMessage("Are you sure you want to unfriend " + user.name + "?")
+                    .setPositiveButton("Unfriend", (dialog, which) -> {
+                        String myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                        String connectionId = myId.compareTo(user.uid) < 0 ? myId + "_" + user.uid : user.uid + "_" + myId;
+                        friendRepository.removeConnection(connectionId)
+                            .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Unfriended " + user.name, true));
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+            } else if ("Add".equals(action)) {
+                friendRepository.sendFriendRequest(user.uid)
+                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Friend request sent to " + user.name, true))
+                    .addOnFailureListener(e -> TomaToast.show(requireContext(), "Failed to send request", false));
+            }
         });
         rvFriends.setAdapter(adapter);
 
@@ -98,32 +112,90 @@ public class FriendsListFragment extends Fragment {
     
     private void loadMyFriends() {
         friendRepository.getFriends().observe(getViewLifecycleOwner(), connections -> {
+            updateUserStatusMap();
             if (connections == null || connections.isEmpty()) {
-                adapter.submitList(new ArrayList<>());
+                if (adapter != null) adapter.submitList(new ArrayList<>());
                 emptyState.setVisibility(View.VISIBLE);
                 return;
             }
             emptyState.setVisibility(View.GONE);
-            // We need to fetch UserProfiles for these connections.
-            // For simplicity, we just show "Friend" in the UI.
-            // Let's implement a quick fetch for UserProfiles.
             List<UserProfile> friendsList = new ArrayList<>();
+            int[] pendingCount = {connections.size()};
             String myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             
             for (int i = 0; i < connections.size(); i++) {
                 String targetUid = connections.get(i).senderId.equals(myUid) ? connections.get(i).receiverId : connections.get(i).senderId;
-                friendRepository.getUserProfile(targetUid).addOnSuccessListener(profile -> {
-                    if (profile != null) {
-                        friendsList.add(profile);
-                        if (friendsList.size() == connections.size()) {
-                            adapter = new FriendAdapter("Friend", null);
+                friendRepository.getUserProfile(targetUid).addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        friendsList.add(task.getResult());
+                    } else {
+                        friendsList.add(new UserProfile(targetUid, "", "", "unknown", "Unknown User", "", ""));
+                    }
+                    
+                    pendingCount[0]--;
+                    if (pendingCount[0] == 0) {
+                        if (adapter == null) {
+                            adapter = new FriendAdapter("Friend", (user, action) -> {
+                                if ("Friend".equals(action)) {
+                                    new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                                        .setTitle("Unfriend")
+                                        .setMessage("Are you sure you want to unfriend " + user.name + "?")
+                                        .setPositiveButton("Unfriend", (dialog, which) -> {
+                                            // Find connection ID
+                                            String myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                            String connectionId = myId.compareTo(user.uid) < 0 ? myId + "_" + user.uid : user.uid + "_" + myId;
+                                            friendRepository.removeConnection(connectionId)
+                                                .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Unfriended " + user.name, true));
+                                        })
+                                        .setNegativeButton("Cancel", null)
+                                        .show();
+                                }
+                            });
                             rvFriends.setAdapter(adapter);
-                            adapter.submitList(friendsList);
                         }
+                        adapter.setUserStatusMap(statusMap);
+                        adapter.submitList(friendsList);
                     }
                 });
             }
         });
+
+        // Also observe requests to keep the map updated
+        friendRepository.getPendingRequests().observe(getViewLifecycleOwner(), connections -> updateUserStatusMap());
+        friendRepository.getSentRequests().observe(getViewLifecycleOwner(), connections -> updateUserStatusMap());
+    }
+
+    private java.util.Map<String, String> statusMap = new java.util.HashMap<>();
+
+    private void updateUserStatusMap() {
+        statusMap.clear();
+        String myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        
+        List<com.tomaflow.app.data.model.FriendConnection> friends = friendRepository.getFriends().getValue();
+        if (friends != null) {
+            for (com.tomaflow.app.data.model.FriendConnection c : friends) {
+                String target = c.senderId.equals(myUid) ? c.receiverId : c.senderId;
+                statusMap.put(target, "ACCEPTED");
+            }
+        }
+        
+        List<com.tomaflow.app.data.model.FriendConnection> received = friendRepository.getPendingRequests().getValue();
+        if (received != null) {
+            for (com.tomaflow.app.data.model.FriendConnection c : received) {
+                statusMap.put(c.senderId, "RECEIVED");
+            }
+        }
+        
+        List<com.tomaflow.app.data.model.FriendConnection> sent = friendRepository.getSentRequests().getValue();
+        if (sent != null) {
+            for (com.tomaflow.app.data.model.FriendConnection c : sent) {
+                statusMap.put(c.receiverId, "SENT");
+            }
+        }
+        
+        if (adapter != null) {
+            adapter.setUserStatusMap(statusMap);
+        }
     }
 
     private void searchUsers(String query) {
@@ -134,13 +206,30 @@ public class FriendsListFragment extends Fragment {
         friendRepository.searchByUsername(query).addOnSuccessListener(users -> {
             if (users.isEmpty()) {
                 emptyState.setVisibility(View.VISIBLE);
-                adapter.submitList(new ArrayList<>());
+                if (adapter != null) adapter.submitList(new ArrayList<>());
             } else {
                 emptyState.setVisibility(View.GONE);
-                adapter = new FriendAdapter("Add", user -> {
-                    friendRepository.sendFriendRequest(user.uid)
-                        .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Friend request sent to " + user.name, true));
+                adapter = new FriendAdapter("Add", (user, action) -> {
+                    if ("Friend".equals(action)) {
+                        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                            .setTitle("Unfriend")
+                            .setMessage("Are you sure you want to unfriend " + user.name + "?")
+                            .setPositiveButton("Unfriend", (dialog, which) -> {
+                                String myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                String connectionId = myId.compareTo(user.uid) < 0 ? myId + "_" + user.uid : user.uid + "_" + myId;
+                                friendRepository.removeConnection(connectionId)
+                                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Unfriended " + user.name, true));
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                    } else if ("Add".equals(action)) {
+                        statusMap.put(user.uid, "SENT");
+                        if (adapter != null) adapter.setUserStatusMap(statusMap);
+                        friendRepository.sendFriendRequest(user.uid)
+                            .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Friend request sent to " + user.name, true));
+                    }
                 });
+                adapter.setUserStatusMap(statusMap);
                 rvFriends.setAdapter(adapter);
                 adapter.submitList(users);
             }
@@ -159,10 +248,27 @@ public class FriendsListFragment extends Fragment {
                 TomaToast.show(requireContext(), "No friends found from contacts.", false);
             } else {
                 emptyState.setVisibility(View.GONE);
-                adapter = new FriendAdapter("Add", user -> {
-                    friendRepository.sendFriendRequest(user.uid)
-                        .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Friend request sent to " + user.name, true));
+                adapter = new FriendAdapter("Add", (user, action) -> {
+                    if ("Friend".equals(action)) {
+                        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                            .setTitle("Unfriend")
+                            .setMessage("Are you sure you want to unfriend " + user.name + "?")
+                            .setPositiveButton("Unfriend", (dialog, which) -> {
+                                String myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                String connectionId = myId.compareTo(user.uid) < 0 ? myId + "_" + user.uid : user.uid + "_" + myId;
+                                friendRepository.removeConnection(connectionId)
+                                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Unfriended " + user.name, true));
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                    } else if ("Add".equals(action)) {
+                        statusMap.put(user.uid, "SENT");
+                        if (adapter != null) adapter.setUserStatusMap(statusMap);
+                        friendRepository.sendFriendRequest(user.uid)
+                            .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Friend request sent to " + user.name, true));
+                    }
                 });
+                adapter.setUserStatusMap(statusMap);
                 rvFriends.setAdapter(adapter);
                 adapter.submitList(users);
             }

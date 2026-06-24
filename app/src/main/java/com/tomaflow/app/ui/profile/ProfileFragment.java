@@ -37,7 +37,13 @@ public class ProfileFragment extends Fragment {
 
         View btnSettings = view.findViewById(R.id.btn_settings);
         if (btnSettings != null) {
-            btnSettings.setOnClickListener(v -> androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_settings));
+            btnSettings.setOnClickListener(v -> {
+                androidx.navigation.NavOptions navOptions = new androidx.navigation.NavOptions.Builder()
+                        .setPopUpTo(R.id.nav_focus, false)
+                        .setLaunchSingleTop(true)
+                        .build();
+                androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_settings, null, navOptions);
+            });
         }
 
         if (user != null) {

@@ -41,7 +41,11 @@ public class FriendRepository {
                     if (task.isSuccessful() && task.getResult() != null) {
                         for (DocumentSnapshot doc : task.getResult().getDocuments()) {
                             if (!doc.getId().equals(currentUserId)) {
-                                results.add(doc.toObject(UserProfile.class));
+                                UserProfile profile = doc.toObject(UserProfile.class);
+                                if (profile != null) {
+                                    profile.uid = doc.getId();
+                                    results.add(profile);
+                                }
                             }
                         }
                     }
@@ -71,7 +75,11 @@ public class FriendRepository {
                         if (task.isSuccessful() && task.getResult() != null) {
                             for (DocumentSnapshot doc : task.getResult().getDocuments()) {
                                 if (!doc.getId().equals(currentUserId)) {
-                                    list.add(doc.toObject(UserProfile.class));
+                                    UserProfile profile = doc.toObject(UserProfile.class);
+                                    if (profile != null) {
+                                        profile.uid = doc.getId();
+                                        list.add(profile);
+                                    }
                                 }
                             }
                         }
@@ -111,62 +119,90 @@ public class FriendRepository {
     }
 
     // 6. Get Pending Requests (where receiver is me)
+    private MutableLiveData<List<FriendConnection>> pendingRequestsLiveData;
     public LiveData<List<FriendConnection>> getPendingRequests() {
-        MutableLiveData<List<FriendConnection>> liveData = new MutableLiveData<>();
-        db.collection("friend_connections")
-          .whereEqualTo("receiverId", currentUserId)
-          .whereEqualTo("status", "PENDING")
-          .addSnapshotListener((snapshot, e) -> {
-              if (e != null) return;
-              List<FriendConnection> list = new ArrayList<>();
-              if (snapshot != null) {
-                  for (DocumentSnapshot doc : snapshot.getDocuments()) {
-                      list.add(doc.toObject(FriendConnection.class));
+        if (pendingRequestsLiveData == null) {
+            pendingRequestsLiveData = new MutableLiveData<>();
+            db.collection("friend_connections")
+              .whereEqualTo("receiverId", currentUserId)
+              .whereEqualTo("status", "PENDING")
+              .addSnapshotListener((snapshot, e) -> {
+                  if (e != null) return;
+                  List<FriendConnection> list = new ArrayList<>();
+                  if (snapshot != null) {
+                      for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                          list.add(doc.toObject(FriendConnection.class));
+                      }
                   }
-              }
-              liveData.setValue(list);
-          });
-        return liveData;
+                  pendingRequestsLiveData.setValue(list);
+              });
+        }
+        return pendingRequestsLiveData;
+    }
+
+    // 6.5 Get Sent Requests (where sender is me)
+    private MutableLiveData<List<FriendConnection>> sentRequestsLiveData;
+    public LiveData<List<FriendConnection>> getSentRequests() {
+        if (sentRequestsLiveData == null) {
+            sentRequestsLiveData = new MutableLiveData<>();
+            db.collection("friend_connections")
+              .whereEqualTo("senderId", currentUserId)
+              .whereEqualTo("status", "PENDING")
+              .addSnapshotListener((snapshot, e) -> {
+                  if (e != null) return;
+                  List<FriendConnection> list = new ArrayList<>();
+                  if (snapshot != null) {
+                      for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                          list.add(doc.toObject(FriendConnection.class));
+                      }
+                  }
+                  sentRequestsLiveData.setValue(list);
+              });
+        }
+        return sentRequestsLiveData;
     }
 
     // 7. Get Friends (where I am sender or receiver and status is ACCEPTED)
-    // Firestore OR queries are tricky. We do two queries and merge them.
+    private MutableLiveData<List<FriendConnection>> friendsLiveData;
     public LiveData<List<FriendConnection>> getFriends() {
-        MutableLiveData<List<FriendConnection>> liveData = new MutableLiveData<>();
-        
-        // Use addSnapshotListener to update in real time. We fetch both sets separately.
-        db.collection("friend_connections")
-          .whereEqualTo("status", "ACCEPTED")
-          .whereIn("senderId", Arrays.asList(currentUserId))
-          .addSnapshotListener((snap1, e1) -> {
-              db.collection("friend_connections")
-                .whereEqualTo("status", "ACCEPTED")
-                .whereIn("receiverId", Arrays.asList(currentUserId))
-                .get()
-                .addOnSuccessListener(snap2 -> {
-                    List<FriendConnection> list = new ArrayList<>();
-                    if (snap1 != null) {
-                        for (DocumentSnapshot doc : snap1.getDocuments()) {
-                            list.add(doc.toObject(FriendConnection.class));
+        if (friendsLiveData == null) {
+            friendsLiveData = new MutableLiveData<>();
+            db.collection("friend_connections")
+              .whereEqualTo("status", "ACCEPTED")
+              .whereIn("senderId", Arrays.asList(currentUserId))
+              .addSnapshotListener((snap1, e1) -> {
+                  db.collection("friend_connections")
+                    .whereEqualTo("status", "ACCEPTED")
+                    .whereIn("receiverId", Arrays.asList(currentUserId))
+                    .get()
+                    .addOnSuccessListener(snap2 -> {
+                        List<FriendConnection> list = new ArrayList<>();
+                        if (snap1 != null) {
+                            for (DocumentSnapshot doc : snap1.getDocuments()) {
+                                list.add(doc.toObject(FriendConnection.class));
+                            }
                         }
-                    }
-                    if (snap2 != null) {
-                        for (DocumentSnapshot doc : snap2.getDocuments()) {
-                            list.add(doc.toObject(FriendConnection.class));
+                        if (snap2 != null) {
+                            for (DocumentSnapshot doc : snap2.getDocuments()) {
+                                list.add(doc.toObject(FriendConnection.class));
+                            }
                         }
-                    }
-                    liveData.setValue(list);
-                });
-          });
-          
-        return liveData;
+                        friendsLiveData.setValue(list);
+                    });
+              });
+        }
+        return friendsLiveData;
     }
     
     // Get single user profile to map from connection to UserProfile
     public Task<UserProfile> getUserProfile(String uid) {
         return db.collection("users").document(uid).get().continueWith(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                return task.getResult().toObject(UserProfile.class);
+            if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
+                UserProfile profile = task.getResult().toObject(UserProfile.class);
+                if (profile != null) {
+                    profile.uid = task.getResult().getId();
+                    return profile;
+                }
             }
             return null;
         });

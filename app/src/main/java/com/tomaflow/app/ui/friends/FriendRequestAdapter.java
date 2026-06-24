@@ -75,11 +75,23 @@ public class FriendRequestAdapter extends ListAdapter<FriendRequestItem, FriendR
             tvName.setText(user.name != null ? user.name : user.email);
             tvUsername.setText(user.username != null ? "@" + user.username : "");
             
-            btnAccept.setOnClickListener(v -> {
-                if (listener != null) listener.onAccept(item);
-            });
+            if (item.isSentRequest) {
+                btnAccept.setVisibility(View.GONE);
+            } else {
+                btnAccept.setVisibility(View.VISIBLE);
+                btnAccept.setOnClickListener(v -> {
+                    if (listener != null) listener.onAccept(item);
+                });
+            }
+            
             btnDecline.setOnClickListener(v -> {
                 if (listener != null) listener.onDecline(item);
+            });
+            
+            itemView.setOnClickListener(v -> {
+                android.content.Intent intent = new android.content.Intent(itemView.getContext(), com.tomaflow.app.ui.friends.FriendProfileActivity.class);
+                intent.putExtra(com.tomaflow.app.ui.friends.FriendProfileActivity.EXTRA_USER_ID, user.uid);
+                itemView.getContext().startActivity(intent);
             });
 
             if (user.avatarUrl != null && !user.avatarUrl.isEmpty()) {

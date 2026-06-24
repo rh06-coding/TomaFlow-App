@@ -122,7 +122,18 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        goToMain();
+                        String uid = mAuth.getCurrentUser().getUid();
+                        com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document(uid).get().addOnCompleteListener(snapshotTask -> {
+                            if (snapshotTask.isSuccessful() && snapshotTask.getResult() != null && !snapshotTask.getResult().exists()) {
+                                String email = mAuth.getCurrentUser().getEmail();
+                                String name = mAuth.getCurrentUser().getDisplayName();
+                                String generatedUsername = "user_" + uid.substring(0, 6).toLowerCase();
+                                com.tomaflow.app.data.model.UserProfile userProfile = new com.tomaflow.app.data.model.UserProfile(
+                                        uid, email, "", generatedUsername, name, "", "");
+                                com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document(uid).set(userProfile);
+                            }
+                            goToMain();
+                        });
                     } else {
                         com.tomaflow.app.utils.TomaToast.show(LoginActivity.this, getString(R.string.auth_login_failed), true);
                     }
