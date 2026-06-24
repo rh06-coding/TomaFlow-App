@@ -60,7 +60,31 @@ public class ProfileFragment extends Fragment {
             }
         }
 
+        if (user != null) {
+            com.tomaflow.app.data.repository.ProfileRepository repo = new com.tomaflow.app.data.repository.ProfileRepository(user.getUid());
+            repo.getProfile().observe(getViewLifecycleOwner(), profile -> {
+                if (profile != null) {
+                    if (profile.name != null && !profile.name.isEmpty()) {
+                        tvName.setText(profile.name);
+                    }
+                    if (profile.avatarUrl != null && !profile.avatarUrl.isEmpty()) {
+                        android.widget.ImageView ivAvatar = view.findViewById(R.id.iv_profile_avatar);
+                        if (ivAvatar != null) {
+                            ivAvatar.setVisibility(View.VISIBLE);
+                            tvInitials.setVisibility(View.GONE);
+                            com.bumptech.glide.Glide.with(this).load(profile.avatarUrl).circleCrop().into(ivAvatar);
+                        }
+                    }
+                }
+            });
+        }
 
+        View btnEditProfile = view.findViewById(R.id.btn_edit_profile);
+        if (btnEditProfile != null) {
+            btnEditProfile.setOnClickListener(v -> {
+                startActivity(new Intent(requireContext(), EditProfileActivity.class));
+            });
+        }
 
         View cardLeaderboard = view.findViewById(R.id.card_leaderboard);
         if (cardLeaderboard != null) {
