@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Selected button fill in a MaterialButtonToggleGroup pill. Transparent when
-     unselected so the pill's bg_pill_muted track shows through. -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="true" android:color="@color/toma_primary" />
-    <item android:color="@android:color/transparent" />
-</selector>

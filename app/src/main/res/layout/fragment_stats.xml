@@ -56,7 +56,6 @@
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     app:cornerRadius="100dp"
-                    app:backgroundTint="@color/btn_toggle_bg"
                     android:text="@string/stats_tab_week"
                     android:textColor="@color/toma_primary"
                     android:textStyle="bold" />
@@ -69,7 +68,6 @@
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     app:cornerRadius="100dp"
-                    app:backgroundTint="@color/btn_toggle_bg"
                     android:text="@string/stats_tab_month"
                     android:textColor="@color/toma_text_muted"
                     android:textStyle="bold" />
