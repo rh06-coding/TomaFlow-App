@@ -20,7 +20,7 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/ic_back"
             app:navigationIconTint="@color/toma_primary"
-            app:title="Friends"
+            app:title="@string/profile_friends"
             app:titleTextColor="@color/toma_text"
             app:titleTextAppearance="@style/TextAppearance.Toma.Label" />
             

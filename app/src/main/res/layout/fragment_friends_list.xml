@@ -14,7 +14,7 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search username or email"
+        android:hint="@string/friend_search_hint"
         app:startIconDrawable="@drawable/ic_person">
         
         <com.google.android.material.textfield.TextInputEditText
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:icon="@drawable/ic_person"
-        android:text="Find friends from Contacts" />
+        android:text="@string/friend_find_contacts" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_friends"
@@ -59,7 +59,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="No friends yet"
+            android:text="@string/friend_no_friends"
             android:textColor="@color/toma_text_muted" />
     </LinearLayout>
 </LinearLayout>
+

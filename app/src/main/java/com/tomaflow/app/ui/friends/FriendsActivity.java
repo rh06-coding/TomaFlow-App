@@ -28,10 +28,10 @@ public class FriendsActivity extends AppCompatActivity {
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             switch (position) {
                 case 0:
-                    tab.setText("Friends");
+                    tab.setText(R.string.profile_friends);
                     break;
                 case 1:
-                    tab.setText("Requests");
+                    tab.setText(R.string.friend_tab_requests);
                     break;
             }
         }).attach();

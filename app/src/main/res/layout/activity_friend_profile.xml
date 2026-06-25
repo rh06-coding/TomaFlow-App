@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="10dp"
-                android:text="Friend Profile"
+                android:text="@string/friend_profile_title"
                 android:textAppearance="@style/TextAppearance.Toma.Brand" />
         </LinearLayout>
 
@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="12dp"
-            android:text="Message" />
+            android:text="@string/friend_message" />
 
         <!-- Stats row -->
         <LinearLayout
@@ -107,7 +107,7 @@
                     tools:text="Level 0" android:textColor="@color/toma_text"
                     android:textSize="20sp" android:textStyle="bold" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/profile_ranking" android:textAppearance="@style/TextAppearance.Toma.Label" />
+                    android:text="@string/profile_level" android:textAppearance="@style/TextAppearance.Toma.Label" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="0dp" android:layout_height="wrap_content"
@@ -135,3 +135,5 @@
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
+
+

@@ -124,7 +124,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/profile_ranking"
+                                android:text="@string/profile_level"
                                 android:textAppearance="@style/TextAppearance.Toma.Label" />
                         </LinearLayout>
 
@@ -270,3 +270,4 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>
+

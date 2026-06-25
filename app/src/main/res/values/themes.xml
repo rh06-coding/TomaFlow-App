@@ -63,7 +63,7 @@
         <item name="itemIconTint">@color/bottom_nav_color</item>
         <item name="itemTextColor">@color/bottom_nav_color</item>
         <item name="itemActiveIndicatorStyle">@style/Widget.Toma.BottomNav.Indicator</item>
-        <item name="labelVisibilityMode">labeled</item>
+        <item name="labelVisibilityMode">auto</item>
         <item name="backgroundTint">@color/toma_surface</item>
     </style>
 

@@ -132,7 +132,7 @@
                     tools:text="Level 42" android:textColor="@color/toma_text"
                     android:textSize="20sp" android:textStyle="bold" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="@string/profile_ranking" android:textAppearance="@style/TextAppearance.Toma.Label" />
+                    android:text="@string/profile_level" android:textAppearance="@style/TextAppearance.Toma.Label" />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="0dp" android:layout_height="wrap_content"
@@ -240,14 +240,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Friends"
+                    android:text="@string/profile_friends"
                     android:textColor="@color/toma_text"
                     android:textStyle="bold"
                     android:textSize="16sp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Find and connect with friends"
+                    android:text="@string/profile_friends_desc"
                     android:textColor="@color/toma_text_muted"
                     android:textSize="13sp" />
             </LinearLayout>
@@ -296,4 +296,5 @@
             style="@style/Widget.Toma.Button.Logout" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
+
 

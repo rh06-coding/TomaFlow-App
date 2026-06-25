@@ -80,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Tap to change avatar"
+                android:text="@string/profile_tap_avatar"
                 android:textColor="@color/toma_text_muted"
                 android:textSize="12sp" />
 
@@ -163,7 +163,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Change Password"
+                android:text="@string/profile_change_password"
                 android:textColor="@color/toma_primary" />
 
         </LinearLayout>
@@ -179,7 +179,8 @@
             android:id="@+id/btn_save"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Save Profile"
+            android:text="@string/profile_save"
             style="@style/Widget.Toma.Button.Primary" />
     </LinearLayout>
 </LinearLayout>
+
