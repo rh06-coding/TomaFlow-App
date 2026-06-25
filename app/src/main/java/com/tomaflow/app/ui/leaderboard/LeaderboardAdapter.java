@@ -53,16 +53,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
             holder.itemView.setBackgroundResource(R.drawable.bg_card);
         }
         
-        // Highlight top 3
-        if (position == 0) {
-            holder.tvRank.setTextColor(Color.parseColor("#F59E0B")); // Gold
-        } else if (position == 1) {
-            holder.tvRank.setTextColor(Color.parseColor("#9CA3AF")); // Silver
-        } else if (position == 2) {
-            holder.tvRank.setTextColor(Color.parseColor("#B45309")); // Bronze
-        } else {
-            holder.tvRank.setTextColor(Color.parseColor("#C8324A")); // toma_primary
-        }
+        holder.tvRank.setTextColor(Color.parseColor("#C8324A")); // toma_primary
     }
 
     @Override

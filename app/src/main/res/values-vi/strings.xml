@@ -252,8 +252,6 @@
     <string name="strict_mode_blocked">Chế độ Nghiêm ngặt đang bật. Hãy tập trung!</string>
 
     <!-- DND -->
-    <string name="settings_dnd">Chế độ Tập trung (Không làm phiền)</string>
-    <string name="settings_dnd_desc">Tắt tiếng thông báo khi đang tập trung</string>
     <string name="dnd_permission_needed">Cho phép quyền thông báo để bật Chế độ Tập trung</string>
     <string name="dnd_permission_btn">Mở Cài đặt</string>
 
@@ -322,7 +320,7 @@
     <string name="btn_add_friends">Thêm Bạn bè</string>
     
     <!-- Profile -->
-    <string name="profile_view_ranking">Xem xếp hạng toàn cầu của bạn</string>
+    <string name="profile_view_ranking">Bảng xếp hạng giữa bạn bè</string>
     
     <!-- Auth -->
     <string name="auth_language_switch">VI | EN</string>

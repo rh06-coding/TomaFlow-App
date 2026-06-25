@@ -252,8 +252,6 @@
     <string name="strict_mode_blocked">Strict Mode is on. Stay focused!</string>
 
     <!-- DND -->
-    <string name="settings_dnd">Focus Mode (Do Not Disturb)</string>
-    <string name="settings_dnd_desc">Silence notifications while focusing</string>
     <string name="dnd_permission_needed">Allow notification access to enable Focus Mode</string>
     <string name="dnd_permission_btn">Open Settings</string>
 
@@ -322,7 +320,7 @@
     <string name="btn_add_friends">Add Friends</string>
     
     <!-- Profile -->
-    <string name="profile_view_ranking">View your global ranking</string>
+    <string name="profile_view_ranking">View your friends ranking</string>
     
     <!-- Auth -->
     <string name="auth_language_switch">VI | EN</string>

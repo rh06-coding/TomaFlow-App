@@ -92,7 +92,6 @@ public class LeaderboardActivity extends AppCompatActivity {
         for (String uid : userIds) {
             friendRepository.getUserProfile(uid).addOnSuccessListener(profile -> {
                 String username = profile != null ? profile.name : "Unknown";
-                if (uid.equals(currentUserId) && profile != null) username = profile.name + " (You)";
                 
                 final String finalUsername = username;
                 sessionDataSource.fetchSessions(uid, new FirestoreSessionRemoteDataSource.SessionFetchCallback() {
@@ -107,7 +106,7 @@ public class LeaderboardActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Exception e) {
-                        LeaderboardEntry entry = new LeaderboardEntry("", uid, finalUsername, 0, 0);
+                        LeaderboardEntry entry = new LeaderboardEntry("0", uid, finalUsername, 0, 0, 1, 0);
                         synchronized (entries) {
                             entries.add(entry);
                         }
@@ -127,7 +126,7 @@ public class LeaderboardActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Exception ex) {
-                        LeaderboardEntry entry = new LeaderboardEntry("", uid, "Unknown", 0, 0);
+                        LeaderboardEntry entry = new LeaderboardEntry("0", uid, "Unknown", 0, 0, 1, 0);
                         synchronized (entries) {
                             entries.add(entry);
                         }
@@ -140,11 +139,13 @@ public class LeaderboardActivity extends AppCompatActivity {
 
     private LeaderboardEntry calculateStats(String uid, String username, List<SessionEntity> sessions) {
         int pomodoros = 0;
+        long totalMinutes = 0;
         List<Long> completedDays = new ArrayList<>();
 
         for (SessionEntity s : sessions) {
              if ("Completed".equals(s.status)) {
                  pomodoros++;
+                 totalMinutes += s.duration / 60;
                  
                  Calendar c = Calendar.getInstance();
                  c.setTimeInMillis(s.startTime);
@@ -183,20 +184,64 @@ public class LeaderboardActivity extends AppCompatActivity {
             }
         }
         
-        return new LeaderboardEntry("", uid, username, pomodoros, streak);
+        int level = (int) (totalMinutes / 120) + 1;
+        return new LeaderboardEntry(String.valueOf(0), uid, username, pomodoros, streak, level, totalMinutes);
     }
 
     private void checkAndSort(List<LeaderboardEntry> entries, int pending) {
         if (pending == 0) {
-            Collections.sort(entries, (a, b) -> Integer.compare(b.pomodoros, a.pomodoros)); // Descending
+            Collections.sort(entries, (a, b) -> Long.compare(b.totalMinutes, a.totalMinutes)); // Descending
             for (int i = 0; i < entries.size(); i++) {
                 entries.get(i).rank = String.valueOf(i + 1);
             }
             
             runOnUiThread(() -> {
-                adapter = new LeaderboardAdapter(entries, currentUserId);
+                bindPodium(entries);
+                
+                List<LeaderboardEntry> remaining = new ArrayList<>();
+                if (entries.size() > 3) {
+                    remaining.addAll(entries.subList(3, entries.size()));
+                }
+                adapter = new LeaderboardAdapter(remaining, currentUserId);
                 rvLeaderboard.setAdapter(adapter);
             });
+        }
+    }
+
+    private void bindPodium(List<LeaderboardEntry> entries) {
+        View layoutPodium = findViewById(R.id.layout_podium);
+        if (entries.isEmpty()) {
+            layoutPodium.setVisibility(View.GONE);
+            return;
+        }
+        layoutPodium.setVisibility(View.VISIBLE);
+
+        View podium1 = findViewById(R.id.podium_rank_1);
+        View podium2 = findViewById(R.id.podium_rank_2);
+        View podium3 = findViewById(R.id.podium_rank_3);
+
+        if (entries.size() > 0) {
+            podium1.setVisibility(View.VISIBLE);
+            ((android.widget.TextView) findViewById(R.id.tv_podium_name_1)).setText(entries.get(0).username);
+            ((android.widget.TextView) findViewById(R.id.tv_podium_level_1)).setText(getString(R.string.rewards_level, entries.get(0).level));
+        } else {
+            podium1.setVisibility(View.INVISIBLE);
+        }
+
+        if (entries.size() > 1) {
+            podium2.setVisibility(View.VISIBLE);
+            ((android.widget.TextView) findViewById(R.id.tv_podium_name_2)).setText(entries.get(1).username);
+            ((android.widget.TextView) findViewById(R.id.tv_podium_level_2)).setText(getString(R.string.rewards_level, entries.get(1).level));
+        } else {
+            podium2.setVisibility(View.INVISIBLE);
+        }
+
+        if (entries.size() > 2) {
+            podium3.setVisibility(View.VISIBLE);
+            ((android.widget.TextView) findViewById(R.id.tv_podium_name_3)).setText(entries.get(2).username);
+            ((android.widget.TextView) findViewById(R.id.tv_podium_level_3)).setText(getString(R.string.rewards_level, entries.get(2).level));
+        } else {
+            podium3.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -206,13 +251,17 @@ public class LeaderboardActivity extends AppCompatActivity {
         public String username;
         public int pomodoros;
         public int streak;
+        public int level;
+        public long totalMinutes;
 
-        public LeaderboardEntry(String rank, String userId, String username, int pomodoros, int streak) {
+        public LeaderboardEntry(String rank, String userId, String username, int pomodoros, int streak, int level, long totalMinutes) {
             this.rank = rank;
             this.userId = userId;
             this.username = username;
             this.pomodoros = pomodoros;
             this.streak = streak;
+            this.level = level;
+            this.totalMinutes = totalMinutes;
         }
     }
 }
