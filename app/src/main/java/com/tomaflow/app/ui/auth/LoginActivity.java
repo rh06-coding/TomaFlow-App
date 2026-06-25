@@ -188,16 +188,25 @@ public class LoginActivity extends AppCompatActivity {
 
         String uid = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
         if (uid != null) {
+            android.content.SharedPreferences themePrefs = getSharedPreferences("user_theme_prefs", MODE_PRIVATE);
             com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document(uid).get()
                 .addOnCompleteListener(task -> {
-                    boolean isDark = false;
-                    if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
+                    // Only trust/refresh the cache when the Firestore fetch actually
+                    // succeeded. Previously a failed/offline fetch fell through to
+                    // isDark=false and overwrote the cached pref, snapping the user
+                    // to light mode and clobbering their last known theme.
+                    boolean fetched = task.isSuccessful() && task.getResult() != null && task.getResult().exists();
+                    boolean isDark;
+                    if (fetched) {
                         Boolean dark = task.getResult().getBoolean("isDarkMode");
-                        if (dark != null) isDark = dark;
+                        isDark = dark != null && dark;
+                        themePrefs.edit()
+                                .putBoolean("dark_" + uid, isDark)
+                                .putBoolean("last_dark", isDark).apply();
+                    } else {
+                        // Offline/error: keep the last known theme instead of forcing light.
+                        isDark = themePrefs.getBoolean("dark_" + uid, themePrefs.getBoolean("last_dark", false));
                     }
-                    getSharedPreferences("user_theme_prefs", MODE_PRIVATE).edit()
-                            .putBoolean("dark_" + uid, isDark)
-                            .putBoolean("last_dark", isDark).apply();
                     new com.tomaflow.app.timer.SettingsManager(this).setDarkMode(isDark);
                     androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
                             isDark ? androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES : androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO);
