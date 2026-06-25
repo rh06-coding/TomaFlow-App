@@ -11,6 +11,7 @@
     <color name="toma_bg">#F8F5FA</color>
     <color name="toma_surface">#FFFFFF</color>
     <color name="toma_surface_muted">#EFECF3</color>
+    <color name="toma_slider_card_bg">#F2D6DC</color>
 
     <!-- Text -->
     <color name="toma_text">#0F0F14</color>

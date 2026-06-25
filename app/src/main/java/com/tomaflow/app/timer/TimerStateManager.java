@@ -8,9 +8,6 @@ import com.tomaflow.app.constants.AppConstants;
 /**
  * Persists and restores timer state via SharedPreferences.
  *
- * Needed because Android may kill the service under memory pressure.
- * On restart, the saved state is loaded and drift-corrected using
- * the elapsed SystemClock delta between save and restore.
  */
 public class TimerStateManager {
 

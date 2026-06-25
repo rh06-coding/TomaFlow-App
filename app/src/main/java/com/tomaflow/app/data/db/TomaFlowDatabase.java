@@ -8,13 +8,11 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.tomaflow.app.data.db.dao.SettingsDao;
 import com.tomaflow.app.data.db.dao.SessionDao;
 import com.tomaflow.app.data.db.dao.TaskDao;
 import com.tomaflow.app.data.db.dao.NoteDao;
 import com.tomaflow.app.data.db.entity.NoteEntity;
 import com.tomaflow.app.data.db.entity.SessionEntity;
-import com.tomaflow.app.data.db.entity.SettingsEntity;
 import com.tomaflow.app.data.db.entity.TaskEntity;
 import androidx.annotation.NonNull;
 import androidx.room.migration.Migration;
@@ -24,10 +22,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
         entities = {
                 TaskEntity.class,
                 SessionEntity.class,
-                SettingsEntity.class,
                 NoteEntity.class
         },
-        version = 5,
+        version = 6,
         exportSchema = false
 )
 public abstract class TomaFlowDatabase extends RoomDatabase {
@@ -35,8 +32,6 @@ public abstract class TomaFlowDatabase extends RoomDatabase {
     public abstract TaskDao taskDao();
 
     public abstract SessionDao sessionDao();
-
-    public abstract SettingsDao settingsDao();
     
     public abstract NoteDao noteDao();
 
@@ -52,7 +47,7 @@ public abstract class TomaFlowDatabase extends RoomDatabase {
                                     TomaFlowDatabase.class,
                                     "tomaflow_database"
                             )
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
                             .fallbackToDestructiveMigration()
                             .build();
                 }
@@ -93,6 +88,14 @@ public abstract class TomaFlowDatabase extends RoomDatabase {
         public void migrate(@NonNull SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE notes ADD COLUMN userId TEXT");
             database.execSQL("ALTER TABLE notes ADD COLUMN updatedAt INTEGER NOT NULL DEFAULT 0");
+        }
+    };
+
+    // Migration v6: drop dead settings table safely without losing user data
+    private static final Migration MIGRATION_5_6 = new Migration(5, 6) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("DROP TABLE IF EXISTS settings");
         }
     };
 }

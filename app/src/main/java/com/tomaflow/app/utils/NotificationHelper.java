@@ -25,11 +25,6 @@ import com.tomaflow.app.timer.PomodoroTimer.Phase;
 import com.tomaflow.app.timer.PomodoroTimer.TimerState;
 import com.tomaflow.app.timer.TimerEngineService;
 
-/**
- * Two notification channels:
- *   - TIMER_CHANNEL (LOW): persistent countdown notification for foreground service
- *   - SOUND_CHANNEL (HIGH): phase-complete notification with sound + vibration
- */
 public class NotificationHelper {
 
     private final Context mContext;
@@ -45,7 +40,6 @@ public class NotificationHelper {
         createNotificationChannels();
     }
 
-    /** Required on Android 8.0+ (API 26). */
     private void createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Low importance — no sound, used for the persistent timer notification
@@ -115,7 +109,6 @@ public class NotificationHelper {
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setPriority(NotificationCompat.PRIORITY_LOW);
 
-        // We explicitly manage the time string in the title, so no chronometer needed.
         builder.setUsesChronometer(false);
 
         int actionCount = 0;
@@ -277,7 +270,6 @@ public class NotificationHelper {
             VibrationEffect effect = VibrationEffect.createWaveform(pattern, -1);
             mVibrator.vibrate(effect);
         } catch (Exception e) {
-            // Fallback for older API levels
             try {
                 long[] pattern = (phase == Phase.FOCUS)
                         ? AppConstants.VIBRATION_PATTERN_SESSION_COMPLETE
