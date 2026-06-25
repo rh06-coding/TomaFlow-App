@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                     if (System.currentTimeMillis() - lastPressedTime < 2000) {
                         finish();
                     } else {
-                        Toast.makeText(MainActivity.this, getString(R.string.main_exit_toast), Toast.LENGTH_SHORT).show();
+                        com.tomaflow.app.utils.TomaToast.show(MainActivity.this, getString(R.string.main_exit_toast));
                         lastPressedTime = System.currentTimeMillis();
                     }
                 }
@@ -59,6 +59,17 @@ public class MainActivity extends AppCompatActivity {
                     mBottomNav.setVisibility(android.view.View.GONE);
                 } else {
                     mBottomNav.setVisibility(android.view.View.VISIBLE);
+                }
+            });
+
+            // Setup Unread Badge
+            com.tomaflow.app.utils.UnreadBadgeManager.getInstance().getTotalUnreadCount().observe(this, count -> {
+                com.google.android.material.badge.BadgeDrawable badge = mBottomNav.getOrCreateBadge(R.id.nav_profile);
+                if (count != null && count > 0) {
+                    badge.setVisible(true);
+                    badge.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, R.color.toma_error));
+                } else {
+                    badge.setVisible(false);
                 }
             });
         }

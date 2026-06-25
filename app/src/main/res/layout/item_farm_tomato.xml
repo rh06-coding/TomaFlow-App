@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="4dp">
+
+    <TextView
+        android:id="@+id/tv_farm_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/toma_primary"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        tools:text="14" />
+
+    <FrameLayout
+        android:id="@+id/fl_tomato_bg"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/bg_icon_chip_info">
+
+        <ImageView
+            android:id="@+id/iv_tomato_stage"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center"
+            tools:src="@drawable/ic_toma_plant" />
+    </FrameLayout>
+</LinearLayout>

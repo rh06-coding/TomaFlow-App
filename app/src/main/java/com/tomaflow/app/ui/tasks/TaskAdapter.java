@@ -48,7 +48,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         // Show estimated minutes if set, else show estPomodoros (tomato count)
         if (task.estimatedMinutes > 0) {
-            holder.tvPomos.setText(task.estimatedMinutes + "m");
+            holder.tvPomos.setText(task.estimatedMinutes + " " + holder.itemView.getContext().getString(R.string.task_duration_unit));
         } else {
             holder.tvPomos.setText(String.valueOf(task.estPomodoros));
         }

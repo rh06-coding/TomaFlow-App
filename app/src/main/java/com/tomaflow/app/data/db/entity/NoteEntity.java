@@ -16,9 +16,13 @@ public class NoteEntity {
     public String content;
     public String mood;
     public long createdAt;
+    public long updatedAt;
+    public String userId;
 
     public NoteEntity() {
         this.noteId = UUID.randomUUID().toString();
-        this.createdAt = System.currentTimeMillis();
+        long now = System.currentTimeMillis();
+        this.createdAt = now;
+        this.updatedAt = now;
     }
 }

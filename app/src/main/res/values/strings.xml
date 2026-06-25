@@ -82,6 +82,9 @@
     <string name="settings_notify_desc">Sound and haptic alerts for phase shifts.</string>
     <string name="settings_sanctuary">Focus Sanctuary</string>
     <string name="settings_sanctuary_desc">Your workspace is tuned for peak cognitive performance.</string>
+    
+    <string name="settings_auto_start_break">Auto-start Breaks</string>
+    <string name="settings_auto_start_break_desc">Automatically start the break timer when a focus session ends.</string>
 
     <string name="settings_dark_mode">Dark Mode</string>
     <string name="settings_dark_mode_desc">Switch between light and dark themes.</string>
@@ -166,6 +169,7 @@
     <string name="toma_stage_grow">Plant is growing strong…</string>
     <string name="toma_stage_flower">Flowering — fruit soon!</string>
     <string name="toma_stage_ripe">Tomato almost ripe! 🍅</string>
+    <string name="toma_stage_dirt">Dirt empty</string>
     <string name="toma_complete">🍅 Pomodoro complete!</string>
     <string name="toma_wilt">Plant wilted… 😢 Try again!</string>
 
@@ -182,16 +186,27 @@
     <string name="phase_complete_start_break">Start Break</string>
     <string name="phase_complete_start_focus">Start Focus</string>
     <string name="phase_complete_skip">Skip</string>
+    
+    <!-- Confirm Dialogs -->
+    <string name="confirm_no">No</string>
+    <string name="confirm_yes">Yes, Reset</string>
+    <string name="confirm_reset_title">Reset Timer?</string>
+    <string name="confirm_reset_msg">Are you sure you want to reset the current session?</string>
+    <string name="confirm_yes_skip">Yes, Skip</string>
+    <string name="confirm_skip_title">Skip Session?</string>
+    <string name="confirm_skip_msg">Are you sure you want to skip the current session?</string>
+    
     <!-- Error & Toast messages -->
     <string name="main_exit_toast">Press back again to exit</string>
     <string name="error_required">Required</string>
     <string name="error_password_length">Minimum 8 characters</string>
     <string name="error_password_match">Passwords do not match</string>
-    <string name="auth_google_failed">Google sign in failed: </string>
+    <string name="auth_google_failed">Google sign in failed</string>
     <string name="auth_login_failed">Authentication failed.</string>
-    <string name="auth_login_failed_msg">Login failed: </string>
+    <string name="auth_login_failed_msg">Login failed</string>
     <string name="auth_email_required_reset">Enter email to reset password</string>
     <string name="auth_reset_email_sent">Reset email sent</string>
+    <string name="auth_reset_email_failed">Failed to send reset email.</string>
     <string name="auth_register_success">Registration successful! Please sign in.</string>
     <string name="auth_register_failed">Registration failed: </string>
     <string name="task_name_required">Please enter a task name</string>
@@ -224,7 +239,7 @@
     <string name="stats_tab_month">MONTH</string>
     <string name="stats_focus_label">FOCUS</string>
     <string name="stats_breaks_label">BREAKS</string>
-    <string name="profile_ranking">RANKING</string>
+    <string name="profile_level">LEVEL</string>
     <string name="profile_hours">HOURS</string>
     <string name="profile_streak">STREAK</string>
     <string name="dialog_btn_skip">Skip Break</string>
@@ -237,8 +252,6 @@
     <string name="strict_mode_blocked">Strict Mode is on. Stay focused!</string>
 
     <!-- DND -->
-    <string name="settings_dnd">Focus Mode (Do Not Disturb)</string>
-    <string name="settings_dnd_desc">Silence notifications while focusing</string>
     <string name="dnd_permission_needed">Allow notification access to enable Focus Mode</string>
     <string name="dnd_permission_btn">Open Settings</string>
 
@@ -256,16 +269,45 @@
     <string name="mood_tired">😴 Tired</string>
     <string name="mood_stressed">😤 Stressed</string>
 
+    <string name="action_edit">Edit</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="confirm_delete_task_title">Delete Task</string>
+    <string name="confirm_delete_task_msg">Are you sure you want to delete this task?</string>
+    <string name="confirm_delete_note_title">Delete Note</string>
+    <string name="confirm_delete_note_msg">Are you sure you want to delete this note?</string>
+    <string name="error_empty_content">Please enter some content</string>
+    <string name="friend_system_coming_soon">Friend system coming in the next update!</string>
+    <string name="journal_entry_default">Journal Entry</string>
+    <string name="rewards_farm_title">My Farm</string>
+    <string name="day_mon">M</string>
+    <string name="day_tue">T</string>
+    <string name="day_wed">W</string>
+    <string name="day_thu">T</string>
+    <string name="day_fri">F</string>
+    <string name="day_sat">S</string>
+    <string name="day_sun">S</string>
+
     <!-- Premium / VIP -->
-    <string name="premium_title">Upgrade to VIP</string>
+    <string name="premium_title">Upgrade to Premium</string>
+    <string name="premium_badge">Premium</string>
+    <string name="premium_btn_upgrade">Upgrade to VIP</string>
+    <string name="premium_btn_cancel_vip">Cancel VIP</string>
+    <string name="premium_cancel_title">Cancel Subscription</string>
+    <string name="premium_cancel_msg">Are you sure you want to cancel your VIP subscription? You will lose access to premium features immediately.</string>
+    <string name="premium_cancel_confirm">Cancel VIP</string>
     <string name="premium_subtitle">Unlock your full potential</string>
-    <string name="premium_btn_upgrade">Upgrade Now</string>
     <string name="premium_btn_later">Maybe later</string>
     <string name="premium_gate_title">VIP Feature</string>
     <string name="premium_gate_desc">This feature is available for VIP members.</string>
-    <string name="premium_badge">VIP 👑</string>
     <string name="premium_success">You are now a VIP member! 🎉</string>
     <string name="feature_normal_tasks_limit">Free plan: max 5 active tasks</string>
+    <string name="premium_feature_1">All background music</string>
+    <string name="premium_feature_2">Custom music from device</string>
+    <string name="premium_feature_3">Customize session duration</string>
+    <string name="premium_feature_4">Strict Mode to prevent distractions</string>
+    <string name="premium_feature_5">Unlimited active tasks</string>
+    <string name="btn_restore_purchases">Restore Purchases</string>
 
     <!-- Share -->
     <string name="share_achievement_title">Share Achievement</string>
@@ -275,21 +317,67 @@
     <string name="leaderboard_title">Leaderboard</string>
     <string name="leaderboard_tab_global">Global</string>
     <string name="leaderboard_tab_friends">Friends</string>
-    <string name="leaderboard_coming_soon">Friends feature coming soon!</string>
+    <string name="leaderboard_empty_title">No friends yet</string>
+    <string name="leaderboard_empty_msg">Add friends to compete on the leaderboard!</string>
     <string name="leaderboard_rank">Rank #%1$d</string>
     <string name="leaderboard_empty">No data yet. Complete a session to appear here!</string>
+    <string name="btn_add_friends">Add Friends</string>
+    
+    <!-- Profile -->
+    <string name="profile_view_ranking">View your friends ranking</string>
+    
+    <!-- Auth -->
+    <string name="auth_language_switch">VI | EN</string>
 
-    <!-- Confirmation Dialog -->
-    <string name="confirm_reset_title">Reset timer?</string>
-    <string name="confirm_reset_msg">Are you sure you want to reset the current session? Your progress in this session will be lost.</string>
-    <string name="confirm_skip_title">Skip session?</string>
-    <string name="confirm_skip_msg">Are you sure you want to skip the current session? Your progress in this session will be lost.</string>
-    <string name="confirm_yes">Yes, Reset</string>
-    <string name="confirm_yes_skip">Yes, Skip</string>
-    <string name="confirm_no">Cancel</string>
+    <string name="task_items_count">%1$d ITEMS</string>
+    <string name="profile_edit">Edit Profile</string>
+    <!-- Edit Profile -->
+    <string name="profile_tap_avatar">Tap to change avatar</string>
+    <string name="profile_change_password">Change Password</string>
+    <string name="profile_save">Save Profile</string>
 
-    <!-- Auto-start Break -->
-    <string name="settings_auto_start_break">Auto-start Breaks</string>
-    <string name="settings_auto_start_break_desc">Automatically start a break session when focus finishes</string>
+    <!-- Friends -->
+    <string name="profile_friends">Friends</string>
+    <string name="profile_friends_desc">Find and connect with friends</string>
+    <string name="friend_profile_title">Friend Profile</string>
+    <string name="friend_message">Message</string>
+    <string name="friend_chat_name">Name</string>
+    <string name="friend_find_contacts">Find friends from Contacts</string>
+    <string name="friend_no_friends">No friends yet</string>
+    <string name="friend_received_requests">Received Requests</string>
+    <string name="friend_no_received_requests">No received requests</string>
+    <string name="friend_sent_requests">Sent Requests</string>
+    <string name="friend_no_sent_requests">No sent requests</string>
+    <string name="friend_add">Add</string>
+    <string name="friend_search_hint">Search username or email</string>
+    <string name="friend_tab_requests">Requests</string>
+    <string name="rewards_level">Level %1$d</string>
+    <string name="rewards_xp_progress">%1$d / %2$d XP to Level %3$d</string>
 
+    <string name="friend_permission_contacts_denied">Permission denied. Cannot read contacts.</string>
+    <string name="friend_action_unfriend">Unfriend</string>
+    <string name="friend_unfriend_confirm">Are you sure you want to unfriend %1$s?</string>
+    <string name="friend_unfriended">Unfriended %1$s</string>
+    <string name="friend_request_sent">Friend request sent to %1$s</string>
+    <string name="friend_request_failed">Failed to send request</string>
+    <string name="friend_searching_contacts">Searching contacts...</string>
+    <string name="friend_no_contacts_found">No contacts found.</string>
+    <string name="friend_no_friends_from_contacts">No friends found from contacts.</string>
+    <string name="friend_unknown_user">Unknown User</string>
+    <string name="friend_status_friend">Friend</string>
+    <string name="friend_action_accept">Accept</string>
+    <string name="friend_action_reject">Reject</string>
+    <string name="friend_request_accepted">Accepted %1$s</string>
+    <string name="friend_request_rejected">Rejected %1$s</string>
+    <string name="friend_request_process_failed">Failed to process request</string>
+    <string name="friend_status_sent">Sent</string>
+    <string name="friend_profile_cycles">%1$d cycles</string>
+    
+    <string name="leaderboard_streak">🔥 %1$d days streak</string>
+    <string name="leaderboard_pomodoros">pomodoros</string>
+    <string name="leaderboard_you">(You)</string>
 </resources>
+
+
+
+

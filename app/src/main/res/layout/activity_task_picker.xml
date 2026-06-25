@@ -19,7 +19,7 @@
             android:paddingHorizontal="8dp"
             app:navigationIcon="@drawable/ic_back"
             app:navigationIconTint="@color/toma_primary"
-            app:title="Chọn công việc"
+            app:title="@string/task_picker_sheet_title"
             app:titleTextColor="@color/toma_text"
             app:titleTextAppearance="@style/TextAppearance.Toma.Label" />
 

@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/toma_background">
@@ -23,34 +24,270 @@
             app:titleTextColor="@color/toma_text"
             app:titleTextAppearance="@style/TextAppearance.Toma.Label" />
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/toma_background"
-            app:tabIndicatorColor="@color/toma_primary"
-            app:tabSelectedTextColor="@color/toma_primary"
-            app:tabTextColor="@color/toma_text_muted"
-            app:tabIndicatorFullWidth="false">
 
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/leaderboard_tab_global" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/leaderboard_tab_friends" />
-
-        </com.google.android.material.tabs.TabLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!-- Podium Layout -->
+        <LinearLayout
+            android:id="@+id/layout_podium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="bottom|center_horizontal"
+            android:padding="16dp"
+            android:visibility="gone">
+            
+            <!-- Rank 2 -->
+            <LinearLayout
+                android:id="@+id/podium_rank_2"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginEnd="16dp">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="#2"
+                    android:textColor="#9CA3AF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+                
+                <FrameLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/bg_avatar_circle">
+                    <ImageView
+                        android:id="@+id/iv_podium_avatar_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/tv_podium_initials_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textColor="@color/toma_primary"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/iv_podium_default_2"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_person"
+                        app:tint="@color/toma_primary"
+                        android:visibility="gone" />
+                </FrameLayout>
+                
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:id="@+id/tv_podium_name_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="Name"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="@color/toma_text"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/iv_podium_vip_2"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="4dp"
+                        android:src="@drawable/ic_star"
+                        app:tint="@color/toma_warning"
+                        android:visibility="gone" />
+                </LinearLayout>
+                    
+                <TextView
+                    android:id="@+id/tv_podium_level_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Level 5"
+                    android:textColor="@color/toma_text_muted"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Rank 1 -->
+            <LinearLayout
+                android:id="@+id/podium_rank_1"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginBottom="16dp">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="#1"
+                    android:textColor="#F59E0B"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+                
+                <FrameLayout
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/bg_avatar_circle">
+                    <ImageView
+                        android:id="@+id/iv_podium_avatar_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/tv_podium_initials_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textColor="@color/toma_primary"
+                        android:textSize="32sp"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/iv_podium_default_1"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_person"
+                        app:tint="@color/toma_primary"
+                        android:visibility="gone" />
+                </FrameLayout>
+                
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:id="@+id/tv_podium_name_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="Name"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="@color/toma_text"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/iv_podium_vip_1"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="4dp"
+                        android:src="@drawable/ic_star"
+                        app:tint="@color/toma_warning"
+                        android:visibility="gone" />
+                </LinearLayout>
+                    
+                <TextView
+                    android:id="@+id/tv_podium_level_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Level 10"
+                    android:textColor="@color/toma_text_muted"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- Rank 3 -->
+            <LinearLayout
+                android:id="@+id/podium_rank_3"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginStart="16dp">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="#3"
+                    android:textColor="#B45309"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+                
+                <FrameLayout
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/bg_avatar_circle">
+                    <ImageView
+                        android:id="@+id/iv_podium_avatar_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/tv_podium_initials_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textColor="@color/toma_primary"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/iv_podium_default_3"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_person"
+                        app:tint="@color/toma_primary"
+                        android:visibility="gone" />
+                </FrameLayout>
+                
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextView
+                        android:id="@+id/tv_podium_name_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="Name"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="@color/toma_text"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/iv_podium_vip_3"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="4dp"
+                        android:src="@drawable/ic_star"
+                        app:tint="@color/toma_warning"
+                        android:visibility="gone" />
+                </LinearLayout>
+                    
+                <TextView
+                    android:id="@+id/tv_podium_level_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Level 3"
+                    android:textColor="@color/toma_text_muted"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
 
         <!-- Global Tab Content -->
         <androidx.recyclerview.widget.RecyclerView
@@ -62,7 +299,7 @@
             android:paddingTop="16dp"
             android:paddingBottom="100dp" />
 
-        <!-- Friends Tab Empty State -->
+        <!-- Empty State (Shown if no friends) -->
         <LinearLayout
             android:id="@+id/layout_friends_empty"
             android:layout_width="match_parent"
@@ -82,7 +319,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="@string/leaderboard_coming_soon"
+                android:text="@string/leaderboard_empty_title"
                 android:textAppearance="@style/TextAppearance.Toma.Title"
                 android:gravity="center" />
 
@@ -90,7 +327,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="We are working on adding social features. Soon you'll be able to focus together with your friends!"
+                android:text="@string/leaderboard_empty_msg"
                 android:textAppearance="@style/TextAppearance.Toma.Body"
                 android:gravity="center" />
 
@@ -99,10 +336,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="32dp"
-                android:text="Add Friends"
+                android:text="@string/btn_add_friends"
                 style="@style/Widget.Toma.Button.Primary" />
         </LinearLayout>
 
-    </FrameLayout>
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

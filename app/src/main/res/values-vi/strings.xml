@@ -15,83 +15,114 @@
     <string name="auth_email">Địa chỉ email</string>
     <string name="auth_password">Mật khẩu</string>
     <string name="auth_forgot">Quên mật khẩu?</string>
-    <string name="auth_signin">Đăng nhập</string>
-    <string name="auth_no_account">Chưa có tài khoản?</string>
+    <string name="auth_signin">Đăng Nhập</string>
+    <string name="auth_google">Đăng nhập với Google</string>
+    <string name="auth_no_account">Người mới đến TomaFlow?</string>
     <string name="auth_create">Tạo tài khoản</string>
 
-    <string name="reg_title">Bắt đầu\ndòng chảy.</string>
-    <string name="reg_sub">Tạo tài khoản để kiến tạo sự tập trung của bạn.</string>
+    <string name="reg_title">Bắt đầu\nluồng làm việc.</string>
+    <string name="reg_sub">Tạo tài khoản để thiết kế sự tập trung.</string>
     <string name="reg_name">Họ và tên</string>
-    <string name="reg_password">Mật khẩu (từ 8 ký tự)</string>
+    <string name="reg_password">Mật khẩu (8+ ký tự)</string>
+    <string name="reg_confirm_password">Xác nhận mật khẩu</string>
     <string name="reg_submit">Tạo tài khoản</string>
-    <string name="reg_terms">Khi tiếp tục, bạn đồng ý với Điều khoản và Chính sách bảo mật của TomaFlow.</string>
+    <string name="reg_terms">Bằng cách tiếp tục, bạn đồng ý với Điều khoản và Chính sách của TomaFlow.</string>
     <string name="reg_have">Đã có tài khoản?</string>
     <string name="reg_signin">Đăng nhập</string>
 
     <!-- Focus -->
     <string name="focus_current">PHIÊN HIỆN TẠI</string>
-    <string name="focus_title">Giờ tập trung</string>
+    <string name="focus_title">Giờ Tập Trung</string>
     <string name="focus_time">25:00</string>
-    <string name="focus_phase">LÀM VIỆC SÂU</string>
+    <string name="focus_phase">TẬP TRUNG SÂU</string>
 
     <!-- Tasks -->
-    <string name="tasks_current">TIÊU ĐIỂM HIỆN TẠI</string>
-    <string name="tasks_title">Kiến trúc\ncông việc</string>
-    <string name="tasks_slots">VỊ TRÍ HOẠT ĐỘNG</string>
-    <string name="tasks_est">SỐ POMODORO DỰ KIẾN</string>
+    <string name="tasks_current">TẬP TRUNG HIỆN TẠI</string>
+    <string name="tasks_title">Cấu trúc\nCông việc</string>
+    <string name="tasks_slots">PHIÊN HOẠT ĐỘNG</string>
+    <string name="tasks_est">ƯỚC TÍNH POMODORO</string>
     <string name="tasks_completion">TỶ LỆ HOÀN THÀNH</string>
-    <string name="tasks_active">Đang làm</string>
+    <string name="tasks_active">Đang thực hiện</string>
     <string name="tasks_completed">Đã hoàn thành</string>
 
     <!-- Stats -->
     <string name="stats_performance">HIỆU SUẤT CỦA BẠN</string>
-    <string name="stats_title">Dòng chảy tuần</string>
-    <string name="stats_total">TỔNG THỜI GIAN TẬP TRUNG</string>
-    <string name="stats_pomos">POMODORO ĐÃ HOÀN THÀNH</string>
+    <string name="stats_title">Luồng Tuần Qua</string>
+    <string name="stats_total">TỔNG GIỜ TẬP TRUNG</string>
+    <string name="stats_pomos">POMODORO HOÀN THÀNH</string>
     <string name="stats_best">NGÀY TỐT NHẤT</string>
-    <string name="stats_intensity">Cường độ tập trung\nhàng ngày</string>
-    <string name="stats_insights">PHÂN TÍCH DÒNG CHẢY</string>
-    <string name="stats_peak">Phát hiện đỉnh hiệu suất</string>
-    <string name="stats_peak_desc">Mức tập trung của bạn cao hơn 24% trong khoảng 9:00 - 11:30 sáng. Hãy lên lịch làm việc sâu vào khung giờ này.</string>
+    <string name="stats_intensity">Cường độ\nTập trung</string>
+    <string name="stats_breakdown">Chi tiết phiên</string>
+    <string name="stats_no_data">Chưa có phiên nào</string>
+    <string name="stats_completed">Hoàn thành</string>
+    <string name="stats_failed">Thất bại</string>
+    <string name="stats_insights">THÔNG TIN LUỒNG</string>
+    <string name="stats_peak">Phát hiện Hiệu suất Đỉnh</string>
+    <string name="stats_peak_desc">Mức độ tập trung của bạn cao hơn 24% từ 9:00 sáng đến 11:30 sáng. Hãy cân nhắc đặt các công việc khó vào thời gian này.</string>
 
     <!-- Profile -->
-    <string name="profile_role">KIẾN TRÚC SƯ TẬP TRUNG CẤP CAO</string>
+    <string name="profile_role">CHUYÊN GIA TẬP TRUNG</string>
     <string name="profile_badges">Huy hiệu đã đạt</string>
     <string name="profile_view_all">XEM TẤT CẢ</string>
-    <string name="profile_cloud">Đồng bộ Cloud</string>
-    <string name="profile_cloud_time">CÁCH ĐÂY 2 PHÚT</string>
+    <string name="profile_cloud">Đồng bộ Đám mây</string>
+    <string name="profile_cloud_time">LẦN CUỐI: 2P TRƯỚC</string>
     <string name="profile_logout">Đăng xuất</string>
 
     <!-- Settings -->
     <string name="settings_title">Cài đặt</string>
-    <string name="settings_header">Tuỳ chọn bộ đếm</string>
-    <string name="settings_sub">Tuỳ biến chu kỳ tập trung theo nhịp của bạn.</string>
+    <string name="settings_header">Tùy chỉnh Bộ đếm</string>
+    <string name="settings_sub">Tùy chỉnh các phiên tập trung theo nhịp điệu của bạn.</string>
     <string name="settings_focus">Tập trung</string>
     <string name="settings_short">Nghỉ ngắn</string>
     <string name="settings_long">Nghỉ dài</string>
-    <string name="settings_deep">HỆ THỐNG LÀM VIỆC SÂU</string>
-    <string name="settings_strict">Chế độ nghiêm</string>
-    <string name="settings_strict_desc">Không cho phép tạm dừng khi đang trong phiên.</string>
+    <string name="settings_deep">HỆ THỐNG TẬP TRUNG SÂU</string>
+    <string name="settings_strict">Chế độ Nghiêm ngặt</string>
+    <string name="settings_strict_desc">Ngăn chặn việc tạm dừng trong khi tập trung.</string>
     <string name="settings_notify">Thông báo</string>
-    <string name="settings_notify_desc">Âm thanh &amp; rung khi chuyển giai đoạn.</string>
-    <string name="settings_sanctuary">Không gian tập trung</string>
+    <string name="settings_notify_desc">Âm thanh và rung khi chuyển giai đoạn.</string>
+    <string name="settings_sanctuary">Không gian Tập trung</string>
     <string name="settings_sanctuary_desc">Không gian được tinh chỉnh cho hiệu suất nhận thức đỉnh cao.</string>
+    
+    <string name="settings_auto_start_break">Tự động bắt đầu giờ nghỉ</string>
+    <string name="settings_auto_start_break_desc">Tự động đếm giờ nghỉ ngay khi phiên tập trung kết thúc.</string>
 
-    <!-- Rewards -->
-    <string name="rewards_title">Phần thưởng</string>
-    <string name="rewards_section_badges">Huy hiệu đã đạt</string>
-    <string name="rewards_view_all">Xem tất cả</string>
+    <string name="settings_dark_mode">Chế độ Tối</string>
+    <string name="settings_dark_mode_desc">Chuyển đổi giữa giao diện sáng và tối.</string>
+
+    <string name="nav_rewards">THƯỞNG</string>
+    <string name="rewards_title">Thành tựu</string>
+    <string name="rewards_section_badges">Huy hiệu</string>
+    <string name="rewards_view_all">XEM TẤT CẢ</string>
+
+    <string name="notification_channel_timer_name">Đồng hồ Pomodoro</string>
+    <string name="notification_channel_timer_desc">Hiển thị bộ đếm giờ hiện tại và các nút điều khiển</string>
+    <string name="notification_channel_sound_name">Âm thanh Thông báo</string>
+    <string name="notification_channel_sound_desc">Phát âm thanh khi hoàn thành một giai đoạn</string>
+    <string name="notification_timer_title">Đồng hồ TomaFlow</string>
+    <string name="notification_action_pause">Tạm dừng</string>
+    <string name="notification_action_resume">Tiếp tục</string>
+    <string name="notification_action_skip">Bỏ qua</string>
+    <string name="notification_focus_complete_title">Hoàn thành Tập trung!</string>
+    <string name="notification_break_complete_title">Hoàn thành Nghỉ ngơi!</string>
+    <string name="notification_focus_complete_msg">Đã hoàn thành phiên %1$d. Đến giờ nghỉ rồi!</string>
+    <string name="notification_break_complete_msg">Nghỉ ngơi xong rồi. Sẵn sàng tập trung chưa?</string>
+
+    <string name="placeholder_task_title">Không có Công việc</string>
+    <string name="placeholder_task_subtitle">Chọn một công việc để bắt đầu</string>
+    <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID_HERE</string>
 
     <!-- Music -->
     <string name="focus_music_title">Nhạc nền</string>
-    <string name="focus_music_empty">Chưa chọn bản nhạc</string>
+    <string name="focus_music_empty">Chưa chọn nhạc</string>
     <string name="focus_music_pick">Chọn nhạc</string>
     <string name="focus_music_play">Phát</string>
     <string name="focus_music_pause">Tạm dừng</string>
 
     <!-- Current task -->
-    <string name="task_send_to_focus">Đưa vào Tập trung</string>
-    <string name="task_sent_to_focus">Đã đưa \"%1$s\" vào Tập trung</string>
+    <string name="focus_no_task">Chọn một công việc</string>
+    <string name="focus_no_task_sub">Nhấn để chọn công việc</string>
+    <string name="task_send_to_focus">Gửi vào Tập trung</string>
+    <string name="task_sent_to_focus">Đã gửi \"%1$s\" vào Tập trung</string>
 
     <!-- Language -->
     <string name="settings_language">Ngôn ngữ</string>
@@ -99,51 +130,48 @@
     <string name="lang_en">English</string>
     <string name="lang_vi">Tiếng Việt</string>
 
+    <!-- Task duration -->
+    <string name="task_duration_hint">Phút (tùy chọn)</string>
+    <string name="task_duration_label">Thời lượng</string>
+
     <!-- Music Picker -->
     <string name="music_pick_device">Chọn từ thiết bị</string>
     <string name="music_pick_device_desc">Duyệt và chọn một file âm thanh</string>
-    <string name="music_section_selected">BÀI NHẠC ĐÃ CHỌN</string>
+    <string name="music_section_selected">NHẠC ĐÃ CHỌN</string>
     <string name="music_from_device">Từ thiết bị</string>
-
-    <!-- Task duration -->
-    <string name="task_duration_hint">Phút (tuỳ chọn)</string>
-    <string name="task_duration_label">Thời lượng</string>
-
     <!-- Badges -->
-    <string name="badge_newbie_title">Người mới</string>
+    <string name="badge_newbie_title">Bước đầu tiên</string>
     <string name="badge_newbie_desc">Hoàn thành 1 Pomodoro</string>
     <string name="badge_hardworker_title">Chăm chỉ</string>
     <string name="badge_hardworker_desc">Hoàn thành 10 Pomodoro</string>
     <string name="badge_superman_title">Siêu nhân</string>
     <string name="badge_superman_desc">Hoàn thành 50 Pomodoro</string>
-    <string name="badge_consistent_title">Kiên trì</string>
-    <string name="badge_consistent_desc">Focus 7 ngày liên tiếp</string>
+    <string name="badge_consistent_title">Bền bỉ</string>
+    <string name="badge_consistent_desc">Tập trung 7 ngày liên tiếp</string>
     <string name="badge_marathon_title">Marathon</string>
-    <string name="badge_marathon_desc">Focus 4 chu kỳ trong 1 ngày</string>
+    <string name="badge_marathon_desc">4 chu kỳ trong một ngày</string>
     <string name="badge_perfect_title">Hoàn hảo</string>
-    <string name="badge_perfect_desc">Hoàn thành 5 task</string>
+    <string name="badge_perfect_desc">Hoàn thành 5 công việc</string>
     <string name="badge_nightowl_title">Cú đêm</string>
-    <string name="badge_nightowl_desc">Focus sau 22:00</string>
-    <string name="badge_earlybird_title">Chim sớm</string>
-    <string name="badge_earlybird_desc">Focus trước 07:00</string>
-
+    <string name="badge_nightowl_desc">Tập trung sau 22:00</string>
+    <string name="badge_earlybird_title">Chào buổi sáng</string>
+    <string name="badge_earlybird_desc">Tập trung trước 07:00</string>
     <!-- Focus extra strings -->
-    <string name="focus_no_task">Chọn công việc</string>
-    <string name="focus_no_task_sub">Nhấn để chọn task</string>
     <string name="focus_select_music_first">Vui lòng chọn nhạc trước</string>
     <string name="focus_task_default_sub">Đang tập trung</string>
-    <string name="focus_task_complete_title">Hoàn thành task!</string>
+    <string name="focus_task_complete_title">Hoàn thành Công việc!</string>
     <string name="focus_task_complete_msg">Tuyệt vời! Bạn đã hoàn thành công việc này.</string>
     <string name="ok">OK</string>
 
     <!-- Tomato growth stages -->
     <string name="toma_stage_seed">Hạt giống vừa được gieo…</string>
-    <string name="toma_stage_sprout">Mầm xanh đang nhú lên!</string>
-    <string name="toma_stage_grow">Cây đang lớn mạnh…</string>
-    <string name="toma_stage_flower">Hoa nở rồi, sắp có quả!</string>
-    <string name="toma_stage_ripe">Cà chua sắp chín rồi! 🍅</string>
+    <string name="toma_stage_sprout">Mầm đang nhú lên!</string>
+    <string name="toma_stage_grow">Cây đang phát triển mạnh mẽ…</string>
+    <string name="toma_stage_flower">Cây ra hoa — sắp có quả!</string>
+    <string name="toma_stage_ripe">Cà chua sắp chín! 🍅</string>
+    <string name="toma_stage_dirt">Đất trống</string>
     <string name="toma_complete">🍅 Pomodoro hoàn thành!</string>
-    <string name="toma_wilt">Cây đã chết… 😢 Hãy cố lần sau!</string>
+    <string name="toma_wilt">Cây bị héo… 😢 Thử lại nhé!</string>
 
     <!-- Session tab switcher -->
     <string name="focus_tab_focus">Tập trung</string>
@@ -151,121 +179,205 @@
     <string name="focus_tab_long">Nghỉ dài</string>
 
     <!-- Phase complete dialog -->
-    <string name="phase_complete_focus_title">Xong rồi! 🍅</string>
-    <string name="phase_complete_focus_sub">Phiên #%1$d hoàn thành. Đến lúc nghỉ ngơi!</string>
+    <string name="phase_complete_focus_title">Hoàn thành Tập trung! 🍅</string>
+    <string name="phase_complete_focus_sub">Phiên #%1$d đã xong. Đến giờ nghỉ rồi!</string>
     <string name="phase_complete_break_title">Hết giờ nghỉ!</string>
-    <string name="phase_complete_break_sub">Sẵn sàng tập trung trở lại?</string>
-    <string name="phase_complete_start_break">Bắt đầu nghỉ</string>
-    <string name="phase_complete_start_focus">Tập trung tiếp</string>
+    <string name="phase_complete_break_sub">Sẵn sàng tập trung chưa?</string>
+    <string name="phase_complete_start_break">Bắt đầu Nghỉ</string>
+    <string name="phase_complete_start_focus">Bắt đầu Tập trung</string>
     <string name="phase_complete_skip">Bỏ qua</string>
+    
+    <!-- Confirm Dialogs -->
+    <string name="confirm_no">Không</string>
+    <string name="confirm_yes">Có, Đặt lại</string>
+    <string name="confirm_reset_title">Đặt lại Bộ đếm?</string>
+    <string name="confirm_reset_msg">Bạn có chắc chắn muốn đặt lại phiên hiện tại?</string>
+    <string name="confirm_yes_skip">Có, Bỏ qua</string>
+    <string name="confirm_skip_title">Bỏ qua Phiên?</string>
+    <string name="confirm_skip_msg">Bạn có chắc chắn muốn bỏ qua phiên hiện tại?</string>
+    
     <!-- Error & Toast messages -->
     <string name="main_exit_toast">Nhấn back lần nữa để thoát</string>
     <string name="error_required">Bắt buộc</string>
     <string name="error_password_length">Tối thiểu 8 ký tự</string>
     <string name="error_password_match">Mật khẩu không khớp</string>
-    <string name="auth_google_failed">Đăng nhập Google thất bại: </string>
-    <string name="auth_login_failed">Đăng nhập thất bại.</string>
-    <string name="auth_login_failed_msg">Đăng nhập thất bại: </string>
-    <string name="auth_email_required_reset">Nhập email để reset mật khẩu</string>
-    <string name="auth_reset_email_sent">Email reset đã gửi</string>
-    <string name="auth_register_success">Đăng ký thành công! Hãy đăng nhập.</string>
+    <string name="auth_google_failed">Đăng nhập Google thất bại</string>
+    <string name="auth_login_failed">Xác thực thất bại.</string>
+    <string name="auth_login_failed_msg">Đăng nhập thất bại</string>
+    <string name="auth_email_required_reset">Nhập email để đặt lại mật khẩu</string>
+    <string name="auth_reset_email_sent">Đã gửi email đặt lại</string>
+    <string name="auth_reset_email_failed">Gửi email đặt lại thất bại.</string>
+    <string name="auth_register_success">Đăng ký thành công! Vui lòng đăng nhập.</string>
     <string name="auth_register_failed">Đăng ký thất bại: </string>
     <string name="task_name_required">Vui lòng nhập tên công việc</string>
 
     <!-- UI Strings -->
-    <string name="task_complete_title">Hoàn thành công việc!</string>
-    <string name="task_complete_desc">Tuyệt vời! Bạn đã hoàn thành xuất sắc công việc này.</string>
-    <string name="task_complete_btn">Tuyệt vời</string>
-    <string name="phase_complete_focus_sub_short">Hoàn thành 1 Pomodoro!</string>
-    <string name="notification_focus_complete_short">Hoàn thành 1 Pomodoro!</string>
+    <string name="task_complete_title">Hoàn thành Công việc!</string>
+    <string name="task_complete_desc">Tuyệt vời! Bạn đã hoàn thành công việc này thành công.</string>
+    <string name="task_complete_btn">Tuyệt</string>
+    <string name="phase_complete_focus_sub_short">1 Pomodoro Hoàn thành!</string>
+    <string name="notification_focus_complete_short">1 Pomodoro Hoàn thành!</string>
 
-    <string name="music_default_category">Nhạc mặc định</string>
-    <string name="task_picker_pending">Công việc đang chờ</string>
-    <string name="task_picker_empty">Bạn chưa có công việc nào đang chờ.\nHãy thêm ở tab Tasks.</string>
-    <string name="task_picker_selected">Công việc đã chọn</string>
+    <string name="music_default_category">Nhạc Mặc định</string>
+    <string name="task_picker_pending">Công việc Chờ xử lý</string>
+    <string name="task_picker_empty">Không có công việc chờ.\nThêm trong thẻ Công việc.</string>
+    <string name="task_picker_selected">Công việc Đã chọn</string>
     <string name="task_picker_none_selected">Chưa chọn công việc</string>
-    <string name="task_picker_none_desc">Nhấn chọn bên trên</string>
-    <string name="task_picker_sheet_title">Chọn công việc</string>
+    <string name="task_picker_none_desc">Nhấn để chọn ở trên</string>
+    <string name="task_picker_sheet_title">Chọn Công việc</string>
 
-    <string name="task_add_title">Thêm công việc</string>
-    <string name="task_add_est_pomos">Số Pomodoro</string>
+    <string name="task_add_title">Thêm Công việc Mới</string>
+    <string name="task_add_est_pomos">Ước tính Pomodoro</string>
     <string name="task_add_min">phút</string>
-    <string name="task_add_save">Lưu công việc</string>
-    <string name="task_title_hint">Tên công việc</string>
-    <string name="task_note_hint">Ghi chú (Tuỳ chọn)</string>
-    <string name="task_pomodoros_label">Số Pomodoro</string>
+    <string name="task_add_save">Lưu Công việc</string>
+    <string name="task_title_hint">Tiêu đề Công việc</string>
+    <string name="task_note_hint">Ghi chú (Tùy chọn)</string>
+    <string name="task_pomodoros_label">Ước tính Pomodoro</string>
     <string name="task_duration_unit">phút</string>
 
     <string name="stats_tab_week">TUẦN</string>
     <string name="stats_tab_month">THÁNG</string>
     <string name="stats_focus_label">TẬP TRUNG</string>
     <string name="stats_breaks_label">NGHỈ NGƠI</string>
-    <string name="profile_ranking">XẾP HẠNG</string>
+    <string name="profile_level">CẤP ĐỘ</string>
     <string name="profile_hours">SỐ GIỜ</string>
     <string name="profile_streak">CHUỖI</string>
-    <string name="dialog_btn_skip">Bỏ qua giải lao</string>
+    <string name="dialog_btn_skip">Bỏ qua Giờ nghỉ</string>
 
     <string name="notification_action_music">Nhạc</string>
 
     <!-- Strict Mode -->
-    <string name="settings_strict_mode">Chế độ nghiêm ngặt</string>
-    <string name="settings_strict_mode_desc">Khóa nút tạm dừng khi đang tập trung</string>
-    <string name="strict_mode_blocked">Chế độ nghiêm ngặt đang bật. Hãy tiếp tục tập trung!</string>
+    <string name="settings_strict_mode">Chế độ Nghiêm ngặt</string>
+    <string name="settings_strict_mode_desc">Khóa nút tạm dừng trong phiên tập trung</string>
+    <string name="strict_mode_blocked">Chế độ Nghiêm ngặt đang bật. Hãy tập trung!</string>
 
     <!-- DND -->
-    <string name="settings_dnd">Chế độ tập trung (Không làm phiền)</string>
-    <string name="settings_dnd_desc">Tắt thông báo từ app khác khi đang tập trung</string>
-    <string name="dnd_permission_needed">Cho phép quyền truy cập thông báo để bật Chế độ tập trung</string>
-    <string name="dnd_permission_btn">Mở cài đặt</string>
+    <string name="dnd_permission_needed">Cho phép quyền thông báo để bật Chế độ Tập trung</string>
+    <string name="dnd_permission_btn">Mở Cài đặt</string>
 
     <!-- Note / Journal -->
-    <string name="stats_journal_title">Nhật ký tập trung</string>
-    <string name="stats_journal_empty">Chưa có ghi chú nào. Thêm ghi chú đầu tiên!</string>
-    <string name="note_add_title">Thêm ghi chú</string>
-    <string name="note_title_hint">Tiêu đề (tuỳ chọn)</string>
-    <string name="note_content_hint">Buổi tập trung hôm nay thế nào?</string>
+    <string name="stats_journal_title">Nhật ký Tập trung</string>
+    <string name="stats_journal_empty">Chưa có ghi chú nào. Hãy thêm ghi chú đầu tiên!</string>
+    <string name="note_add_title">Thêm Ghi chú</string>
+    <string name="note_title_hint">Tiêu đề (tùy chọn)</string>
+    <string name="note_content_hint">Phiên tập trung của bạn thế nào?</string>
     <string name="note_mood_label">Tâm trạng</string>
     <string name="note_save">Lưu</string>
     <string name="note_delete_confirm">Xóa ghi chú này?</string>
-    <string name="mood_happy">😊 Tuyệt vời</string>
+    <string name="mood_happy">😊 Tuyệt</string>
     <string name="mood_focused">🎯 Tập trung</string>
     <string name="mood_tired">😴 Mệt mỏi</string>
     <string name="mood_stressed">😤 Căng thẳng</string>
 
+    <string name="action_edit">Chỉnh sửa</string>
+    <string name="action_delete">Xóa</string>
+    <string name="action_cancel">Hủy</string>
+    <string name="confirm_delete_task_title">Xóa Công việc</string>
+    <string name="confirm_delete_task_msg">Bạn có chắc chắn muốn xóa công việc này?</string>
+    <string name="confirm_delete_note_title">Xóa Ghi chú</string>
+    <string name="confirm_delete_note_msg">Bạn có chắc chắn muốn xóa ghi chú này?</string>
+    <string name="error_empty_content">Vui lòng nhập nội dung</string>
+    <string name="friend_system_coming_soon">Hệ thống bạn bè sẽ có trong bản cập nhật tới!</string>
+    <string name="journal_entry_default">Mục Nhật ký</string>
+    <string name="rewards_farm_title">Nông trại của tôi</string>
+    <string name="day_mon">Hai</string>
+    <string name="day_tue">Ba</string>
+    <string name="day_wed">Tư</string>
+    <string name="day_thu">Năm</string>
+    <string name="day_fri">Sáu</string>
+    <string name="day_sat">Bảy</string>
+    <string name="day_sun">CN</string>
+
     <!-- Premium / VIP -->
     <string name="premium_title">Nâng cấp VIP</string>
-    <string name="premium_subtitle">Mở khoá toàn bộ tiềm năng của bạn</string>
-    <string name="premium_btn_upgrade">Nâng cấp ngay</string>
+    <string name="premium_badge">VIP 👑</string>
+    <string name="premium_btn_upgrade">Nâng cấp Ngay</string>
+    <string name="premium_btn_cancel_vip">Hủy VIP</string>
+    <string name="premium_cancel_title">Hủy Đăng ký VIP</string>
+    <string name="premium_cancel_msg">Bạn có chắc chắn muốn hủy gói VIP? Bạn sẽ mất quyền truy cập vào các tính năng cao cấp ngay lập tức.</string>
+    <string name="premium_cancel_confirm">Hủy VIP</string>
+    <string name="premium_subtitle">Mở khóa toàn bộ tiềm năng của bạn</string>
     <string name="premium_btn_later">Để sau</string>
     <string name="premium_gate_title">Tính năng VIP</string>
-    <string name="premium_gate_desc">Tính năng này dành riêng cho thành viên VIP.</string>
-    <string name="premium_badge">VIP 👑</string>
+    <string name="premium_gate_desc">Tính năng này dành cho thành viên VIP.</string>
     <string name="premium_success">Bạn đã là thành viên VIP! 🎉</string>
     <string name="feature_normal_tasks_limit">Gói miễn phí: tối đa 5 công việc</string>
+    <string name="premium_feature_1">Tất cả nhạc nền</string>
+    <string name="premium_feature_2">Nhạc tùy chỉnh từ thiết bị</string>
+    <string name="premium_feature_3">Tùy chỉnh thời gian phiên</string>
+    <string name="premium_feature_4">Chế độ Nghiêm ngặt</string>
+    <string name="premium_feature_5">Không giới hạn công việc</string>
+    <string name="btn_restore_purchases">Khôi phục Mua hàng</string>
 
     <!-- Share -->
-    <string name="share_achievement_title">Chia sẻ thành tích</string>
-    <string name="share_text">Mình vừa hoàn thành %1$d Pomodoro với TomaFlow! 🍅 #TomaFlow #NăngSuất</string>
+    <string name="share_achievement_title">Chia sẻ Thành tựu</string>
+    <string name="share_text">Tôi đã hoàn thành %1$d Pomodoro với TomaFlow! 🍅 #TomaFlow #Productivity</string>
 
     <!-- Leaderboard -->
     <string name="leaderboard_title">Bảng xếp hạng</string>
     <string name="leaderboard_tab_global">Toàn cầu</string>
     <string name="leaderboard_tab_friends">Bạn bè</string>
-    <string name="leaderboard_coming_soon">Tính năng bạn bè sắp ra mắt!</string>
+    <string name="leaderboard_empty_title">Chưa có bạn bè</string>
+    <string name="leaderboard_empty_msg">Thêm bạn bè để cùng đua top trên bảng xếp hạng!</string>
     <string name="leaderboard_rank">Hạng #%1$d</string>
-    <string name="leaderboard_empty">Chưa có dữ liệu. Hoàn thành 1 phiên để xuất hiện tại đây!</string>
+    <string name="leaderboard_empty">Chưa có dữ liệu. Hãy hoàn thành phiên để xuất hiện ở đây!</string>
+    <string name="btn_add_friends">Thêm Bạn bè</string>
+    
+    <!-- Profile -->
+    <string name="profile_view_ranking">Bảng xếp hạng giữa bạn bè</string>
+    
+    <!-- Auth -->
+    <string name="auth_language_switch">VI | EN</string>
 
-    <!-- Confirmation Dialog -->
-    <string name="confirm_reset_title">Đặt lại bộ đếm?</string>
-    <string name="confirm_reset_msg">Bạn có chắc chắn muốn đặt lại phiên hiện tại? Tiến trình của phiên này sẽ bị mất.</string>
-    <string name="confirm_skip_title">Bỏ qua phiên?</string>
-    <string name="confirm_skip_msg">Bạn có chắc chắn muốn bỏ qua phiên hiện tại? Tiến trình của phiên này sẽ bị mất.</string>
-    <string name="confirm_yes">Có, đặt lại</string>
-    <string name="confirm_yes_skip">Có, bỏ qua</string>
-    <string name="confirm_no">Hủy</string>
+    <string name="task_items_count">%1$d MỤC</string>
+    <string name="profile_edit">Chỉnh sửa Hồ sơ</string>
+    <!-- Edit Profile -->
+    <string name="profile_tap_avatar">Nhấn để thay đổi ảnh đại diện</string>
+    <string name="profile_change_password">Đổi Mật khẩu</string>
+    <string name="profile_save">Lưu Hồ sơ</string>
 
-    <!-- Auto-start Break -->
-    <string name="settings_auto_start_break">Tự khởi động giờ nghỉ</string>
-    <string name="settings_auto_start_break_desc">Tự động bắt đầu phiên giải lao sau khi hoàn thành tập trung</string>
+    <!-- Friends -->
+    <string name="profile_friends">Bạn bè</string>
+    <string name="profile_friends_desc">Tìm và kết nối với bạn bè</string>
+    <string name="friend_profile_title">Hồ sơ Bạn bè</string>
+    <string name="friend_message">Nhắn tin</string>
+    <string name="friend_chat_name">Tên</string>
+    <string name="friend_find_contacts">Tìm bạn bè từ Danh bạ</string>
+    <string name="friend_no_friends">Chưa có bạn bè</string>
+    <string name="friend_received_requests">Lời mời đã nhận</string>
+    <string name="friend_no_received_requests">Không có lời mời nào</string>
+    <string name="friend_sent_requests">Lời mời đã gửi</string>
+    <string name="friend_no_sent_requests">Không có lời mời nào</string>
+    <string name="friend_add">Thêm</string>
+    <string name="friend_search_hint">Tìm kiếm tên người dùng hoặc email</string>
+    <string name="friend_tab_requests">Lời mời</string>
+    <string name="rewards_level">Cấp độ %1$d</string>
+    <string name="rewards_xp_progress">%1$d / %2$d XP lên Cấp %3$d</string>
 
+    <string name="friend_permission_contacts_denied">Bị từ chối quyền. Không thể đọc danh bạ.</string>
+    <string name="friend_action_unfriend">Hủy kết bạn</string>
+    <string name="friend_unfriend_confirm">Bạn có chắc chắn muốn hủy kết bạn với %1$s không?</string>
+    <string name="friend_unfriended">Đã hủy kết bạn với %1$s</string>
+    <string name="friend_request_sent">Đã gửi lời mời kết bạn đến %1$s</string>
+    <string name="friend_request_failed">Gửi lời mời thất bại</string>
+    <string name="friend_searching_contacts">Đang tìm danh bạ...</string>
+    <string name="friend_no_contacts_found">Không tìm thấy liên hệ nào.</string>
+    <string name="friend_no_friends_from_contacts">Không tìm thấy bạn bè nào từ danh bạ.</string>
+    <string name="friend_unknown_user">Người dùng Không xác định</string>
+    <string name="friend_status_friend">Bạn bè</string>
+    <string name="friend_action_accept">Chấp nhận</string>
+    <string name="friend_action_reject">Từ chối</string>
+    <string name="friend_request_accepted">Đã chấp nhận %1$s</string>
+    <string name="friend_request_rejected">Đã từ chối %1$s</string>
+    <string name="friend_request_process_failed">Xử lý lời mời thất bại</string>
+    <string name="friend_status_sent">Đã gửi</string>
+    <string name="friend_profile_cycles">%1$d chu kỳ</string>
+    
+    <string name="leaderboard_streak">🔥 %1$d ngày liên tiếp</string>
+    <string name="leaderboard_pomodoros">pomodoro</string>
+    <string name="leaderboard_you">(Bạn)</string>
 </resources>
+
+
+
+

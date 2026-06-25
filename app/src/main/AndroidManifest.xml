@@ -15,10 +15,13 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:name=".TomaFlowApp"
         android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.TomaFlow">
 
         <!-- ── Auth Flow ────────────────────────── -->
@@ -56,6 +59,10 @@
             android:exported="false"
             android:name=".ui.stats.StatsActivity" />
 
+        <activity
+            android:exported="false"
+            android:name=".ui.stats.JournalActivity" />
+
         <!-- ── Settings screen (stub — to be implemented) ─ -->
         <activity
             android:exported="false"
@@ -78,8 +85,40 @@
 
         <!-- ── Premium ─────────────────────────────────── -->
         <activity
+            android:name=".ui.profile.EditProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+            
+        <activity
             android:name=".ui.premium.PremiumActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.TomaFlow" />
+            
+        <activity
+            android:name=".ui.premium.PremiumProcessingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.TomaFlow" />
+
+        <activity
+            android:name=".ui.profile.ProfileActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.friends.FriendsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.friends.FriendProfileActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.chat.ChatActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+
 
         <!-- ── Leaderboard ─────────────────────────────── -->
         <activity

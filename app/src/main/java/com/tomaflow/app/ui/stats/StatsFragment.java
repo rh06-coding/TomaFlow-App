@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.navigation.Navigation;
+import android.content.Intent;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -64,22 +65,14 @@ public class StatsFragment extends Fragment {
         if (avatar != null) {
             avatar.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.nav_profile));
         }
-
-        View btnShare = view.findViewById(R.id.btn_share);
-        if (btnShare != null) {
-            btnShare.setOnClickListener(v -> {
-                String pomos = mTvPomos != null ? mTvPomos.getText().toString() : "0";
-                String time = mTvTotalFocus != null ? mTvTotalFocus.getText().toString() : "0h 0m";
-                com.tomaflow.app.utils.ShareHelper.shareStats(requireContext(), view, pomos, time);
-            });
-        }
-        
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        com.tomaflow.app.utils.HeaderUIHelper.setupHeader(view, getString(R.string.nav_stats), getViewLifecycleOwner());
 
         mSessionRepository = new SessionRepository(requireActivity().getApplication());
 
@@ -105,26 +98,53 @@ public class StatsFragment extends Fragment {
 
         // Journal logic
         NoteViewModel noteViewModel = new androidx.lifecycle.ViewModelProvider(this).get(NoteViewModel.class);
-        NoteAdapter noteAdapter = new NoteAdapter();
+        NoteAdapter noteAdapter = new NoteAdapter(new NoteAdapter.OnNoteClickListener() {
+            @Override
+            public void onEdit(com.tomaflow.app.data.db.entity.NoteEntity note) {
+                AddNoteBottomSheet bottomSheet = AddNoteBottomSheet.newInstance(note.noteId, note.title, note.content, note.mood);
+                bottomSheet.show(getChildFragmentManager(), "AddNoteBottomSheet");
+            }
+
+            @Override
+            public void onDelete(com.tomaflow.app.data.db.entity.NoteEntity note) {
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.confirm_delete_note_title)
+                    .setMessage(R.string.confirm_delete_note_msg)
+                    .setPositiveButton(R.string.action_delete, (dialog, which) -> {
+                        noteViewModel.delete(note);
+                    })
+                    .setNegativeButton(R.string.action_cancel, null)
+                    .show();
+            }
+        });
         androidx.recyclerview.widget.RecyclerView recyclerNotes = view.findViewById(R.id.recycler_notes);
         recyclerNotes.setAdapter(noteAdapter);
 
         TextView tvJournalEmpty = view.findViewById(R.id.tv_journal_empty);
 
         noteViewModel.getAllNotes().observe(getViewLifecycleOwner(), notes -> {
-            noteAdapter.submitList(notes);
             if (notes == null || notes.isEmpty()) {
                 tvJournalEmpty.setVisibility(View.VISIBLE);
                 recyclerNotes.setVisibility(View.GONE);
+                noteAdapter.submitList(null);
             } else {
                 tvJournalEmpty.setVisibility(View.GONE);
                 recyclerNotes.setVisibility(View.VISIBLE);
+                // Only show the latest note
+                noteAdapter.submitList(notes.subList(0, 1));
             }
         });
 
         view.findViewById(R.id.btn_add_note).setOnClickListener(v -> {
-            AddNoteBottomSheet.newInstance().show(getChildFragmentManager(), "AddNoteBottomSheet");
+            AddNoteBottomSheet.newInstance(null, null, null, null).show(getChildFragmentManager(), "AddNoteBottomSheet");
         });
+
+        View btnViewAll = view.findViewById(R.id.btn_view_all_notes);
+        if (btnViewAll != null) {
+            btnViewAll.setOnClickListener(v -> {
+                startActivity(new Intent(requireContext(), JournalActivity.class));
+            });
+        }
     }
 
     private void highlightActiveRange(View view, int checkedId) {
@@ -161,9 +181,7 @@ public class StatsFragment extends Fragment {
         mBarChart.setScaleEnabled(false);
         mBarChart.setFitBars(true);
         mBarChart.getAxisRight().setEnabled(false);
-        mBarChart.getLegend().setEnabled(true);
-        mBarChart.getLegend().setTextColor(
-                ContextCompat.getColor(requireContext(), R.color.toma_text));
+        mBarChart.getLegend().setEnabled(false);
 
         int textColor = ContextCompat.getColor(requireContext(), R.color.toma_text_muted);
 
@@ -223,11 +241,11 @@ public class StatsFragment extends Fragment {
             breakEntries.add(new BarEntry(i, breakByDay[i]));
         }
 
-        BarDataSet focusSet = new BarDataSet(focusEntries, "Focus");
+        BarDataSet focusSet = new BarDataSet(focusEntries, getString(R.string.stats_focus_label));
         focusSet.setColor(ContextCompat.getColor(requireContext(), R.color.toma_primary));
         focusSet.setDrawValues(false);
 
-        BarDataSet breakSet = new BarDataSet(breakEntries, "Break");
+        BarDataSet breakSet = new BarDataSet(breakEntries, getString(R.string.stats_breaks_label));
         breakSet.setColor(ContextCompat.getColor(requireContext(), R.color.toma_success));
         breakSet.setDrawValues(false);
 

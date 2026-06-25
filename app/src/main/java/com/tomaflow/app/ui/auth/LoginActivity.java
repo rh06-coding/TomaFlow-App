@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     } catch (ApiException e) {
                         Log.w(TAG, "Google sign in failed", e);
-                        Toast.makeText(this, getString(R.string.auth_google_failed) + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_google_failed), false);
                     }
                 }
             }
@@ -122,9 +122,20 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        goToMain();
+                        String uid = mAuth.getCurrentUser().getUid();
+                        com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document(uid).get().addOnCompleteListener(snapshotTask -> {
+                            if (snapshotTask.isSuccessful() && snapshotTask.getResult() != null && !snapshotTask.getResult().exists()) {
+                                String email = mAuth.getCurrentUser().getEmail();
+                                String name = mAuth.getCurrentUser().getDisplayName();
+                                String generatedUsername = "user_" + uid.substring(0, 6).toLowerCase();
+                                com.tomaflow.app.data.model.UserProfile userProfile = new com.tomaflow.app.data.model.UserProfile(
+                                        uid, email, "", generatedUsername, name, "", "");
+                                com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document(uid).set(userProfile);
+                            }
+                            goToMain();
+                        });
                     } else {
-                        Toast.makeText(LoginActivity.this, getString(R.string.auth_login_failed), Toast.LENGTH_SHORT).show();
+                        com.tomaflow.app.utils.TomaToast.show(LoginActivity.this, getString(R.string.auth_login_failed), false);
                     }
                 });
     }
@@ -141,8 +152,7 @@ public class LoginActivity extends AppCompatActivity {
             .addOnSuccessListener(result -> goToMain())
             .addOnFailureListener(e -> {
                 mBtnSignIn.setEnabled(true);
-                Toast.makeText(this, getString(R.string.auth_login_failed_msg) + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
+                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_login_failed_msg), false);
             });
     }
 
@@ -154,9 +164,9 @@ public class LoginActivity extends AppCompatActivity {
         }
         mAuth.sendPasswordResetEmail(email)
             .addOnSuccessListener(v ->
-                Toast.makeText(this, getString(R.string.auth_reset_email_sent), Toast.LENGTH_SHORT).show())
+                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_reset_email_sent)))
             .addOnFailureListener(e ->
-                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_reset_email_failed), false));
     }
 
     private void goToMain() {
@@ -171,6 +181,10 @@ public class LoginActivity extends AppCompatActivity {
         // Kéo huy hiệu từ Firestore về SharedPreferences
         com.tomaflow.app.data.repository.RewardsRepository rewardsRepository = new com.tomaflow.app.data.repository.RewardsRepository(getApplication());
         rewardsRepository.syncRewardsFromFirestore();
+
+        // Kéo nhật ký từ Firestore về Room
+        com.tomaflow.app.data.repository.NoteRepository noteRepository = new com.tomaflow.app.data.repository.NoteRepository(getApplication());
+        noteRepository.syncNotesFromFirestore();
 
         navigateToMain();
     }

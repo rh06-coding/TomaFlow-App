@@ -22,6 +22,9 @@ public interface SessionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(SessionEntity session);
 
+    @Query("DELETE FROM Sessions")
+    void deleteAll();
+
     @Query("select * from Sessions order by startTime desc")
     LiveData<List<SessionEntity>> getAllSessions();
 
@@ -66,10 +69,25 @@ public interface SessionDao {
     @Query("select * from Sessions where startTime >= :sinceMillis order by startTime desc")
     LiveData<List<SessionEntity>> getSessionsSince(long sinceMillis);
 
+    // Dữ liệu Farm theo tháng
+    @Query("select date(startTime / 1000, 'unixepoch', 'localtime') as dateStr, " +
+            "cast(coalesce(sum(duration), 0) / 60 as integer) as totalMinutes " +
+            "from Sessions " +
+            "where status = 'Completed' " +
+            "and strftime('%Y-%m', datetime(startTime / 1000, 'unixepoch', 'localtime')) = :yearMonth " +
+            "group by dateStr order by dateStr asc")
+    LiveData<List<DailyTomatoRow>> getMonthlyTomatoes(String yearMonth);
+
     /** Row type for getWeeklyDailyStats(). */
     class DailyStatRow {
         @ColumnInfo(name = "DAY_NUM")      public String dayNum;        // "0"–"6"
         @ColumnInfo(name = "MINUTES")      public int minutes;           // focus minutes
         @ColumnInfo(name = "CYCLES")       public int cycles;
+    }
+
+    /** Row type for getDailyTomatoes(). */
+    class DailyTomatoRow {
+        @ColumnInfo(name = "dateStr")      public String dateStr;       // "YYYY-MM-DD"
+        @ColumnInfo(name = "totalMinutes") public int totalMinutes;     // focus minutes
     }
 }

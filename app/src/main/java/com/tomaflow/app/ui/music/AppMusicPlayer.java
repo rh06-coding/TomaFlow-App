@@ -15,6 +15,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.support.v4.media.session.MediaSessionCompat;
+
 public class AppMusicPlayer {
 
     private static final String TAG = "AppMusicPlayer";
@@ -32,6 +34,7 @@ public class AppMusicPlayer {
     @Nullable
     private BuiltInTrack    mCurrentTrack;
     private boolean         mIsPlaying = false;
+    private MediaSessionCompat mMediaSession;
 
     public interface OnPlaybackStateChanged {
         void onStateChanged(boolean isPlaying, @Nullable BuiltInTrack track);
@@ -225,6 +228,14 @@ public class AppMusicPlayer {
 
     public boolean isPlaying()              { return mIsPlaying; }
     @Nullable public BuiltInTrack getCurrentTrack() { return mCurrentTrack; }
+
+    public MediaSessionCompat.Token getSessionToken(Context context) {
+        if (mMediaSession == null) {
+            mMediaSession = new MediaSessionCompat(context.getApplicationContext(), "TomaFlowMusic");
+            mMediaSession.setActive(true);
+        }
+        return mMediaSession.getSessionToken();
+    }
 
     // ── MusicService (foreground notification) ────────────────────────────────
 

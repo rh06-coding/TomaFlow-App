@@ -139,6 +139,9 @@ public class FocusFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        com.tomaflow.app.utils.HeaderUIHelper.setupHeader(view, getString(R.string.nav_focus), getViewLifecycleOwner());
+
         mTimerViewModel = new ViewModelProvider(requireActivity()).get(TimerViewModel.class);
         mTaskViewModel  = new ViewModelProvider(requireActivity()).get(TaskViewModel.class);
 
@@ -221,7 +224,7 @@ public class FocusFragment extends Fragment {
                     } else if (player.getCurrentTrack() != null) {
                         player.resume(requireContext());
                     } else {
-                        android.widget.Toast.makeText(getContext(), getString(R.string.focus_select_music_first), android.widget.Toast.LENGTH_SHORT).show();
+                        com.tomaflow.app.utils.TomaToast.show(getContext(), R.string.focus_select_music_first, false);
                     }
                 }
             });
@@ -247,7 +250,7 @@ public class FocusFragment extends Fragment {
             if (state.phase == PomodoroTimer.Phase.FOCUS) {
                 com.tomaflow.app.timer.SettingsManager settings = new com.tomaflow.app.timer.SettingsManager(requireContext());
                 if (settings.isStrictMode()) {
-                    android.widget.Toast.makeText(requireContext(), R.string.strict_mode_blocked, android.widget.Toast.LENGTH_SHORT).show();
+                    com.tomaflow.app.utils.TomaToast.show(requireContext(), R.string.strict_mode_blocked, false);
                     return;
                 }
             }
@@ -266,7 +269,7 @@ public class FocusFragment extends Fragment {
         if (cur != null && cur.phase == PomodoroTimer.Phase.FOCUS) {
             com.tomaflow.app.timer.SettingsManager settings = new com.tomaflow.app.timer.SettingsManager(requireContext());
             if (settings.isStrictMode()) {
-                android.widget.Toast.makeText(requireContext(), R.string.strict_mode_blocked, android.widget.Toast.LENGTH_SHORT).show();
+                com.tomaflow.app.utils.TomaToast.show(requireContext(), R.string.strict_mode_blocked, false);
                 return;
             }
             new AlertDialog.Builder(requireContext())
@@ -290,7 +293,7 @@ public class FocusFragment extends Fragment {
         if (cur != null && cur.phase == PomodoroTimer.Phase.FOCUS) {
             com.tomaflow.app.timer.SettingsManager settings = new com.tomaflow.app.timer.SettingsManager(requireContext());
             if (settings.isStrictMode()) {
-                android.widget.Toast.makeText(requireContext(), R.string.strict_mode_blocked, android.widget.Toast.LENGTH_SHORT).show();
+                com.tomaflow.app.utils.TomaToast.show(requireContext(), R.string.strict_mode_blocked, false);
                 return;
             }
             new AlertDialog.Builder(requireContext())

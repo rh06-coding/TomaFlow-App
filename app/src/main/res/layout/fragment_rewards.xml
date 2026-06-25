@@ -1,37 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/toma_bg"
     tools:context=".rewards.RewardsActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/toma_bg"
-        app:elevation="0dp">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/toma_bg"
-            app:navigationIcon="@drawable/ic_back"
-            app:title="@string/rewards_title"
-            app:titleCentered="true"
-            app:titleTextColor="@color/toma_text" />
-    </com.google.android.material.appbar.AppBarLayout>
+    <!-- Header -->
+    <include layout="@layout/layout_main_header" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingHorizontal="16dp"
-        android:paddingBottom="32dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:paddingBottom="32dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,7 +49,7 @@
                         <FrameLayout
                             android:layout_width="56dp"
                             android:layout_height="56dp"
-                            android:background="@drawable/bg_icon_chip_info">
+                            android:background="@drawable/bg_avatar_circle">
 
                             <TextView
                                 android:id="@+id/tv_rewards_avatar_initials"
@@ -70,9 +57,18 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 tools:text="ER"
-                                android:textColor="@color/toma_primary"
+                                android:textColor="@android:color/white"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
+                                
+                            <ImageView
+                                android:id="@+id/iv_rewards_avatar"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:background="@drawable/bg_avatar_circle"
+                                android:clipToOutline="true"
+                                android:visibility="gone" />
                         </FrameLayout>
 
                         <LinearLayout
@@ -117,6 +113,7 @@
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/tv_rewards_level"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 tools:text="Level 42"
@@ -127,7 +124,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/profile_ranking"
+                                android:text="@string/profile_level"
                                 android:textAppearance="@style/TextAppearance.Toma.Label" />
                         </LinearLayout>
 
@@ -139,6 +136,7 @@
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/tv_rewards_hours"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 tools:text="1,240"
@@ -161,6 +159,7 @@
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/tv_rewards_streak"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 tools:text="98%"
@@ -188,6 +187,7 @@
                         app:trackThickness="8dp" />
 
                     <TextView
+                        android:id="@+id/tv_rewards_xp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
@@ -210,33 +210,64 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/rewards_section_badges"
+                    android:text="@string/rewards_farm_title"
                     android:textColor="@color/toma_text"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
+                <ImageView
+                    android:id="@+id/btn_prev_month"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_back"
+                    app:tint="@color/toma_primary"
+                    android:background="?attr/selectableItemBackgroundBorderless" />
+
                 <TextView
-                    android:id="@+id/btn_view_all"
+                    android:id="@+id/tv_month_year"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="6dp"
-                    android:text="@string/rewards_view_all"
-                    android:textAllCaps="true"
-                    android:textColor="@color/toma_primary"
-                    android:textSize="11sp"
-                    android:letterSpacing="0.2"
+                    android:layout_marginHorizontal="8dp"
+                    tools:text="June 2026"
+                    android:textColor="@color/toma_text"
                     android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/btn_next_month"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="@color/toma_primary"
+                    android:background="?attr/selectableItemBackgroundBorderless" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:weightSum="7">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/day_mon" android:textSize="12sp" android:textColor="@color/toma_text_muted"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/day_tue" android:textSize="12sp" android:textColor="@color/toma_text_muted"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/day_wed" android:textSize="12sp" android:textColor="@color/toma_text_muted"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/day_thu" android:textSize="12sp" android:textColor="@color/toma_text_muted"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/day_fri" android:textSize="12sp" android:textColor="@color/toma_text_muted"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/day_sat" android:textSize="12sp" android:textColor="@color/toma_text_muted"/>
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:text="@string/day_sun" android:textSize="12sp" android:textColor="@color/toma_text_muted"/>
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_badges"
+                android:id="@+id/rv_farm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:nestedScrollingEnabled="false"
                 android:overScrollMode="never"
                 tools:itemCount="6"
-                tools:listitem="@layout/item_badge" />
+                tools:listitem="@layout/item_farm_tomato" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
+

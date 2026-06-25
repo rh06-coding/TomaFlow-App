@@ -59,13 +59,6 @@ public class SettingsFragment extends Fragment {
             });
         }
 
-        MaterialSwitch dndSwitch = view.findViewById(R.id.switch_dnd);
-        if (dndSwitch != null) {
-            dndSwitch.setChecked(mSettingsManager.isDndMode());
-            dndSwitch.setOnCheckedChangeListener((btn, isChecked) -> {
-                mSettingsManager.setDndMode(isChecked);
-            });
-        }
 
         MaterialSwitch autoStartBreakSwitch = view.findViewById(R.id.switch_auto_start_break);
         if (autoStartBreakSwitch != null) {

@@ -10,6 +10,10 @@ import androidx.lifecycle.ViewModelProvider;
  * Sau này sẽ hiển thị task từ Room và cho phép thêm/sửa/xóa task.
  */
 public class TasksActivity extends AppCompatActivity {
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.tomaflow.app.utils.LanguageManager.wrap(base));
+    }
 
     private TaskViewModel taskViewModel;
 

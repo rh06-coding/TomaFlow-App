@@ -37,7 +37,13 @@ public class ProfileFragment extends Fragment {
 
         View btnSettings = view.findViewById(R.id.btn_settings);
         if (btnSettings != null) {
-            btnSettings.setOnClickListener(v -> androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_settings));
+            btnSettings.setOnClickListener(v -> {
+                androidx.navigation.NavOptions navOptions = new androidx.navigation.NavOptions.Builder()
+                        .setPopUpTo(R.id.nav_focus, false)
+                        .setLaunchSingleTop(true)
+                        .build();
+                androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_settings, null, navOptions);
+            });
         }
 
         if (user != null) {
@@ -60,36 +66,155 @@ public class ProfileFragment extends Fragment {
             }
         }
 
+        if (user != null) {
+            com.tomaflow.app.data.repository.ProfileRepository repo = new com.tomaflow.app.data.repository.ProfileRepository(user.getUid());
+            repo.getProfile().observe(getViewLifecycleOwner(), profile -> {
+                if (profile != null) {
+                    if (profile.name != null && !profile.name.isEmpty()) {
+                        tvName.setText(profile.name);
+                    }
+                    if (profile.avatarUrl != null && !profile.avatarUrl.isEmpty()) {
+                        android.widget.ImageView ivAvatar = view.findViewById(R.id.iv_profile_avatar);
+                        if (ivAvatar != null) {
+                            ivAvatar.setVisibility(View.VISIBLE);
+                            tvInitials.setVisibility(View.GONE);
+                            com.tomaflow.app.utils.AvatarHelper.loadAvatar(requireContext(), profile.avatarUrl, ivAvatar);
+                        }
+                    }
+                    
+                    // Update VIP status from Firebase
+                    com.tomaflow.app.data.repository.SubscriptionManager sm = new com.tomaflow.app.data.repository.SubscriptionManager(requireContext());
+                    if (profile.isVip && !sm.isVip()) {
+                        sm.setVip(true);
+                    }
+                    
+                    TextView tvRole = view.findViewById(R.id.tv_profile_role);
+                    View btnUpgrade = view.findViewById(R.id.btn_upgrade_vip);
+                    
+                    if (profile.isVip || sm.isVip()) {
+                        tvRole.setText(R.string.premium_badge);
+                        tvRole.setTextColor(ContextCompat.getColor(requireContext(), R.color.toma_warning));
+                        if (btnUpgrade != null) btnUpgrade.setVisibility(View.GONE);
+                    } else {
+                        tvRole.setText(getString(R.string.profile_role));
+                        tvRole.setTextColor(ContextCompat.getColor(requireContext(), R.color.toma_primary));
+                        
+                        if (btnUpgrade != null) {
+                            btnUpgrade.setVisibility(View.VISIBLE);
+                            btnUpgrade.setOnClickListener(v -> startActivity(new Intent(requireContext(), com.tomaflow.app.ui.premium.PremiumActivity.class)));
+                        }
+                    }
+                }
+            });
+        }
 
+        View btnEditProfile = view.findViewById(R.id.btn_edit_profile);
+        if (btnEditProfile != null) {
+            btnEditProfile.setOnClickListener(v -> {
+                startActivity(new Intent(requireContext(), EditProfileActivity.class));
+            });
+        }
 
         View cardLeaderboard = view.findViewById(R.id.card_leaderboard);
         if (cardLeaderboard != null) {
-            cardLeaderboard.setOnClickListener(v -> 
-                startActivity(new Intent(requireContext(), com.tomaflow.app.ui.leaderboard.LeaderboardActivity.class))
-            );
+            cardLeaderboard.setOnClickListener(v -> {
+                startActivity(new Intent(requireContext(), com.tomaflow.app.ui.leaderboard.LeaderboardActivity.class));
+            });
+        }
+        
+        View cardFriends = view.findViewById(R.id.card_friends);
+        if (cardFriends != null) {
+            cardFriends.setOnClickListener(v -> {
+                startActivity(new Intent(requireContext(), com.tomaflow.app.ui.friends.FriendsActivity.class));
+            });
+            
+            View badgeUnread = view.findViewById(R.id.badge_friends_unread);
+            if (badgeUnread != null) {
+                com.tomaflow.app.utils.UnreadBadgeManager.getInstance().getTotalUnreadCount().observe(getViewLifecycleOwner(), count -> {
+                    badgeUnread.setVisibility((count != null && count > 0) ? View.VISIBLE : View.GONE);
+                });
+            }
         }
 
-        com.tomaflow.app.data.repository.SubscriptionManager sm = new com.tomaflow.app.data.repository.SubscriptionManager(requireContext());
-        TextView tvRole = view.findViewById(R.id.tv_profile_role);
-        if (sm.isVip()) {
-            tvRole.setText("VIP MEMBER 👑");
-            tvRole.setTextColor(ContextCompat.getColor(requireContext(), R.color.toma_warning));
-        } else {
-            tvRole.setText(getString(R.string.profile_role));
-            tvRole.setTextColor(ContextCompat.getColor(requireContext(), R.color.toma_primary));
+        TextView tvHours = view.findViewById(R.id.tv_hours_value);
+        TextView tvStreak = view.findViewById(R.id.tv_streak_value);
+        TextView tvLevel = view.findViewById(R.id.tv_level_value);
+        com.tomaflow.app.data.repository.SessionRepository sessionRepo = new com.tomaflow.app.data.repository.SessionRepository(requireActivity().getApplication());
+        sessionRepo.getAllSessions().observe(getViewLifecycleOwner(), sessions -> {
+            if (sessions == null) return;
             
-            // Add upgrade button to the header
-            com.google.android.material.button.MaterialButton btnUpgrade = new com.google.android.material.button.MaterialButton(requireContext());
-            btnUpgrade.setText("Upgrade to VIP");
-            btnUpgrade.setOnClickListener(v -> startActivity(new Intent(requireContext(), com.tomaflow.app.ui.premium.PremiumActivity.class)));
-            ((ViewGroup) view.findViewById(R.id.container_avatar).getParent()).addView(btnUpgrade, 2);
-        }
+            long totalSeconds = 0;
+            java.util.Set<String> activeDays = new java.util.HashSet<>();
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+            sdf.setTimeZone(java.util.TimeZone.getDefault());
+            
+            for (com.tomaflow.app.data.db.entity.SessionEntity s : sessions) {
+                if ("Completed".equals(s.status)) {
+                    totalSeconds += s.duration;
+                    activeDays.add(sdf.format(new java.util.Date(s.startTime)));
+                }
+            }
+            
+            float hours = totalSeconds / 3600f;
+            if (tvHours != null) tvHours.setText(String.format(java.util.Locale.getDefault(), "%.1f", hours));
+            
+            int streak = 0;
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            String todayStr = sdf.format(cal.getTime());
+            
+            cal.add(java.util.Calendar.DAY_OF_YEAR, -1);
+            String yesterdayStr = sdf.format(cal.getTime());
+            
+            if (activeDays.contains(todayStr)) {
+                streak = 1;
+                cal.setTime(new java.util.Date());
+            } else if (activeDays.contains(yesterdayStr)) {
+                streak = 1;
+            }
+            
+            if (streak > 0) {
+                while (true) {
+                    cal.add(java.util.Calendar.DAY_OF_YEAR, -1);
+                    if (activeDays.contains(sdf.format(cal.getTime()))) {
+                        streak++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            
+            int totalMinutes = (int) (totalSeconds / 60);
+            int level = (totalMinutes / 600) + 1;
+            
+            if (tvStreak != null) tvStreak.setText(String.valueOf(streak));
+            if (tvLevel != null) tvLevel.setText(String.valueOf(level));
+        });
 
         view.findViewById(R.id.btn_logout).setOnClickListener(v -> {
-            auth.signOut();
-            Intent intent = new Intent(getActivity(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            new Thread(() -> {
+                // Stop services if running
+                requireContext().stopService(new Intent(requireContext(), com.tomaflow.app.timer.TimerEngineService.class));
+                requireContext().stopService(new Intent(requireContext(), com.tomaflow.app.ui.music.MusicService.class));
+
+                // Clear local database
+                com.tomaflow.app.data.db.TomaFlowDatabase.getInstance(requireContext()).clearAllTables();
+                
+                // Clear SharedPreferences
+                requireContext().getSharedPreferences("tomaflow_subscription", android.content.Context.MODE_PRIVATE).edit().clear().apply();
+                requireContext().getSharedPreferences("rewards_prefs", android.content.Context.MODE_PRIVATE).edit().clear().apply();
+                requireContext().getSharedPreferences(com.tomaflow.app.constants.AppConstants.PREFERENCES_FILE_NAME, android.content.Context.MODE_PRIVATE).edit().clear().apply();
+                
+                // Clear Unread Badge Manager
+                com.tomaflow.app.utils.UnreadBadgeManager.getInstance().clear();
+                
+                auth.signOut();
+                
+                requireActivity().runOnUiThread(() -> {
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                });
+            }).start();
         });
 
         return view;
