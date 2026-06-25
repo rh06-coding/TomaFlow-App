@@ -5,7 +5,6 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +15,7 @@ import com.tomaflow.app.data.db.entity.SessionEntity;
 import com.tomaflow.app.data.model.FriendConnection;
 import com.tomaflow.app.data.remote.FirestoreSessionRemoteDataSource;
 import com.tomaflow.app.data.repository.FriendRepository;
+import com.tomaflow.app.databinding.ActivityLeaderboardBinding;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,8 +29,7 @@ public class LeaderboardActivity extends AppCompatActivity {
         super.attachBaseContext(com.tomaflow.app.utils.LanguageManager.wrap(base));
     }
 
-    private RecyclerView rvLeaderboard;
-    private View layoutFriendsEmpty;
+    private ActivityLeaderboardBinding binding;
     private LeaderboardAdapter adapter;
     private FriendRepository friendRepository;
     private FirestoreSessionRemoteDataSource sessionDataSource;
@@ -39,15 +38,12 @@ public class LeaderboardActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_leaderboard);
+        binding = ActivityLeaderboardBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationOnClickListener(v -> finish());
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
 
-        rvLeaderboard = findViewById(R.id.rv_leaderboard);
-        layoutFriendsEmpty = findViewById(R.id.layout_friends_empty);
-
-        rvLeaderboard.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvLeaderboard.setLayoutManager(new LinearLayoutManager(this));
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -57,30 +53,30 @@ public class LeaderboardActivity extends AppCompatActivity {
             loadLeaderboardData();
         }
 
-        findViewById(R.id.btn_add_friend).setOnClickListener(v -> finish());
+        binding.btnAddFriend.setOnClickListener(v -> finish());
     }
 
     private void loadLeaderboardData() {
         friendRepository.getFriends().observe(this, connections -> {
             if (connections == null) return;
-            
+
             List<String> userIds = new ArrayList<>();
             userIds.add(currentUserId); // Add self
-            
+
             for (FriendConnection c : connections) {
                 String friendId = c.senderId.equals(currentUserId) ? c.receiverId : c.senderId;
                 userIds.add(friendId);
             }
-            
+
             if (userIds.size() == 1) {
-                layoutFriendsEmpty.setVisibility(View.VISIBLE);
-                rvLeaderboard.setVisibility(View.GONE);
+                binding.layoutFriendsEmpty.setVisibility(View.VISIBLE);
+                binding.rvLeaderboard.setVisibility(View.GONE);
                 return;
             }
-            
-            layoutFriendsEmpty.setVisibility(View.GONE);
-            rvLeaderboard.setVisibility(View.VISIBLE);
-            
+
+            binding.layoutFriendsEmpty.setVisibility(View.GONE);
+            binding.rvLeaderboard.setVisibility(View.VISIBLE);
+
             fetchStatsForUsers(userIds);
         });
     }
@@ -206,65 +202,65 @@ public class LeaderboardActivity extends AppCompatActivity {
             
             runOnUiThread(() -> {
                 bindPodium(entries);
-                
+
                 List<LeaderboardEntry> remaining = new ArrayList<>();
                 if (entries.size() > 3) {
                     remaining.addAll(entries.subList(3, entries.size()));
                 }
                 adapter = new LeaderboardAdapter(remaining, currentUserId);
-                rvLeaderboard.setAdapter(adapter);
+                binding.rvLeaderboard.setAdapter(adapter);
             });
         }
     }
 
     private void bindPodium(List<LeaderboardEntry> entries) {
-        View layoutPodium = findViewById(R.id.layout_podium);
         if (entries.isEmpty()) {
-            layoutPodium.setVisibility(View.GONE);
+            binding.layoutPodium.setVisibility(View.GONE);
             return;
         }
-        layoutPodium.setVisibility(View.VISIBLE);
-
-        View podium1 = findViewById(R.id.podium_rank_1);
-        View podium2 = findViewById(R.id.podium_rank_2);
-        View podium3 = findViewById(R.id.podium_rank_3);
+        binding.layoutPodium.setVisibility(View.VISIBLE);
 
         if (entries.size() > 0) {
-            podium1.setVisibility(View.VISIBLE);
-            ((android.widget.TextView) findViewById(R.id.tv_podium_name_1)).setText(entries.get(0).username);
-            ((android.widget.TextView) findViewById(R.id.tv_podium_level_1)).setText(getString(R.string.rewards_level, entries.get(0).level));
-            findViewById(R.id.iv_podium_vip_1).setVisibility(entries.get(0).isVip ? View.VISIBLE : View.GONE);
+            binding.podiumRank1.setVisibility(View.VISIBLE);
+            binding.tvPodiumName1.setText(entries.get(0).username);
+            binding.tvPodiumLevel1.setText(getString(R.string.rewards_level, entries.get(0).level));
+            binding.ivPodiumVip1.setVisibility(entries.get(0).isVip ? View.VISIBLE : View.GONE);
             setPodiumAvatar(1, entries.get(0));
         } else {
-            podium1.setVisibility(View.INVISIBLE);
+            binding.podiumRank1.setVisibility(View.INVISIBLE);
         }
 
         if (entries.size() > 1) {
-            podium2.setVisibility(View.VISIBLE);
-            ((android.widget.TextView) findViewById(R.id.tv_podium_name_2)).setText(entries.get(1).username);
-            ((android.widget.TextView) findViewById(R.id.tv_podium_level_2)).setText(getString(R.string.rewards_level, entries.get(1).level));
-            findViewById(R.id.iv_podium_vip_2).setVisibility(entries.get(1).isVip ? View.VISIBLE : View.GONE);
+            binding.podiumRank2.setVisibility(View.VISIBLE);
+            binding.tvPodiumName2.setText(entries.get(1).username);
+            binding.tvPodiumLevel2.setText(getString(R.string.rewards_level, entries.get(1).level));
+            binding.ivPodiumVip2.setVisibility(entries.get(1).isVip ? View.VISIBLE : View.GONE);
             setPodiumAvatar(2, entries.get(1));
         } else {
-            podium2.setVisibility(View.INVISIBLE);
+            binding.podiumRank2.setVisibility(View.INVISIBLE);
         }
 
         if (entries.size() > 2) {
-            podium3.setVisibility(View.VISIBLE);
-            ((android.widget.TextView) findViewById(R.id.tv_podium_name_3)).setText(entries.get(2).username);
-            ((android.widget.TextView) findViewById(R.id.tv_podium_level_3)).setText(getString(R.string.rewards_level, entries.get(2).level));
-            findViewById(R.id.iv_podium_vip_3).setVisibility(entries.get(2).isVip ? View.VISIBLE : View.GONE);
+            binding.podiumRank3.setVisibility(View.VISIBLE);
+            binding.tvPodiumName3.setText(entries.get(2).username);
+            binding.tvPodiumLevel3.setText(getString(R.string.rewards_level, entries.get(2).level));
+            binding.ivPodiumVip3.setVisibility(entries.get(2).isVip ? View.VISIBLE : View.GONE);
             setPodiumAvatar(3, entries.get(2));
         } else {
-            podium3.setVisibility(View.INVISIBLE);
+            binding.podiumRank3.setVisibility(View.INVISIBLE);
         }
     }
-    
+
     private void setPodiumAvatar(int rank, LeaderboardEntry entry) {
-        android.widget.ImageView ivAvatar = findViewById(getResources().getIdentifier("iv_podium_avatar_" + rank, "id", getPackageName()));
-        android.widget.TextView tvInitials = findViewById(getResources().getIdentifier("tv_podium_initials_" + rank, "id", getPackageName()));
-        android.widget.ImageView ivDefault = findViewById(getResources().getIdentifier("iv_podium_default_" + rank, "id", getPackageName()));
-        
+        android.widget.ImageView ivAvatar;
+        android.widget.TextView tvInitials;
+        android.widget.ImageView ivDefault;
+        switch (rank) {
+            case 1: ivAvatar = binding.ivPodiumAvatar1; tvInitials = binding.tvPodiumInitials1; ivDefault = binding.ivPodiumDefault1; break;
+            case 2: ivAvatar = binding.ivPodiumAvatar2; tvInitials = binding.tvPodiumInitials2; ivDefault = binding.ivPodiumDefault2; break;
+            default: ivAvatar = binding.ivPodiumAvatar3; tvInitials = binding.tvPodiumInitials3; ivDefault = binding.ivPodiumDefault3; break;
+        }
+
         if (entry.avatarUrl != null && !entry.avatarUrl.isEmpty()) {
             ivAvatar.setVisibility(View.VISIBLE);
             tvInitials.setVisibility(View.GONE);

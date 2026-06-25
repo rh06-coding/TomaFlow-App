@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -22,6 +19,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 import com.tomaflow.app.R;
 import com.tomaflow.app.data.model.UserProfile;
 import com.tomaflow.app.data.repository.ProfileRepository;
+import com.tomaflow.app.databinding.ActivityEditProfileBinding;
 import com.tomaflow.app.utils.TomaToast;
 
 import java.util.Calendar;
@@ -33,14 +31,7 @@ public class EditProfileActivity extends AppCompatActivity {
         super.attachBaseContext(com.tomaflow.app.utils.LanguageManager.wrap(base));
     }
 
-    private ImageView ivAvatar;
-    private TextView tvInitials;
-    private EditText etName;
-    private EditText etUsername;
-    private EditText etEmail;
-    private EditText etPhone;
-    private EditText etDob;
-
+    private ActivityEditProfileBinding binding;
     private ProfileRepository repository;
     private FirebaseUser user;
     
@@ -52,9 +43,9 @@ public class EditProfileActivity extends AppCompatActivity {
             uri -> {
                 if (uri != null) {
                     selectedImageUri = uri;
-                    ivAvatar.setVisibility(View.VISIBLE);
-                    tvInitials.setVisibility(View.GONE);
-                    Glide.with(this).load(uri).circleCrop().into(ivAvatar);
+                    binding.ivAvatar.setVisibility(View.VISIBLE);
+                    binding.tvAvatarInitials.setVisibility(View.GONE);
+                    Glide.with(this).load(uri).circleCrop().into(binding.ivAvatar);
                 }
             }
     );
@@ -62,7 +53,8 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_profile);
+        binding = ActivityEditProfileBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -72,65 +64,54 @@ public class EditProfileActivity extends AppCompatActivity {
 
         repository = new ProfileRepository(user.getUid());
 
-        findViewById(R.id.toolbar).setOnClickListener(v -> finish());
-        
-        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationOnClickListener(v -> finish());
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
 
-        ivAvatar = findViewById(R.id.iv_avatar);
-        tvInitials = findViewById(R.id.tv_avatar_initials);
-        etName = findViewById(R.id.et_name);
-        etUsername = findViewById(R.id.et_username);
-        etEmail = findViewById(R.id.et_email);
-        etPhone = findViewById(R.id.et_phone);
-        etDob = findViewById(R.id.et_dob);
+        binding.btnChangeAvatar.setOnClickListener(v -> pickImageLauncher.launch("image/*"));
 
-        findViewById(R.id.btn_change_avatar).setOnClickListener(v -> pickImageLauncher.launch("image/*"));
+        binding.etDob.setOnClickListener(v -> showDatePicker());
 
-        etDob.setOnClickListener(v -> showDatePicker());
-
-        findViewById(R.id.btn_change_password).setOnClickListener(v -> {
+        binding.btnChangePassword.setOnClickListener(v -> {
             FirebaseAuth.getInstance().sendPasswordResetEmail(user.getEmail())
                 .addOnSuccessListener(aVoid -> TomaToast.show(this, "Password reset email sent!", true))
                 .addOnFailureListener(e -> TomaToast.show(this, "Failed to send reset email: " + e.getMessage(), false));
         });
 
-        findViewById(R.id.btn_save).setOnClickListener(v -> saveProfile());
+        binding.btnSave.setOnClickListener(v -> saveProfile());
 
         loadProfile();
     }
 
     private void loadProfile() {
         // Fallback from auth
-        etEmail.setText(user.getEmail());
+        binding.etEmail.setText(user.getEmail());
         String name = user.getDisplayName();
-        if (name != null) etName.setText(name);
+        if (name != null) binding.etName.setText(name);
 
         repository.getProfile().observe(this, profile -> {
             if (profile != null) {
-                if (profile.name != null) etName.setText(profile.name);
-                if (profile.username != null) etUsername.setText(profile.username);
-                if (profile.phone != null) etPhone.setText(profile.phone);
-                if (profile.dob != null) etDob.setText(profile.dob);
+                if (profile.name != null) binding.etName.setText(profile.name);
+                if (profile.username != null) binding.etUsername.setText(profile.username);
+                if (profile.phone != null) binding.etPhone.setText(profile.phone);
+                if (profile.dob != null) binding.etDob.setText(profile.dob);
                 currentAvatarUrl = profile.avatarUrl;
-                
+
                 if (currentAvatarUrl != null && !currentAvatarUrl.isEmpty() && selectedImageUri == null) {
-                    ivAvatar.setVisibility(View.VISIBLE);
-                    tvInitials.setVisibility(View.GONE);
-                    com.tomaflow.app.utils.AvatarHelper.loadAvatar(this, currentAvatarUrl, ivAvatar);
+                    binding.ivAvatar.setVisibility(View.VISIBLE);
+                    binding.tvAvatarInitials.setVisibility(View.GONE);
+                    com.tomaflow.app.utils.AvatarHelper.loadAvatar(this, currentAvatarUrl, binding.ivAvatar);
                 }
             } else {
                 // Generate stable username if null
-                if (etUsername.getText().toString().isEmpty()) {
+                if (binding.etUsername.getText().toString().isEmpty()) {
                     String generated = "user_" + user.getUid().substring(0, 6).toLowerCase();
-                    etUsername.setText(generated);
+                    binding.etUsername.setText(generated);
                 }
             }
-            
+
             // Set initials if no avatar
             if ((currentAvatarUrl == null || currentAvatarUrl.isEmpty()) && selectedImageUri == null) {
-                String displayName = etName.getText().toString();
-                if (displayName.isEmpty()) displayName = etEmail.getText().toString();
+                String displayName = binding.etName.getText().toString();
+                if (displayName.isEmpty()) displayName = binding.etEmail.getText().toString();
                 String initials = "";
                 String[] parts = displayName.split(" ");
                 if (parts.length > 0 && !parts[0].isEmpty()) {
@@ -139,15 +120,15 @@ public class EditProfileActivity extends AppCompatActivity {
                         initials += parts[parts.length - 1].charAt(0);
                     }
                 }
-                tvInitials.setText(initials.toUpperCase());
-                tvInitials.setVisibility(View.VISIBLE);
-                ivAvatar.setVisibility(View.GONE);
+                binding.tvAvatarInitials.setText(initials.toUpperCase());
+                binding.tvAvatarInitials.setVisibility(View.VISIBLE);
+                binding.ivAvatar.setVisibility(View.GONE);
             }
-            
+
             // Handle VIP status
             com.tomaflow.app.data.repository.SubscriptionManager sm = new com.tomaflow.app.data.repository.SubscriptionManager(this);
             boolean isVip = (profile != null && profile.isVip) || sm.isVip();
-            View btnCancelVip = findViewById(R.id.btn_cancel_vip);
+            View btnCancelVip = binding.btnCancelVip;
             if (isVip) {
                 btnCancelVip.setVisibility(View.VISIBLE);
                 btnCancelVip.setOnClickListener(v -> {
@@ -172,23 +153,23 @@ public class EditProfileActivity extends AppCompatActivity {
     private void showDatePicker() {
         Calendar c = Calendar.getInstance();
         new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
-            etDob.setText(String.format(Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, month + 1, year));
+            binding.etDob.setText(String.format(Locale.getDefault(), "%02d/%02d/%04d", dayOfMonth, month + 1, year));
         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     private void saveProfile() {
-        String name = etName.getText().toString().trim();
-        String username = etUsername.getText().toString().trim();
-        String email = etEmail.getText().toString().trim();
-        String phone = etPhone.getText().toString().trim();
-        String dob = etDob.getText().toString().trim();
+        String name = binding.etName.getText().toString().trim();
+        String username = binding.etUsername.getText().toString().trim();
+        String email = binding.etEmail.getText().toString().trim();
+        String phone = binding.etPhone.getText().toString().trim();
+        String dob = binding.etDob.getText().toString().trim();
 
         if (name.isEmpty() || username.isEmpty() || email.isEmpty()) {
             TomaToast.show(this, "Name, Username and Email are required", false);
             return;
         }
 
-        findViewById(R.id.btn_save).setEnabled(false);
+        binding.btnSave.setEnabled(false);
 
         // Update Email Auth if changed
         if (!email.equals(user.getEmail())) {
@@ -197,7 +178,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     TomaToast.show(this, "Failed to update email: " + e.getMessage(), false);
                 });
         }
-        
+
         // Update Display Name Auth
         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                 .setDisplayName(name)
@@ -208,17 +189,17 @@ public class EditProfileActivity extends AppCompatActivity {
         repository.isUsernameUnique(username).addOnSuccessListener(isUniqueUsername -> {
             if (!isUniqueUsername) {
                 TomaToast.show(this, "Username already taken", false);
-                findViewById(R.id.btn_save).setEnabled(true);
+                binding.btnSave.setEnabled(true);
                 return;
             }
-            
+
             repository.isPhoneUnique(phone).addOnSuccessListener(isUniquePhone -> {
                 if (!isUniquePhone) {
                     TomaToast.show(this, "Phone number already used", false);
-                    findViewById(R.id.btn_save).setEnabled(true);
+                    binding.btnSave.setEnabled(true);
                     return;
                 }
-                
+
                 // Upload avatar if selected
                 if (selectedImageUri != null) {
                     String base64Avatar = encodeImageToBase64(selectedImageUri);
@@ -226,7 +207,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         saveToFirestore(name, username, email, phone, dob, base64Avatar);
                     } else {
                         TomaToast.show(this, "Failed to process image", false);
-                        findViewById(R.id.btn_save).setEnabled(true);
+                        binding.btnSave.setEnabled(true);
                     }
                 } else {
                     saveToFirestore(name, username, email, phone, dob, currentAvatarUrl);
@@ -267,7 +248,7 @@ public class EditProfileActivity extends AppCompatActivity {
             finish();
         }).addOnFailureListener(e -> {
             TomaToast.show(this, "Error saving profile", false);
-            findViewById(R.id.btn_save).setEnabled(true);
+            binding.btnSave.setEnabled(true);
         });
     }
 }
