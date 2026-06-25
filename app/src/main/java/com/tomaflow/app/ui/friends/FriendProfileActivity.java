@@ -156,7 +156,7 @@ public class FriendProfileActivity extends AppCompatActivity {
                 }
 
                 int hours = totalMinutes / 60;
-                int level = (totalMinutes / 120) + 1; // 2 hours = 1 level
+                int level = (totalMinutes / 600) + 1; // 10 hours = 1 level
                 final int finalHours = hours;
                 final int finalLevel = level;
                 final int finalStreak = streak;

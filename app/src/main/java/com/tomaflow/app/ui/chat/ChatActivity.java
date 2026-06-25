@@ -142,7 +142,7 @@ public class ChatActivity extends AppCompatActivity {
                         }
                     }
                     int hours = totalMinutes / 60;
-                    int level = (totalMinutes / 120) + 1;
+                    int level = (totalMinutes / 600) + 1;
                     
                     String achievementText = "🏆 I just reached Level " + level + " with " + hours + " hours of focus!";
                     sendMessage(achievementText, "achievement");
