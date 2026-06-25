@@ -30,39 +30,28 @@ public class TomaToast {
     }
 
     public static void show(Context context, String message, boolean isSuccess) {
-        View parentView = null;
-        if (context instanceof Activity) {
-            parentView = ((Activity) context).findViewById(android.R.id.content);
-        } else if (context instanceof ContextWrapper) {
-            Context base = ((ContextWrapper) context).getBaseContext();
-            if (base instanceof Activity) {
-                parentView = ((Activity) base).findViewById(android.R.id.content);
-            }
-        }
+        try {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View layout = inflater.inflate(R.layout.layout_toma_toast, null);
 
-        if (parentView != null) {
-            try {
-                Snackbar snackbar = Snackbar.make(parentView, message, Snackbar.LENGTH_LONG);
-                if (!isSuccess) {
-                    snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.toma_error));
-                } else {
-                    snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.toma_success));
-                }
-                snackbar.setTextColor(ContextCompat.getColor(context, android.R.color.white));
-                
-                View snackbarView = snackbar.getView();
-                float dp = 4f; // Tighter shadow
-                snackbarView.setElevation(android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics()));
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
-                    snackbarView.setOutlineSpotShadowColor(android.graphics.Color.parseColor("#4D000000")); // Darker spot shadow (30% black)
-                    snackbarView.setOutlineAmbientShadowColor(android.graphics.Color.parseColor("#80000000")); // Darker ambient shadow (50% black)
-                }
+            TextView text = layout.findViewById(R.id.tv_toast_message);
+            ImageView icon = layout.findViewById(R.id.iv_toast_icon);
 
-                snackbar.show();
-            } catch (Exception e) {
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            text.setText(message);
+
+            if (isSuccess) {
+                icon.setImageResource(R.drawable.ic_check);
+                icon.setColorFilter(ContextCompat.getColor(context, R.color.toma_success));
+            } else {
+                icon.setImageResource(R.drawable.ic_close);
+                icon.setColorFilter(ContextCompat.getColor(context, R.color.toma_error));
             }
-        } else {
+
+            Toast toast = new Toast(context);
+            toast.setDuration(Toast.LENGTH_SHORT);
+            toast.setView(layout);
+            toast.show();
+        } catch (Exception e) {
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
     }

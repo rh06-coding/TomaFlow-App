@@ -10,13 +10,6 @@ import java.util.Locale;
 
 /**
  * Manages app-level language switching (EN / VI).
- *
- * Usage:
- *  1. In every Activity, override attachBaseContext:
- *       super.attachBaseContext(LanguageManager.wrap(base));
- *  2. When the user picks a language, call:
- *       LanguageManager.setLanguage(context, langCode);
- *       requireActivity().recreate();
  */
 public class LanguageManager {
 

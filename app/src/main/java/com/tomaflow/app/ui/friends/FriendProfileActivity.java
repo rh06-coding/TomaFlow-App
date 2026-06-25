@@ -113,23 +113,58 @@ public class FriendProfileActivity extends AppCompatActivity {
             @Override
             public void onSuccess(java.util.List<com.tomaflow.app.data.db.entity.SessionEntity> sessions) {
                 int totalMinutes = 0;
-                int completedCycles = 0;
+                java.util.List<Long> completedDays = new java.util.ArrayList<>();
                 for (com.tomaflow.app.data.db.entity.SessionEntity session : sessions) {
                     if ("Completed".equals(session.status)) {
                         totalMinutes += session.duration / 60;
-                        completedCycles++;
+                        
+                        java.util.Calendar c = java.util.Calendar.getInstance();
+                        c.setTimeInMillis(session.startTime);
+                        c.set(java.util.Calendar.HOUR_OF_DAY, 0);
+                        c.set(java.util.Calendar.MINUTE, 0);
+                        c.set(java.util.Calendar.SECOND, 0);
+                        c.set(java.util.Calendar.MILLISECOND, 0);
+                        long day = c.getTimeInMillis();
+                        if (!completedDays.contains(day)) {
+                            completedDays.add(day);
+                        }
                     }
                 }
+                java.util.Collections.sort(completedDays, java.util.Collections.reverseOrder());
+                
+                java.util.Calendar cal = java.util.Calendar.getInstance();
+                cal.set(java.util.Calendar.HOUR_OF_DAY, 0);
+                cal.set(java.util.Calendar.MINUTE, 0);
+                cal.set(java.util.Calendar.SECOND, 0);
+                cal.set(java.util.Calendar.MILLISECOND, 0);
+                long startOfToday = cal.getTimeInMillis();
+                long startOfYesterday = startOfToday - 24 * 60 * 60 * 1000L;
+
+                int streak = 0;
+                long currentDayToCheck = startOfToday;
+                if (!completedDays.contains(currentDayToCheck)) {
+                    currentDayToCheck = startOfYesterday;
+                }
+                
+                for (Long day : completedDays) {
+                    if (day == currentDayToCheck) {
+                        streak++;
+                        currentDayToCheck -= 24 * 60 * 60 * 1000L;
+                    } else if (day < currentDayToCheck) {
+                        break;
+                    }
+                }
+
                 int hours = totalMinutes / 60;
                 int level = (totalMinutes / 120) + 1; // 2 hours = 1 level
                 final int finalHours = hours;
                 final int finalLevel = level;
-                final int finalCompletedCycles = completedCycles;
+                final int finalStreak = streak;
 
                 runOnUiThread(() -> {
                     tvLevel.setText(getString(R.string.rewards_level, finalLevel));
                     tvHours.setText(String.valueOf(finalHours));
-                    tvStreak.setText(getString(R.string.friend_profile_cycles, finalCompletedCycles));
+                    tvStreak.setText(String.valueOf(finalStreak));
                 });
             }
 
@@ -138,7 +173,7 @@ public class FriendProfileActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     tvLevel.setText(getString(R.string.rewards_level, 1));
                     tvHours.setText("0");
-                    tvStreak.setText(getString(R.string.friend_profile_cycles, 0));
+                    tvStreak.setText("0");
                 });
             }
         });

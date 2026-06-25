@@ -10,14 +10,32 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Red circle background accent -->
+    <!-- Tomato body -->
     <path
-        android:fillColor="#AF101A"
-        android:pathData="M54,24 a30,30 0 1,1 0,60 a30,30 0 1,1 0,-60Z" />
-
-    <!-- Letter T -->
+        android:fillColor="#FFC8324A"
+        android:pathData="M54,84 C38,84 26,72 26,56 C26,40 38,28 54,28 C70,28 82,40 82,56 C82,72 70,84 54,84 Z" />
+    <!-- 3 Green Leaves -->
+    <path
+        android:fillColor="#FF3FA66B"
+        android:pathData="M54,28 C50,22 44,20 38,24 C44,28 48,28 54,28 Z" />
+    <path
+        android:fillColor="#FF3FA66B"
+        android:pathData="M54,28 C58,22 64,20 70,24 C64,28 60,28 54,28 Z" />
+    <path
+        android:fillColor="#FF3FA66B"
+        android:pathData="M54,28 C54,22 56,18 54,16 C52,22 54,24 54,28 Z" />
+    <!-- Clock hour markers (12, 3, 6, 9) -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M42,42 L66,42 L66,48 L57,48 L57,66 L51,66 L51,48 L42,48 Z" />
-
+        android:pathData="M54,34.2 a1.8,1.8 0 1,1 0,3.6 a1.8,1.8 0 1,1 0,-3.6Z M54,74.2 a1.8,1.8 0 1,1 0,3.6 a1.8,1.8 0 1,1 0,-3.6Z M74,54.2 a1.8,1.8 0 1,1 0,3.6 a1.8,1.8 0 1,1 0,-3.6Z M34,54.2 a1.8,1.8 0 1,1 0,3.6 a1.8,1.8 0 1,1 0,-3.6Z" />
+    <!-- Clock hands (10:10) -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.6"
+        android:strokeLineCap="round"
+        android:pathData="M54,56 L44,45 M54,56 L68,42" />
+    <!-- Center cap dot -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,53.8 a2.2,2.2 0 1,1 0,4.4 a2.2,2.2 0 1,1 0,-4.4Z" />
 </vector>

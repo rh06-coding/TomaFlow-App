@@ -11,6 +11,7 @@
     <color name="toma_bg">#1C1C24</color>
     <color name="toma_surface">#272732</color> <!-- Elevated soft slate gray for cards -->
     <color name="toma_surface_muted">#323240</color>
+    <color name="toma_slider_card_bg">#3D222A</color>
 
     <!-- Text -->
     <color name="toma_text">#D4D4DE</color> <!-- Soft off-white text -->

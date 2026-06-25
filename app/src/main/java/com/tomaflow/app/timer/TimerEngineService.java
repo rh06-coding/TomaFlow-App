@@ -24,14 +24,6 @@ import com.tomaflow.app.utils.NotificationHelper;
 
 /**
  * Foreground Service chạy Pomodoro ở chế độ nền.
- *
- * CÁC QUYẾT ĐỊNH THIẾT KẾ QUAN TRỌNG để tránh rè/nhiễu âm thanh:
- * 1. Timer ticks chạy trên một HandlerThread ĐỘC LẬP ("TimerThread"), KHÔNG dùng luồng chính.
- *    Điều này ngăn chặn bộ đếm thời gian tranh giành tài nguyên với các callback âm thanh của MediaPlayer.
- * 2. Các callback cập nhật giao diện (UI) được chuyển về luồng CHÍNH thông qua mMainHandler.
- * 3. Thông báo (Notification) chỉ được cập nhật tối đa 5 giây một lần (NOTIF_UPDATE_INTERVAL_MS).
- *    Việc gọi NotificationManager.notify() mỗi giây sẽ làm quá tải hệ thống và gây giật lag âm thanh.
- * 4. startForeground() chỉ được gọi CHÍNH XÁC MỘT LẦN cho mỗi phiên hoạt động.
  */
 public class TimerEngineService extends Service {
 
