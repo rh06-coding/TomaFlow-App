@@ -317,8 +317,6 @@ public class TimerEngineService extends Service {
                 session.status    = "Completed";
                 mSessionRepository.insert(session);
 
-                // Badges
-                mMainHandler.post(() -> checkAndUnlockBadges(sessionCount));
 
                 // Break starts automatically — re-kick the tick loop
                 if (mTimer.isRunning()) scheduleTick();
@@ -432,17 +430,4 @@ public class TimerEngineService extends Service {
         }
     }
 
-    // ── Badges ────────────────────────────────────────────────────────────────
-
-    private void checkAndUnlockBadges(int sessionCount) {
-        com.tomaflow.app.data.repository.RewardsRepository rewardsRepo =
-                new com.tomaflow.app.data.repository.RewardsRepository(getApplication());
-
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        int hour = cal.get(java.util.Calendar.HOUR_OF_DAY);
-
-        if (hour < 7)        rewardsRepo.unlockBadge("earlybird");
-        else if (hour >= 22) rewardsRepo.unlockBadge("nightowl");
-        if (sessionCount >= 4) rewardsRepo.unlockBadge("marathon");
-    }
 }

@@ -139,23 +139,7 @@
     <string name="music_pick_device_desc">Duyệt và chọn một file âm thanh</string>
     <string name="music_section_selected">NHẠC ĐÃ CHỌN</string>
     <string name="music_from_device">Từ thiết bị</string>
-    <!-- Badges -->
-    <string name="badge_newbie_title">Bước đầu tiên</string>
-    <string name="badge_newbie_desc">Hoàn thành 1 Pomodoro</string>
-    <string name="badge_hardworker_title">Chăm chỉ</string>
-    <string name="badge_hardworker_desc">Hoàn thành 10 Pomodoro</string>
-    <string name="badge_superman_title">Siêu nhân</string>
-    <string name="badge_superman_desc">Hoàn thành 50 Pomodoro</string>
-    <string name="badge_consistent_title">Bền bỉ</string>
-    <string name="badge_consistent_desc">Tập trung 7 ngày liên tiếp</string>
-    <string name="badge_marathon_title">Marathon</string>
-    <string name="badge_marathon_desc">4 chu kỳ trong một ngày</string>
-    <string name="badge_perfect_title">Hoàn hảo</string>
-    <string name="badge_perfect_desc">Hoàn thành 5 công việc</string>
-    <string name="badge_nightowl_title">Cú đêm</string>
-    <string name="badge_nightowl_desc">Tập trung sau 22:00</string>
-    <string name="badge_earlybird_title">Chào buổi sáng</string>
-    <string name="badge_earlybird_desc">Tập trung trước 07:00</string>
+
     <!-- Focus extra strings -->
     <string name="focus_select_music_first">Vui lòng chọn nhạc trước</string>
     <string name="focus_task_default_sub">Đang tập trung</string>
