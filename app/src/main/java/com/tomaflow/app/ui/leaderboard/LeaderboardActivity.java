@@ -193,7 +193,7 @@ public class LeaderboardActivity extends AppCompatActivity {
             }
         }
         
-        int level = (int) (totalMinutes / 120) + 1;
+        int level = (int) (totalMinutes / 600) + 1;
         return new LeaderboardEntry(String.valueOf(0), uid, username, pomodoros, streak, level, totalMinutes, isVip);
     }
 
