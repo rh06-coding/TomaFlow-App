@@ -2,6 +2,7 @@ package com.tomaflow.app.utils;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -22,6 +23,8 @@ public class UnreadBadgeManager {
     private final FirebaseFirestore db;
     private String currentUserId;
     private FriendRepository friendRepository;
+    private Observer<List<FriendConnection>> friendsObserver;
+    private boolean friendsObserverRegistered;
     
     private final MutableLiveData<Integer> totalUnreadCount = new MutableLiveData<>(0);
     private final MutableLiveData<Map<String, Integer>> unreadPerFriend = new MutableLiveData<>(new HashMap<>());
@@ -40,17 +43,29 @@ public class UnreadBadgeManager {
         return instance;
     }
 
-    public void init() {
+    /** Public entry point — call after login (e.g. from MainActivity.onCreate). Idempotent. */
+    public void start() {
+        init();
+    }
+
+    private void init() {
+        // Guard against double-registration: the singleton constructor calls this,
+        // and start() is re-invoked on re-login. Without this, observeForever would
+        // stack a new permanent observer on every login.
+        if (friendsObserverRegistered || currentUserId != null) return;
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
         currentUserId = user.getUid();
-        
+
         friendRepository = new FriendRepository(currentUserId);
-        friendRepository.getFriends().observeForever(this::onFriendsLoaded);
+        friendsObserver = this::onFriendsLoaded;
+        friendRepository.getFriends().observeForever(friendsObserver);
+        friendsObserverRegistered = true;
     }
 
     private void onFriendsLoaded(List<FriendConnection> friends) {
-        if (friends == null) return;
+        if (friends == null || currentUserId == null) return;
         
         // Remove listeners for friends that were removed
         Map<String, ListenerRegistration> oldListeners = new HashMap<>(listeners);
@@ -104,6 +119,14 @@ public class UnreadBadgeManager {
     }
 
     public void clear() {
+        // Remove the friends LiveData observer FIRST. Without this the observeForever
+        // observer leaks across sessions and the badge double-fires after re-login.
+        if (friendRepository != null && friendsObserver != null) {
+            friendRepository.getFriends().removeObserver(friendsObserver);
+        }
+        friendsObserver = null;
+        friendsObserverRegistered = false;
+
         for (ListenerRegistration registration : listeners.values()) {
             registration.remove();
         }
@@ -111,5 +134,6 @@ public class UnreadBadgeManager {
         totalUnreadCount.postValue(0);
         unreadPerFriend.postValue(new HashMap<>());
         currentUserId = null;
+        friendRepository = null;
     }
 }

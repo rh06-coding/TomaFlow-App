@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
 
         com.google.firebase.auth.FirebaseUser currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
+            // (Re)start unread-badge tracking — idempotent, covers cold start and re-login.
+            com.tomaflow.app.utils.UnreadBadgeManager.getInstance().start();
             new com.tomaflow.app.data.repository.ProfileRepository(currentUser.getUid()).getProfile().observe(this, profile -> {
                 if (profile != null) {
                     boolean dark = profile.isDarkMode;
