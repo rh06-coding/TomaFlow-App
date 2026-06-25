@@ -289,13 +289,17 @@
     <string name="day_sun">S</string>
 
     <!-- Premium / VIP -->
-    <string name="premium_title">Upgrade to VIP</string>
+    <string name="premium_title">Upgrade to Premium</string>
+    <string name="premium_badge">Premium</string>
+    <string name="premium_btn_upgrade">Upgrade to VIP</string>
+    <string name="premium_btn_cancel_vip">Cancel VIP</string>
+    <string name="premium_cancel_title">Cancel Subscription</string>
+    <string name="premium_cancel_msg">Are you sure you want to cancel your VIP subscription? You will lose access to premium features immediately.</string>
+    <string name="premium_cancel_confirm">Cancel VIP</string>
     <string name="premium_subtitle">Unlock your full potential</string>
-    <string name="premium_btn_upgrade">Upgrade Now</string>
     <string name="premium_btn_later">Maybe later</string>
     <string name="premium_gate_title">VIP Feature</string>
     <string name="premium_gate_desc">This feature is available for VIP members.</string>
-    <string name="premium_badge">VIP 👑</string>
     <string name="premium_success">You are now a VIP member! 🎉</string>
     <string name="feature_normal_tasks_limit">Free plan: max 5 active tasks</string>
     <string name="premium_feature_1">All background music</string>
