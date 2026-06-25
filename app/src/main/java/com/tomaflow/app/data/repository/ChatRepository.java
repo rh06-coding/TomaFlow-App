@@ -7,6 +7,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.tomaflow.app.data.model.ChatMessage;
+import com.tomaflow.app.utils.ChatIds;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +21,7 @@ public class ChatRepository {
     }
 
     public String getChatId(String uid1, String uid2) {
-        if (uid1.compareTo(uid2) < 0) {
-            return uid1 + "_" + uid2;
-        } else {
-            return uid2 + "_" + uid1;
-        }
+        return ChatIds.chatIdFor(uid1, uid2);
     }
 
     public void sendMessage(String chatId, ChatMessage message) {

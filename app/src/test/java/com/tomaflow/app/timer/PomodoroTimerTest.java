@@ -45,9 +45,9 @@ public class PomodoroTimerTest {
     public void testPhaseTransitions() {
         mTimer.startFocus(10000);
 
-        // Skip Focus -> Short Break
+        // Skip Focus -> Short Break (auto-start off by default -> PAUSED_BREAK)
         mTimer.skip();
-        assertEquals(PomodoroTimer.State.RUNNING_BREAK, mTimer.getStateValue());
+        assertEquals(PomodoroTimer.State.PAUSED_BREAK, mTimer.getStateValue());
         assertEquals(PomodoroTimer.Phase.SHORT_BREAK, mTimer.getPhaseValue());
         assertEquals(1, mTimer.getSessionCount());
 
