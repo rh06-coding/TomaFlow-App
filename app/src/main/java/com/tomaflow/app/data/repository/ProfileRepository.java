@@ -1,15 +1,18 @@
 package com.tomaflow.app.data.repository;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.tomaflow.app.data.model.UserProfile;
+import com.tomaflow.app.utils.FirestoreLiveData;
 
 public class ProfileRepository {
     private final FirebaseFirestore db;
     private final String uid;
+    private FirestoreLiveData<UserProfile> profileLiveData;
 
     public ProfileRepository(String uid) {
         this.db = FirebaseFirestore.getInstance();
@@ -17,19 +20,26 @@ public class ProfileRepository {
     }
 
     public LiveData<UserProfile> getProfile() {
-        MutableLiveData<UserProfile> liveData = new MutableLiveData<>();
-        if (uid == null) return liveData;
-        db.collection("users").document(uid).addSnapshotListener((snapshot, e) -> {
-            if (e != null) {
-                return;
-            }
-            if (snapshot != null && snapshot.exists()) {
-                liveData.setValue(snapshot.toObject(UserProfile.class));
-            } else {
-                liveData.setValue(null);
-            }
-        });
-        return liveData;
+        if (uid == null) return new FirestoreLiveData<UserProfile>() {
+            @Override protected ListenerRegistration listen() { return null; }
+        };
+        if (profileLiveData == null) {
+            DocumentReference ref = db.collection("users").document(uid);
+            profileLiveData = new FirestoreLiveData<UserProfile>() {
+                @Override
+                protected ListenerRegistration listen() {
+                    return ref.addSnapshotListener((snapshot, e) -> {
+                        if (e != null) return;
+                        if (snapshot != null && snapshot.exists()) {
+                            setValue(snapshot.toObject(UserProfile.class));
+                        } else {
+                            setValue(null);
+                        }
+                    });
+                }
+            };
+        }
+        return profileLiveData;
     }
 
     public Task<Void> saveProfile(UserProfile profile) {
