@@ -70,4 +70,12 @@ public class SettingsManager {
     public void setAutoStartBreak(boolean enabled) {
         mPrefs.edit().putBoolean("pref_auto_start_break", enabled).apply();
     }
+
+    public boolean isDarkMode() {
+        return mPrefs.getBoolean("pref_dark_mode", false);
+    }
+
+    public void setDarkMode(boolean enabled) {
+        mPrefs.edit().putBoolean("pref_dark_mode", enabled).apply();
+    }
 }

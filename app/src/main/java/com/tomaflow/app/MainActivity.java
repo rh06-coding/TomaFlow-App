@@ -27,6 +27,23 @@ public class MainActivity extends AppCompatActivity {
 
         mBottomNav = findViewById(R.id.bottom_nav);
         setupBottomNavigation();
+
+        com.google.firebase.auth.FirebaseUser currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            new com.tomaflow.app.data.repository.ProfileRepository(currentUser.getUid()).getProfile().observe(this, profile -> {
+                if (profile != null) {
+                    boolean dark = profile.isDarkMode;
+                    getSharedPreferences("user_theme_prefs", MODE_PRIVATE).edit()
+                            .putBoolean("dark_" + currentUser.getUid(), dark)
+                            .putBoolean("last_dark", dark).apply();
+                    new com.tomaflow.app.timer.SettingsManager(this).setDarkMode(dark);
+                    int expectedMode = dark ? androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES : androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO;
+                    if (androidx.appcompat.app.AppCompatDelegate.getDefaultNightMode() != expectedMode) {
+                        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(expectedMode);
+                    }
+                }
+            });
+        }
     }
 
     private void setupBottomNavigation() {

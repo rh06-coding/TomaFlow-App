@@ -3,7 +3,7 @@
     <string name="app_name">TomaFlow</string>
 
     <!-- Bottom nav -->
-    <string name="nav_focus">FOCUS</string>
+    <string name="nav_focus">POMODORO</string>
     <string name="nav_tasks">TASKS</string>
     <string name="nav_stats">STATS</string>
     <string name="nav_profile">PROFILE</string>
@@ -89,8 +89,8 @@
     <string name="settings_dark_mode">Dark Mode</string>
     <string name="settings_dark_mode_desc">Switch between light and dark themes.</string>
 
-    <string name="nav_rewards">REWARDS</string>
-    <string name="rewards_title">Achievements</string>
+    <string name="nav_rewards">JOURNEY</string>
+    <string name="rewards_title">Journey</string>
     <string name="rewards_section_badges">Badges</string>
     <string name="rewards_view_all">VIEW ALL</string>
 

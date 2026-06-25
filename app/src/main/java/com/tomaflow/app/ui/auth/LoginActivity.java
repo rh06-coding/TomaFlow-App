@@ -186,7 +186,26 @@ public class LoginActivity extends AppCompatActivity {
         com.tomaflow.app.data.repository.NoteRepository noteRepository = new com.tomaflow.app.data.repository.NoteRepository(getApplication());
         noteRepository.syncNotesFromFirestore();
 
-        navigateToMain();
+        String uid = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
+        if (uid != null) {
+            com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document(uid).get()
+                .addOnCompleteListener(task -> {
+                    boolean isDark = false;
+                    if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
+                        Boolean dark = task.getResult().getBoolean("isDarkMode");
+                        if (dark != null) isDark = dark;
+                    }
+                    getSharedPreferences("user_theme_prefs", MODE_PRIVATE).edit()
+                            .putBoolean("dark_" + uid, isDark)
+                            .putBoolean("last_dark", isDark).apply();
+                    new com.tomaflow.app.timer.SettingsManager(this).setDarkMode(isDark);
+                    androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
+                            isDark ? androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES : androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO);
+                    navigateToMain();
+                });
+        } else {
+            navigateToMain();
+        }
     }
 
     private void navigateToMain() {

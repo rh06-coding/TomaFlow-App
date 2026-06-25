@@ -65,6 +65,13 @@
         <item name="itemActiveIndicatorStyle">@style/Widget.Toma.BottomNav.Indicator</item>
         <item name="labelVisibilityMode">auto</item>
         <item name="backgroundTint">@color/toma_surface</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.Toma.BottomNav</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.Toma.BottomNav</item>
+    </style>
+
+    <style name="TextAppearance.Toma.BottomNav" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textSize">10.5sp</item>
+        <item name="android:maxLines">1</item>
     </style>
 
     <style name="Widget.Toma.BottomNav.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">

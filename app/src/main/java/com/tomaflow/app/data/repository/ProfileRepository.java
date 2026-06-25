@@ -60,4 +60,9 @@ public class ProfileRepository {
         if (uid == null) return null;
         return db.collection("users").document(uid).update("isVip", isVip);
     }
+
+    public Task<Void> updateDarkMode(boolean isDarkMode) {
+        if (uid == null) return null;
+        return db.collection("users").document(uid).update("isDarkMode", isDarkMode);
+    }
 }
