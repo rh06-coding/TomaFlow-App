@@ -228,7 +228,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_check"
+                    android:src="@drawable/ic_person"
                     app:tint="@color/toma_primary" />
             </FrameLayout>
             <LinearLayout
