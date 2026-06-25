@@ -11,6 +11,7 @@ public class UserProfile {
     public String name;
     public String dob;
     public String avatarUrl;
+    public boolean isVip;
 
     public UserProfile() {}
 
@@ -22,5 +23,6 @@ public class UserProfile {
         this.name = name;
         this.dob = dob;
         this.avatarUrl = avatarUrl;
+        this.isVip = false;
     }
 }

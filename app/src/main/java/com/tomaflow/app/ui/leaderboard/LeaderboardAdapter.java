@@ -44,6 +44,8 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         } else {
             holder.tvStreak.setVisibility(View.GONE);
         }
+        
+        holder.ivVipCrown.setVisibility(entry.isVip ? View.VISIBLE : View.GONE);
 
         if (entry.userId.equals(currentUserId)) {
             holder.tvIsMe.setVisibility(View.VISIBLE);
@@ -54,6 +56,35 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         }
         
         holder.tvRank.setTextColor(Color.parseColor("#C8324A")); // toma_primary
+
+        // Load avatar
+        if (entry.avatarUrl != null && !entry.avatarUrl.isEmpty()) {
+            holder.ivAvatar.setVisibility(View.VISIBLE);
+            holder.tvInitials.setVisibility(View.GONE);
+            holder.ivDefault.setVisibility(View.GONE);
+            com.tomaflow.app.utils.AvatarHelper.loadAvatar(holder.itemView.getContext(), entry.avatarUrl, holder.ivAvatar);
+        } else {
+            holder.ivAvatar.setVisibility(View.GONE);
+            String initials = "";
+            String name = entry.username;
+            if (name != null) {
+                String[] parts = name.split(" ");
+                if (parts.length > 0 && !parts[0].isEmpty()) {
+                    initials += parts[0].charAt(0);
+                    if (parts.length > 1 && !parts[parts.length - 1].isEmpty()) {
+                        initials += parts[parts.length - 1].charAt(0);
+                    }
+                }
+            }
+            if (!initials.isEmpty()) {
+                holder.tvInitials.setText(initials.toUpperCase());
+                holder.tvInitials.setVisibility(View.VISIBLE);
+                holder.ivDefault.setVisibility(View.GONE);
+            } else {
+                holder.tvInitials.setVisibility(View.GONE);
+                holder.ivDefault.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
@@ -63,6 +94,8 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvRank, tvUsername, tvIsMe, tvStreak, tvPomodoros;
+        android.widget.ImageView ivAvatar, ivDefault, ivVipCrown;
+        TextView tvInitials;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -71,6 +104,10 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
             tvIsMe = itemView.findViewById(R.id.tv_is_me);
             tvStreak = itemView.findViewById(R.id.tv_streak);
             tvPomodoros = itemView.findViewById(R.id.tv_pomodoros);
+            ivAvatar = itemView.findViewById(R.id.iv_avatar);
+            tvInitials = itemView.findViewById(R.id.tv_avatar_initials);
+            ivDefault = itemView.findViewById(R.id.iv_default_avatar);
+            ivVipCrown = itemView.findViewById(R.id.iv_vip_crown);
         }
     }
 }

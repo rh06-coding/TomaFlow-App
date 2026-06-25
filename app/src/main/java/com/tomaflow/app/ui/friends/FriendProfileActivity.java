@@ -77,13 +77,18 @@ public class FriendProfileActivity extends AppCompatActivity {
         profileRepository.getProfile().observe(this, profile -> {
             if (profile != null) {
                 String nameToDisplay = profile.name != null ? profile.name : profile.email;
-                tvName.setText(nameToDisplay != null ? nameToDisplay : "Unknown");
+                tvName.setText(profile.name != null ? profile.name : "Unknown");
                 tvUsername.setText(profile.username != null ? "@" + profile.username : "");
+                
+                ImageView ivVipCrown = findViewById(R.id.iv_vip_crown);
+                if (ivVipCrown != null) {
+                    ivVipCrown.setVisibility(profile.isVip ? View.VISIBLE : View.GONE);
+                }
 
                 if (profile.avatarUrl != null && !profile.avatarUrl.isEmpty()) {
                     ivAvatar.setVisibility(View.VISIBLE);
                     tvInitials.setVisibility(View.GONE);
-                    Glide.with(this).load(profile.avatarUrl).circleCrop().into(ivAvatar);
+                    com.tomaflow.app.utils.AvatarHelper.loadAvatar(this, profile.avatarUrl, ivAvatar);
                 } else {
                     ivAvatar.setVisibility(View.GONE);
                     tvInitials.setVisibility(View.VISIBLE);

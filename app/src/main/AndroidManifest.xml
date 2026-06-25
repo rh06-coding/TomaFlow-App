@@ -90,6 +90,16 @@
             android:screenOrientation="portrait" />
             
         <activity
+            android:name=".ui.premium.PremiumActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.TomaFlow" />
+            
+        <activity
+            android:name=".ui.premium.PremiumProcessingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.TomaFlow" />
+
+        <activity
             android:name=".ui.profile.ProfileActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
@@ -108,9 +118,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity
-            android:name=".ui.premium.PremiumActivity"
-            android:exported="false" />
+
 
         <!-- ── Leaderboard ─────────────────────────────── -->
         <activity
