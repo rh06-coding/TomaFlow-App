@@ -57,6 +57,7 @@ public class FriendRepository {
     }
 
     // 2. Suggest friends via Phone Contacts
+    @SuppressWarnings("unchecked")
     public Task<List<UserProfile>> findFriendsByPhones(List<String> phoneNumbers) {
         if (phoneNumbers == null || phoneNumbers.isEmpty()) {
             return Tasks.forResult(new ArrayList<>());
