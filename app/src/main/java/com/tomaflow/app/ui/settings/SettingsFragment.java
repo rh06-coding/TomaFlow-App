@@ -96,10 +96,20 @@ public class SettingsFragment extends Fragment {
     private void bindDarkMode(View view) {
         MaterialSwitch switchDarkMode = view.findViewById(R.id.switch_dark_mode);
 
-        switchDarkMode.setChecked(mSettingsManager.isDarkMode());
+        com.google.firebase.auth.FirebaseUser user = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+        String uid = user != null ? user.getUid() : "default";
+
+        android.content.SharedPreferences themePrefs = requireContext().getSharedPreferences("user_theme_prefs", android.content.Context.MODE_PRIVATE);
+        boolean isAppDark = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES;
+        boolean isDark = themePrefs.getBoolean("dark_" + uid, mSettingsManager.isDarkMode() || isAppDark);
+        switchDarkMode.setChecked(isDark);
 
         switchDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mSettingsManager.setDarkMode(isChecked);
+            themePrefs.edit().putBoolean("dark_" + uid, isChecked).putBoolean("last_dark", isChecked).apply();
+            if (user != null) {
+                new com.tomaflow.app.data.repository.ProfileRepository(uid).updateDarkMode(isChecked);
+            }
             AppCompatDelegate.setDefaultNightMode(
                     isChecked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
         });

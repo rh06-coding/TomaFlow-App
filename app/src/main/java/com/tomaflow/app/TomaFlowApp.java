@@ -1,15 +1,16 @@
 package com.tomaflow.app;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import androidx.appcompat.app.AppCompatDelegate;
-import com.tomaflow.app.timer.SettingsManager;
 
 public class TomaFlowApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        SettingsManager settingsManager = new SettingsManager(this);
+        SharedPreferences themePrefs = getSharedPreferences("user_theme_prefs", MODE_PRIVATE);
+        boolean isDark = themePrefs.getBoolean("last_dark", false);
         AppCompatDelegate.setDefaultNightMode(
-                settingsManager.isDarkMode() ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                isDark ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
     }
 }

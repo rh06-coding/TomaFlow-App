@@ -139,6 +139,7 @@ public class ProfileFragment extends Fragment {
                 requireContext().getSharedPreferences("tomaflow_subscription", android.content.Context.MODE_PRIVATE).edit().clear().apply();
                 requireContext().getSharedPreferences("rewards_prefs", android.content.Context.MODE_PRIVATE).edit().clear().apply();
                 requireContext().getSharedPreferences(com.tomaflow.app.constants.AppConstants.PREFERENCES_FILE_NAME, android.content.Context.MODE_PRIVATE).edit().clear().apply();
+                requireContext().getSharedPreferences("user_theme_prefs", android.content.Context.MODE_PRIVATE).edit().putBoolean("last_dark", false).apply();
                 
                 // Clear Unread Badge Manager
                 com.tomaflow.app.utils.UnreadBadgeManager.getInstance().clear();
@@ -146,6 +147,7 @@ public class ProfileFragment extends Fragment {
                 auth.signOut();
                 
                 requireActivity().runOnUiThread(() -> {
+                    androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO);
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
