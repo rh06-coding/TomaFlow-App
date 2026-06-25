@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.SetOptions;
 import com.tomaflow.app.data.model.UserProfile;
 import com.tomaflow.app.utils.FirestoreLiveData;
 
@@ -44,7 +45,12 @@ public class ProfileRepository {
 
     public Task<Void> saveProfile(UserProfile profile) {
         if (uid == null) return null;
-        return db.collection("users").document(uid).set(profile);
+        // merge() so we don't overwrite fields the caller didn't set. The 7-arg
+        // UserProfile constructor defaults isVip/isDarkMode=false; without merge a
+        // save from EditProfileActivity would clobber the user's dark-mode and VIP
+        // flags (the dark-mode clobber also caused a dark->light flash on save via
+        // MainActivity's profile observer).
+        return db.collection("users").document(uid).set(profile, SetOptions.merge());
     }
     
     public Task<Boolean> isUsernameUnique(String username) {
