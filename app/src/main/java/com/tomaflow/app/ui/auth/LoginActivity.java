@@ -170,51 +170,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goToMain() {
-        // Kéo task từ Firestore về Room sau khi user đã đăng nhập.
-        com.tomaflow.app.data.repository.TaskRepository taskRepository = new com.tomaflow.app.data.repository.TaskRepository(getApplication());
-        taskRepository.syncTasksFromFirestore();
-
-        // Kéo lịch sử Pomodoro từ Firestore về Room
-        com.tomaflow.app.data.repository.SessionRepository sessionRepository = new com.tomaflow.app.data.repository.SessionRepository(getApplication());
-        sessionRepository.syncSessionsFromFirestore();
-
-        // Kéo huy hiệu từ Firestore về SharedPreferences
-        com.tomaflow.app.data.repository.RewardsRepository rewardsRepository = new com.tomaflow.app.data.repository.RewardsRepository(getApplication());
-        rewardsRepository.syncRewardsFromFirestore();
-
-        // Kéo nhật ký từ Firestore về Room
-        com.tomaflow.app.data.repository.NoteRepository noteRepository = new com.tomaflow.app.data.repository.NoteRepository(getApplication());
-        noteRepository.syncNotesFromFirestore();
-
-        String uid = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
-        if (uid != null) {
-            android.content.SharedPreferences themePrefs = getSharedPreferences("user_theme_prefs", MODE_PRIVATE);
-            com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document(uid).get()
-                .addOnCompleteListener(task -> {
-                    // Only trust/refresh the cache when the Firestore fetch actually
-                    // succeeded. Previously a failed/offline fetch fell through to
-                    // isDark=false and overwrote the cached pref, snapping the user
-                    // to light mode and clobbering their last known theme.
-                    boolean fetched = task.isSuccessful() && task.getResult() != null && task.getResult().exists();
-                    boolean isDark;
-                    if (fetched) {
-                        Boolean dark = task.getResult().getBoolean("isDarkMode");
-                        isDark = dark != null && dark;
-                        themePrefs.edit()
-                                .putBoolean("dark_" + uid, isDark)
-                                .putBoolean("last_dark", isDark).apply();
-                    } else {
-                        // Offline/error: keep the last known theme instead of forcing light.
-                        isDark = themePrefs.getBoolean("dark_" + uid, themePrefs.getBoolean("last_dark", false));
-                    }
-                    new com.tomaflow.app.timer.SettingsManager(this).setDarkMode(isDark);
-                    androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
-                            isDark ? androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES : androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO);
-                    navigateToMain();
-                });
-        } else {
-            navigateToMain();
-        }
+        // Sync + theme orchestration lives in SyncManager so it can also run on a
+        // cold start that skips LoginActivity (see MainActivity.onCreate).
+        new com.tomaflow.app.data.SyncManager(getApplication()).syncAllOnLogin(this::navigateToMain);
     }
 
     private void navigateToMain() {

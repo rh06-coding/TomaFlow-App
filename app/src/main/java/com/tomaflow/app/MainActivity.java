@@ -30,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
 
         com.google.firebase.auth.FirebaseUser currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
+            // Cold start that skipped LoginActivity still needs local data synced from
+            // Firestore; LoginActivity handles this on the post-login path.
+            new com.tomaflow.app.data.SyncManager(getApplication()).syncDataOnly();
             // (Re)start unread-badge tracking — idempotent, covers cold start and re-login.
             com.tomaflow.app.utils.UnreadBadgeManager.getInstance().start();
             new com.tomaflow.app.data.repository.ProfileRepository(currentUser.getUid()).getProfile().observe(this, profile -> {
