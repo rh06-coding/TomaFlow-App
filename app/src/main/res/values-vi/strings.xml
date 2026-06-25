@@ -3,7 +3,7 @@
     <string name="app_name">TomaFlow</string>
 
     <!-- Bottom nav -->
-    <string name="nav_focus">TẬP TRUNG</string>
+    <string name="nav_focus">POMODORO</string>
     <string name="nav_tasks">CÔNG VIỆC</string>
     <string name="nav_stats">THỐNG KÊ</string>
     <string name="nav_profile">HỒ SƠ</string>
@@ -89,8 +89,8 @@
     <string name="settings_dark_mode">Chế độ Tối</string>
     <string name="settings_dark_mode_desc">Chuyển đổi giữa giao diện sáng và tối.</string>
 
-    <string name="nav_rewards">THƯỞNG</string>
-    <string name="rewards_title">Thành tựu</string>
+    <string name="nav_rewards">HÀNH TRÌNH</string>
+    <string name="rewards_title">Hành trình</string>
     <string name="rewards_section_badges">Huy hiệu</string>
     <string name="rewards_view_all">XEM TẤT CẢ</string>
 

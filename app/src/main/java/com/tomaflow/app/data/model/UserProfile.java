@@ -12,6 +12,7 @@ public class UserProfile {
     public String dob;
     public String avatarUrl;
     public boolean isVip;
+    public boolean isDarkMode;
 
     public UserProfile() {}
 
@@ -24,5 +25,6 @@ public class UserProfile {
         this.dob = dob;
         this.avatarUrl = avatarUrl;
         this.isVip = false;
+        this.isDarkMode = false;
     }
 }

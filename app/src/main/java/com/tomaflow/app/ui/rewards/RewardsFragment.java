@@ -167,5 +167,26 @@ public class RewardsFragment extends Fragment {
                     }
                 });
         }
+
+        View cardLeaderboard = view.findViewById(R.id.card_leaderboard);
+        if (cardLeaderboard != null) {
+            cardLeaderboard.setOnClickListener(v -> {
+                startActivity(new android.content.Intent(requireContext(), com.tomaflow.app.ui.leaderboard.LeaderboardActivity.class));
+            });
+        }
+        
+        View cardFriends = view.findViewById(R.id.card_friends);
+        if (cardFriends != null) {
+            cardFriends.setOnClickListener(v -> {
+                startActivity(new android.content.Intent(requireContext(), com.tomaflow.app.ui.friends.FriendsActivity.class));
+            });
+            
+            View badgeUnread = view.findViewById(R.id.badge_friends_unread);
+            if (badgeUnread != null) {
+                com.tomaflow.app.utils.UnreadBadgeManager.getInstance().getTotalUnreadCount().observe(getViewLifecycleOwner(), count -> {
+                    badgeUnread.setVisibility((count != null && count > 0) ? View.VISIBLE : View.GONE);
+                });
+            }
+        }
     }
 }

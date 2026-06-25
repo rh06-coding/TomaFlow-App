@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Brand -->
-    <color name="toma_primary">#FF4D6A</color> <!-- Lighter red for dark mode -->
-    <color name="toma_primary_dark">#D62846</color>
-    <color name="toma_primary_soft">#3D1B1F</color> <!-- Deep muted red/brown -->
+    <color name="toma_primary">#DF7280</color> <!-- Softer rosy tomato coral -->
+    <color name="toma_primary_dark">#BD4F5F</color>
+    <color name="toma_primary_soft">#3D222A</color> <!-- Soft dark reddish card background -->
     <color name="toma_on_primary">#FFFFFF</color>
 
     <!-- Surfaces -->
-    <color name="toma_background">#0F0F14</color> <!-- Deep navy/black -->
-    <color name="toma_bg">#0F0F14</color> <!-- Alias for toma_background -->
-    <color name="toma_surface">#1C1C26</color> <!-- Dark gray/blue for cards -->
-    <color name="toma_surface_muted">#252533</color>
+    <color name="toma_background">#1C1C24</color> <!-- Soothing dark charcoal gray (đen xám nhẹ ban đầu) -->
+    <color name="toma_bg">#1C1C24</color>
+    <color name="toma_surface">#272732</color> <!-- Elevated soft slate gray for cards -->
+    <color name="toma_surface_muted">#323240</color>
 
     <!-- Text -->
-    <color name="toma_text">#E2E2E9</color> <!-- Near white -->
-    <color name="toma_text_muted">#9A9AAB</color> <!-- Medium gray -->
+    <color name="toma_text">#D4D4DE</color> <!-- Soft off-white text -->
+    <color name="toma_text_muted">#8E8EA0</color> <!-- Balanced muted text -->
 
     <!-- Accents -->
-    <color name="toma_success">#52C485</color>
-    <color name="toma_success_soft">#1B2E24</color>
-    <color name="toma_info">#60A5FA</color>
-    <color name="toma_info_soft">#1E293B</color>
+    <color name="toma_success">#48B878</color>
+    <color name="toma_success_soft">#1C3026</color>
+    <color name="toma_info">#5B9AEC</color>
+    <color name="toma_info_soft">#1E2A3C</color>
 
-    <color name="toma_divider">#2A2A3A</color>
-    <color name="toma_warning">#F59E0B</color>
-    <color name="toma_error">#EF4444</color>
+    <color name="toma_divider">#363646</color>
+    <color name="toma_warning">#EAA020</color>
+    <color name="toma_error">#E44C4C</color>
     <color name="color_primary">@color/toma_primary</color>
     <color name="color_nav_active">@color/toma_primary</color>
     <color name="color_nav_inactive">@color/toma_text_muted</color>
