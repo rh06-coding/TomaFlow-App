@@ -166,6 +166,16 @@
                 android:text="@string/profile_change_password"
                 android:textColor="@color/toma_primary" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_cancel_vip"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/premium_btn_cancel_vip"
+                android:textColor="@color/toma_error"
+                android:visibility="gone" />
+
         </LinearLayout>
     </ScrollView>
 
