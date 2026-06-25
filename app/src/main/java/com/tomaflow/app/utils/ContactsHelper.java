@@ -12,6 +12,21 @@ import java.util.Set;
 
 public class ContactsHelper {
 
+    /**
+     * Chuẩn hoá số điện thoại: loại bỏ mọi ký tự không phải chữ số hoặc dấu "+",
+     * trả về chuỗi rỗng nếu kết quả không còn ký tự nào.
+     *
+     * Được trích xuất thành hàm tĩnh (static) riêng để có thể kiểm thử đơn vị (unit-test)
+     * mà không cần {@link Context} hay con trỏ (Cursor) danh bạ.
+     */
+    public static String normalizePhone(String phone) {
+        if (phone == null) {
+            return "";
+        }
+        String normalized = phone.replaceAll("[^0-9+]", "");
+        return normalized;
+    }
+
     @SuppressLint("Range")
     public static List<String> getPhoneNumbers(Context context) {
         Set<String> phoneNumbers = new HashSet<>();
@@ -23,12 +38,9 @@ public class ContactsHelper {
             if (cursor != null) {
                 while (cursor.moveToNext()) {
                     String phone = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    if (phone != null) {
-                        // Normalize phone number (remove spaces, dashes, etc.)
-                        phone = phone.replaceAll("[^0-9+]", "");
-                        if (!phone.isEmpty()) {
-                            phoneNumbers.add(phone);
-                        }
+                    String normalized = normalizePhone(phone);
+                    if (!normalized.isEmpty()) {
+                        phoneNumbers.add(normalized);
                     }
                 }
             }

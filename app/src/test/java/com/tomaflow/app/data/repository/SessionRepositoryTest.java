@@ -5,12 +5,15 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.app.Application;
+import android.content.Context;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.test.core.app.ApplicationProvider;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.tomaflow.app.data.db.dao.SessionDao;
 import com.tomaflow.app.data.db.entity.SessionEntity;
 
@@ -36,9 +39,26 @@ public class SessionRepositoryTest {
     private SessionRepository repository;
     private Application application;
 
+    /**
+     * Khởi tạo FirebaseApp giả (dummy) trước khi dựng SessionRepository — constructor
+     * của nó gọi FirebaseFirestore.getInstance(). Robolectric đặt lại application giữa
+     * các test nên phải khởi tạo lại mỗi lần. Không có user nào đăng nhập nên không
+     * chạm tới mạng.
+     */
+    private static void ensureFirebaseInitialized(Context ctx) {
+        if (FirebaseApp.getApps(ctx).isEmpty()) {
+            FirebaseApp.initializeApp(ctx, new FirebaseOptions.Builder()
+                    .setApplicationId("tomaflow-test")
+                    .setProjectId("tomaflow-test")
+                    .setApiKey("fake-api-key-for-unit-tests")
+                    .build());
+        }
+    }
+
     @Before
     public void setUp() {
         application = ApplicationProvider.getApplicationContext();
+        ensureFirebaseInitialized(application);
         repository = new SessionRepository(application);
     }
 

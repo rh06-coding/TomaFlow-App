@@ -10,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.tomaflow.app.data.model.FriendConnection;
 import com.tomaflow.app.data.model.UserProfile;
+import com.tomaflow.app.utils.ConnectionIds;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,10 +100,8 @@ public class FriendRepository {
 
     // 3. Send Friend Request
     public Task<Void> sendFriendRequest(String targetUserId) {
-        String connectionId = currentUserId.compareTo(targetUserId) < 0 
-                ? currentUserId + "_" + targetUserId 
-                : targetUserId + "_" + currentUserId;
-                
+        String connectionId = ConnectionIds.idFor(currentUserId, targetUserId);
+
         FriendConnection conn = new FriendConnection(connectionId, currentUserId, targetUserId, "PENDING");
         return db.collection("friend_connections").document(connectionId).set(conn);
     }

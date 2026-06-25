@@ -2,7 +2,13 @@
 
 plugins {
     id 'com.android.application'
-    id 'com.google.gms.google-services'
+}
+
+// google-services.json chứa cấu hình Firebase thật và bị git-ignore để không đẩy lên remote.
+// Trên CI (checkout mới) file này vắng mặt, nên chỉ áp dụng plugin khi file tồn tại;
+// nhờ đó CI vẫn build và chạy unit test được mà không cần Firebase.
+if (file('google-services.json').exists()) {
+    apply plugin: 'com.google.gms.google-services'
 }
 
 android {
@@ -83,6 +89,7 @@ dependencies {
     testImplementation         'org.robolectric:robolectric:4.11.1'
     testImplementation         'androidx.test:core:1.5.0'
     testImplementation         'androidx.arch.core:core-testing:2.2.0'
+    testImplementation         'androidx.room:room-testing:2.6.1'
     androidTestImplementation  'androidx.test.ext:junit:1.2.1'
     androidTestImplementation  'androidx.test.espresso:espresso-core:3.6.1'
 

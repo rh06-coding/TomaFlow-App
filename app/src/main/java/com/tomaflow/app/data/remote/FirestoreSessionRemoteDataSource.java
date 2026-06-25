@@ -22,10 +22,18 @@ import java.util.Map;
 public class FirestoreSessionRemoteDataSource {
 
     private static final String TAG = "FirestoreSession";
-    private final FirebaseFirestore firestore;
+    private FirebaseFirestore firestore;
 
     public FirestoreSessionRemoteDataSource() {
-        firestore = FirebaseFirestore.getInstance();
+        // Lấy instance Firestore lười (lazy) — không gọi trong constructor để
+        // SessionRepository có thể dựng trong unit test mà không cần Firestore component.
+    }
+
+    private FirebaseFirestore db() {
+        if (firestore == null) {
+            firestore = FirebaseFirestore.getInstance();
+        }
+        return firestore;
     }
 
     public interface SessionFetchCallback {
@@ -50,7 +58,7 @@ public class FirestoreSessionRemoteDataSource {
         data.put("duration", session.duration);
         data.put("status", session.status);
 
-        firestore.collection("users")
+        db().collection("users")
                 .document(userId)
                 .collection("sessions")
                 .document(docId)
@@ -64,7 +72,7 @@ public class FirestoreSessionRemoteDataSource {
             return;
         }
 
-        firestore.collection("users")
+        db().collection("users")
                 .document(userId)
                 .collection("sessions")
                 .get()
