@@ -24,14 +24,6 @@ import com.tomaflow.app.utils.NotificationHelper;
 
 /**
  * Foreground Service chạy Pomodoro ở chế độ nền.
- *
- * CÁC QUYẾT ĐỊNH THIẾT KẾ QUAN TRỌNG để tránh rè/nhiễu âm thanh:
- * 1. Timer ticks chạy trên một HandlerThread ĐỘC LẬP ("TimerThread"), KHÔNG dùng luồng chính.
- *    Điều này ngăn chặn bộ đếm thời gian tranh giành tài nguyên với các callback âm thanh của MediaPlayer.
- * 2. Các callback cập nhật giao diện (UI) được chuyển về luồng CHÍNH thông qua mMainHandler.
- * 3. Thông báo (Notification) chỉ được cập nhật tối đa 5 giây một lần (NOTIF_UPDATE_INTERVAL_MS).
- *    Việc gọi NotificationManager.notify() mỗi giây sẽ làm quá tải hệ thống và gây giật lag âm thanh.
- * 4. startForeground() chỉ được gọi CHÍNH XÁC MỘT LẦN cho mỗi phiên hoạt động.
  */
 public class TimerEngineService extends Service {
 
@@ -50,7 +42,6 @@ public class TimerEngineService extends Service {
     private NotificationHelper   mNotificationHelper;
     private NotificationManager  mNotificationManager;
     private SessionRepository    mSessionRepository;
-    private com.tomaflow.app.data.repository.RewardsRepository mRewardsRepository;
     private PowerManager.WakeLock mWakeLock;
 
     /** Task attached to the current focus run (plumbed from the UI via COMMAND_START).
@@ -122,7 +113,6 @@ public class TimerEngineService extends Service {
         mNotificationHelper = new NotificationHelper(this);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mSessionRepository = new SessionRepository(getApplication());
-        mRewardsRepository = new com.tomaflow.app.data.repository.RewardsRepository(getApplication());
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TomaFlow:TimerWakeLock");
@@ -347,10 +337,6 @@ public class TimerEngineService extends Service {
                 mSessionRepository.insert(session);
                 mFocusStartEpoch = 0L;
 
-                // Badges — run on the timer thread, not the main thread, since
-                // unlockBadge does a Firestore write and we don't want UI jank.
-                mTimerHandler.post(() -> checkAndUnlockBadges(sessionCount));
-
                 // Break starts automatically — re-kick the tick loop
                 if (mTimer.isRunning()) scheduleTick();
             }
@@ -461,16 +447,5 @@ public class TimerEngineService extends Service {
                     mSettingsManager.getLongBreakDurationMs()
             );
         }
-    }
-
-    // ── Badges ────────────────────────────────────────────────────────────────
-
-    private void checkAndUnlockBadges(int sessionCount) {
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        int hour = cal.get(java.util.Calendar.HOUR_OF_DAY);
-
-        if (hour < 7)        mRewardsRepository.unlockBadge("earlybird");
-        else if (hour >= 22) mRewardsRepository.unlockBadge("nightowl");
-        if (sessionCount >= 4) mRewardsRepository.unlockBadge("marathon");
     }
 }

@@ -36,7 +36,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         
         holder.tvRank.setText(entry.rank);
         holder.tvUsername.setText(entry.username);
-        holder.tvPomodoros.setText(String.valueOf(entry.pomodoros));
+        holder.tvLevel.setText(holder.itemView.getContext().getString(R.string.rewards_level, entry.level));
         
         if (entry.streak > 0) {
             holder.tvStreak.setText(holder.itemView.getContext().getString(R.string.leaderboard_streak, entry.streak));
@@ -93,7 +93,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvRank, tvUsername, tvIsMe, tvStreak, tvPomodoros;
+        TextView tvRank, tvUsername, tvIsMe, tvLevel, tvStreak;
         android.widget.ImageView ivAvatar, ivDefault, ivVipCrown;
         TextView tvInitials;
 
@@ -102,8 +102,8 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
             tvRank = itemView.findViewById(R.id.tv_rank);
             tvUsername = itemView.findViewById(R.id.tv_username);
             tvIsMe = itemView.findViewById(R.id.tv_is_me);
+            tvLevel = itemView.findViewById(R.id.tv_level);
             tvStreak = itemView.findViewById(R.id.tv_streak);
-            tvPomodoros = itemView.findViewById(R.id.tv_pomodoros);
             ivAvatar = itemView.findViewById(R.id.iv_avatar);
             tvInitials = itemView.findViewById(R.id.tv_avatar_initials);
             ivDefault = itemView.findViewById(R.id.iv_default_avatar);

@@ -15,4 +15,18 @@
     <path
         android:fillColor="#FF3FA66B"
         android:pathData="M54,28 C54,22 56,18 54,16 C52,22 54,24 54,28 Z" />
+    <!-- Clock hour markers (12, 3, 6, 9) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,34.2 a1.8,1.8 0 1,1 0,3.6 a1.8,1.8 0 1,1 0,-3.6Z M54,74.2 a1.8,1.8 0 1,1 0,3.6 a1.8,1.8 0 1,1 0,-3.6Z M74,54.2 a1.8,1.8 0 1,1 0,3.6 a1.8,1.8 0 1,1 0,-3.6Z M34,54.2 a1.8,1.8 0 1,1 0,3.6 a1.8,1.8 0 1,1 0,-3.6Z" />
+    <!-- Clock hands (10:10) -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.6"
+        android:strokeLineCap="round"
+        android:pathData="M54,56 L44,45 M54,56 L68,42" />
+    <!-- Center cap dot -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,53.8 a2.2,2.2 0 1,1 0,4.4 a2.2,2.2 0 1,1 0,-4.4Z" />
 </vector>

@@ -91,6 +91,15 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tv_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            tools:text="Level 1"
+            android:textColor="@color/toma_text_muted"
+            android:textSize="13sp" />
+
+        <TextView
             android:id="@+id/tv_streak"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -98,30 +107,6 @@
             tools:text="🔥 3 days streak"
             android:textColor="@color/toma_text_muted"
             android:textSize="13sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="end">
-
-        <TextView
-            android:id="@+id/tv_pomodoros"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="14"
-            android:textColor="@color/toma_text"
-            android:textStyle="bold"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/tv_pomodoros_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/leaderboard_pomodoros"
-            android:textColor="@color/toma_primary"
-            android:textSize="12sp" />
     </LinearLayout>
 
 </LinearLayout>

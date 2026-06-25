@@ -139,23 +139,7 @@
     <string name="music_pick_device_desc">Browse and select an audio file</string>
     <string name="music_section_selected">SELECTED TRACK</string>
     <string name="music_from_device">From device</string>
-    <!-- Badges -->
-    <string name="badge_newbie_title">First Step</string>
-    <string name="badge_newbie_desc">Complete 1 Pomodoro</string>
-    <string name="badge_hardworker_title">Hard Worker</string>
-    <string name="badge_hardworker_desc">Complete 10 Pomodoros</string>
-    <string name="badge_superman_title">Superman</string>
-    <string name="badge_superman_desc">Complete 50 Pomodoros</string>
-    <string name="badge_consistent_title">Consistent</string>
-    <string name="badge_consistent_desc">Focus 7 days in a row</string>
-    <string name="badge_marathon_title">Marathon</string>
-    <string name="badge_marathon_desc">4 cycles in one day</string>
-    <string name="badge_perfect_title">Perfect</string>
-    <string name="badge_perfect_desc">Complete 5 tasks</string>
-    <string name="badge_nightowl_title">Night Owl</string>
-    <string name="badge_nightowl_desc">Focus after 22:00</string>
-    <string name="badge_earlybird_title">Early Bird</string>
-    <string name="badge_earlybird_desc">Focus before 07:00</string>
+
     <!-- Focus extra strings -->
     <string name="focus_select_music_first">Please select a track first</string>
     <string name="focus_task_default_sub">Focusing now</string>
