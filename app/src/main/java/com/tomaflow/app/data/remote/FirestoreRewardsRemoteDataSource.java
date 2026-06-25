@@ -1,6 +1,7 @@
 package com.tomaflow.app.data.remote;
 
 import android.util.Log;
+import com.tomaflow.app.utils.TomaFlowLog;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -41,7 +42,7 @@ public class FirestoreRewardsRemoteDataSource {
                 .collection("rewards")
                 .document("badges")
                 .set(data, SetOptions.merge())
-                .addOnSuccessListener(unused -> Log.d(TAG, "Update badge success: " + badgeKey))
+                .addOnSuccessListener(unused -> TomaFlowLog.d(TAG, "Update badge success: " + badgeKey))
                 .addOnFailureListener(e -> Log.e(TAG, "Update badge failed: " + badgeKey, e));
     }
 
@@ -62,7 +63,7 @@ public class FirestoreRewardsRemoteDataSource {
                             }
                         }
                     }
-                    Log.d(TAG, "Fetch badges success: " + badges.size());
+                    TomaFlowLog.d(TAG, "Fetch badges success: " + badges.size());
                     callback.onSuccess(badges);
                 })
                 .addOnFailureListener(e -> {

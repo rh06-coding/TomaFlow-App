@@ -44,6 +44,7 @@ android {
 
     buildFeatures {
         viewBinding true   // Safer view access; eliminates all findViewById calls once adopted
+        buildConfig true   // Generate BuildConfig so release/debug flags (e.g. DEBUG) are available
     }
 
     testOptions {

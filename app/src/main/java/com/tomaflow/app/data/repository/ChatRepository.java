@@ -32,7 +32,8 @@ public class ChatRepository {
         CollectionReference messagesRef = db.collection("chats").document(chatId).collection("messages");
         String messageId = messagesRef.document().getId();
         message.id = messageId;
-        messagesRef.document(messageId).set(message);
+        messagesRef.document(messageId).set(message)
+                .addOnFailureListener(e -> com.tomaflow.app.utils.TomaFlowLog.e("ChatRepository", "sendMessage failed for chat " + chatId, e));
     }
 
     public LiveData<List<ChatMessage>> getMessages(String chatId) {
@@ -73,7 +74,9 @@ public class ChatRepository {
                     for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
                         batch.update(doc.getReference(), "isRead", true);
                     }
-                    batch.commit();
-                });
+                    batch.commit()
+                            .addOnFailureListener(e -> com.tomaflow.app.utils.TomaFlowLog.e("ChatRepository", "markMessagesAsRead batch commit failed for chat " + chatId, e));
+                })
+                .addOnFailureListener(e -> com.tomaflow.app.utils.TomaFlowLog.e("ChatRepository", "markMessagesAsRead query failed for chat " + chatId, e));
     }
 }

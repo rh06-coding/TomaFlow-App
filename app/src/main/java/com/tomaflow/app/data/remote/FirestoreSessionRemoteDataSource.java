@@ -1,6 +1,7 @@
 package com.tomaflow.app.data.remote;
 
 import android.util.Log;
+import com.tomaflow.app.utils.TomaFlowLog;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -63,7 +64,7 @@ public class FirestoreSessionRemoteDataSource {
                 .collection("sessions")
                 .document(docId)
                 .set(data, SetOptions.merge())
-                .addOnSuccessListener(unused -> Log.d(TAG, "Upload session success: " + docId))
+                .addOnSuccessListener(unused -> TomaFlowLog.d(TAG, "Upload session success: " + docId))
                 .addOnFailureListener(e -> Log.e(TAG, "Upload session failed: " + docId, e));
     }
 
@@ -97,7 +98,7 @@ public class FirestoreSessionRemoteDataSource {
                         sessions.add(session);
                     }
 
-                    Log.d(TAG, "Fetch sessions success: " + sessions.size());
+                    TomaFlowLog.d(TAG, "Fetch sessions success: " + sessions.size());
                     callback.onSuccess(sessions);
                 })
                 .addOnFailureListener(e -> {

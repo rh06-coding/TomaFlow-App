@@ -50,6 +50,7 @@ public class TimerEngineService extends Service {
     private NotificationHelper   mNotificationHelper;
     private NotificationManager  mNotificationManager;
     private SessionRepository    mSessionRepository;
+    private com.tomaflow.app.data.repository.RewardsRepository mRewardsRepository;
     private PowerManager.WakeLock mWakeLock;
 
     /** Task attached to the current focus run (plumbed from the UI via COMMAND_START).
@@ -121,6 +122,7 @@ public class TimerEngineService extends Service {
         mNotificationHelper = new NotificationHelper(this);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mSessionRepository = new SessionRepository(getApplication());
+        mRewardsRepository = new com.tomaflow.app.data.repository.RewardsRepository(getApplication());
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TomaFlow:TimerWakeLock");
@@ -345,8 +347,9 @@ public class TimerEngineService extends Service {
                 mSessionRepository.insert(session);
                 mFocusStartEpoch = 0L;
 
-                // Badges
-                mMainHandler.post(() -> checkAndUnlockBadges(sessionCount));
+                // Badges — run on the timer thread, not the main thread, since
+                // unlockBadge does a Firestore write and we don't want UI jank.
+                mTimerHandler.post(() -> checkAndUnlockBadges(sessionCount));
 
                 // Break starts automatically — re-kick the tick loop
                 if (mTimer.isRunning()) scheduleTick();
@@ -463,14 +466,11 @@ public class TimerEngineService extends Service {
     // ── Badges ────────────────────────────────────────────────────────────────
 
     private void checkAndUnlockBadges(int sessionCount) {
-        com.tomaflow.app.data.repository.RewardsRepository rewardsRepo =
-                new com.tomaflow.app.data.repository.RewardsRepository(getApplication());
-
         java.util.Calendar cal = java.util.Calendar.getInstance();
         int hour = cal.get(java.util.Calendar.HOUR_OF_DAY);
 
-        if (hour < 7)        rewardsRepo.unlockBadge("earlybird");
-        else if (hour >= 22) rewardsRepo.unlockBadge("nightowl");
-        if (sessionCount >= 4) rewardsRepo.unlockBadge("marathon");
+        if (hour < 7)        mRewardsRepository.unlockBadge("earlybird");
+        else if (hour >= 22) mRewardsRepository.unlockBadge("nightowl");
+        if (sessionCount >= 4) mRewardsRepository.unlockBadge("marathon");
     }
 }

@@ -1,6 +1,7 @@
 package com.tomaflow.app.data.repository;
 
 import android.app.Application;
+import com.tomaflow.app.utils.TomaFlowLog;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -206,13 +207,17 @@ public class TaskRepository {
         String userId = mUserRepository.getCurrentUserId();
 
         if (userId == null || userId.isEmpty()) {
-            Log.d(TAG, "Skip sync because user is not logged in");
+            TomaFlowLog.e(TAG, "Skip sync because user is not logged in");
             return;
         }
 
         mRemoteDataSource.fetchTasks(userId, new FirestoreTaskRemoteDataSource.TaskFetchCallback() {
             @Override
             public void onSuccess(List<TaskEntity> tasks) {
+                // Guard against wiping local tasks when the remote returns an empty
+                // list — that usually means an offline/partial fetch, not "the user has
+                // no tasks". Delete-then-replace only when we actually got data.
+                if (tasks == null || tasks.isEmpty()) return;
                 mExecutor.execute(() -> {
                     mTaskDao.deleteAll();
                     for (TaskEntity task : tasks) {
@@ -232,7 +237,7 @@ public class TaskRepository {
                         mTaskDao.insert(task);
                     }
 
-                    Log.d(TAG, "Synced tasks from Firestore to Room: " + tasks.size());
+                    TomaFlowLog.d(TAG, "Synced tasks from Firestore to Room: " + tasks.size());
                 });
             }
 

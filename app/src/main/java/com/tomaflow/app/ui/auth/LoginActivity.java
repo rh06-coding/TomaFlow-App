@@ -127,10 +127,11 @@ public class LoginActivity extends AppCompatActivity {
                             if (snapshotTask.isSuccessful() && snapshotTask.getResult() != null && !snapshotTask.getResult().exists()) {
                                 String email = mAuth.getCurrentUser().getEmail();
                                 String name = mAuth.getCurrentUser().getDisplayName();
-                                String generatedUsername = "user_" + uid.substring(0, 6).toLowerCase();
+                                String generatedUsername = "user_" + uid.substring(0, Math.min(6, uid.length())).toLowerCase();
                                 com.tomaflow.app.data.model.UserProfile userProfile = new com.tomaflow.app.data.model.UserProfile(
                                         uid, email, "", generatedUsername, name, "", "");
-                                com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document(uid).set(userProfile);
+                                com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document(uid).set(userProfile)
+                                        .addOnFailureListener(e -> com.tomaflow.app.utils.TomaFlowLog.e("LoginActivity", "Failed to create user profile doc", e));
                             }
                             goToMain();
                         });
