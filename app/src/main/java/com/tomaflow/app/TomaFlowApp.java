@@ -2,12 +2,14 @@ package com.tomaflow.app;
 
 import android.app.Application;
 import androidx.appcompat.app.AppCompatDelegate;
+import com.tomaflow.app.timer.SettingsManager;
 
 public class TomaFlowApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        // Ép ứng dụng luôn chạy ở chế độ giao diện sáng (Light Mode), bất kể cài đặt của hệ thống.
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        SettingsManager settingsManager = new SettingsManager(this);
+        AppCompatDelegate.setDefaultNightMode(
+                settingsManager.isDarkMode() ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
     }
 }

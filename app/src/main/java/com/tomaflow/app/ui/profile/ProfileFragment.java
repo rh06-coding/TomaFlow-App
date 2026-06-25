@@ -115,80 +115,16 @@ public class ProfileFragment extends Fragment {
             });
         }
 
-        View cardLeaderboard = view.findViewById(R.id.card_leaderboard);
-        if (cardLeaderboard != null) {
-            cardLeaderboard.setOnClickListener(v -> {
-                startActivity(new Intent(requireContext(), com.tomaflow.app.ui.leaderboard.LeaderboardActivity.class));
-            });
+        if (user != null) {
+            TextView tvFriendsCount = view.findViewById(R.id.tv_profile_friends_count);
+            new com.tomaflow.app.data.repository.FriendRepository(user.getUid())
+                    .getFriends()
+                    .observe(getViewLifecycleOwner(), friends -> {
+                        if (tvFriendsCount != null) {
+                            tvFriendsCount.setText(String.valueOf(friends != null ? friends.size() : 0));
+                        }
+                    });
         }
-        
-        View cardFriends = view.findViewById(R.id.card_friends);
-        if (cardFriends != null) {
-            cardFriends.setOnClickListener(v -> {
-                startActivity(new Intent(requireContext(), com.tomaflow.app.ui.friends.FriendsActivity.class));
-            });
-            
-            View badgeUnread = view.findViewById(R.id.badge_friends_unread);
-            if (badgeUnread != null) {
-                com.tomaflow.app.utils.UnreadBadgeManager.getInstance().getTotalUnreadCount().observe(getViewLifecycleOwner(), count -> {
-                    badgeUnread.setVisibility((count != null && count > 0) ? View.VISIBLE : View.GONE);
-                });
-            }
-        }
-
-        TextView tvHours = view.findViewById(R.id.tv_hours_value);
-        TextView tvStreak = view.findViewById(R.id.tv_streak_value);
-        TextView tvLevel = view.findViewById(R.id.tv_level_value);
-        com.tomaflow.app.data.repository.SessionRepository sessionRepo = new com.tomaflow.app.data.repository.SessionRepository(requireActivity().getApplication());
-        sessionRepo.getAllSessions().observe(getViewLifecycleOwner(), sessions -> {
-            if (sessions == null) return;
-            
-            long totalSeconds = 0;
-            java.util.Set<String> activeDays = new java.util.HashSet<>();
-            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
-            sdf.setTimeZone(java.util.TimeZone.getDefault());
-            
-            for (com.tomaflow.app.data.db.entity.SessionEntity s : sessions) {
-                if ("Completed".equals(s.status)) {
-                    totalSeconds += s.duration;
-                    activeDays.add(sdf.format(new java.util.Date(s.startTime)));
-                }
-            }
-            
-            float hours = totalSeconds / 3600f;
-            if (tvHours != null) tvHours.setText(String.format(java.util.Locale.getDefault(), "%.1f", hours));
-            
-            int streak = 0;
-            java.util.Calendar cal = java.util.Calendar.getInstance();
-            String todayStr = sdf.format(cal.getTime());
-            
-            cal.add(java.util.Calendar.DAY_OF_YEAR, -1);
-            String yesterdayStr = sdf.format(cal.getTime());
-            
-            if (activeDays.contains(todayStr)) {
-                streak = 1;
-                cal.setTime(new java.util.Date());
-            } else if (activeDays.contains(yesterdayStr)) {
-                streak = 1;
-            }
-            
-            if (streak > 0) {
-                while (true) {
-                    cal.add(java.util.Calendar.DAY_OF_YEAR, -1);
-                    if (activeDays.contains(sdf.format(cal.getTime()))) {
-                        streak++;
-                    } else {
-                        break;
-                    }
-                }
-            }
-            
-            int totalMinutes = (int) (totalSeconds / 60);
-            int level = (totalMinutes / 600) + 1;
-            
-            if (tvStreak != null) tvStreak.setText(String.valueOf(streak));
-            if (tvLevel != null) tvLevel.setText(String.valueOf(level));
-        });
 
         view.findViewById(R.id.btn_logout).setOnClickListener(v -> {
             new Thread(() -> {

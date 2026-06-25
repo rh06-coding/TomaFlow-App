@@ -96,12 +96,13 @@ public class SettingsFragment extends Fragment {
     private void bindDarkMode(View view) {
         MaterialSwitch switchDarkMode = view.findViewById(R.id.switch_dark_mode);
 
-        int currentMode = AppCompatDelegate.getDefaultNightMode();
-        switchDarkMode.setChecked(currentMode == AppCompatDelegate.MODE_NIGHT_YES);
+        switchDarkMode.setChecked(mSettingsManager.isDarkMode());
 
-        switchDarkMode.setOnCheckedChangeListener((buttonView, isChecked) ->
-                AppCompatDelegate.setDefaultNightMode(
-                        isChecked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO));
+        switchDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mSettingsManager.setDarkMode(isChecked);
+            AppCompatDelegate.setDefaultNightMode(
+                    isChecked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+        });
     }
 
     /**
