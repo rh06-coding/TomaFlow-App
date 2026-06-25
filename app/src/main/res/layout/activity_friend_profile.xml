@@ -62,15 +62,29 @@
                 android:visibility="gone" />
         </FrameLayout>
 
-        <TextView
-            android:id="@+id/tv_profile_name"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
-            tools:text="Loading..."
-            android:textAppearance="@style/TextAppearance.Toma.Display"
-            android:textSize="28sp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/tv_profile_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Loading..."
+                android:textAppearance="@style/TextAppearance.Toma.Display"
+                android:textSize="28sp" />
+            <ImageView
+                android:id="@+id/iv_vip_crown"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/ic_star"
+                app:tint="@color/toma_warning"
+                android:visibility="gone" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_profile_role"

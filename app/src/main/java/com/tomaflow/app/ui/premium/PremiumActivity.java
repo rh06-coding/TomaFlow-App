@@ -24,16 +24,14 @@ public class PremiumActivity extends AppCompatActivity {
         findViewById(R.id.toolbar).setOnClickListener(v -> finish());
         
         findViewById(R.id.btn_upgrade).setOnClickListener(v -> {
-            SubscriptionManager sm = new SubscriptionManager(this);
-            sm.setVip(true);
-            com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.premium_success));
+            android.content.Intent intent = new android.content.Intent(this, PremiumProcessingActivity.class);
+            startActivity(intent);
             finish();
         });
         
         findViewById(R.id.btn_restore).setOnClickListener(v -> {
-            SubscriptionManager sm = new SubscriptionManager(this);
-            sm.setVip(true);
-            com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.premium_success));
+            android.content.Intent intent = new android.content.Intent(this, PremiumProcessingActivity.class);
+            startActivity(intent);
             finish();
         });
     }

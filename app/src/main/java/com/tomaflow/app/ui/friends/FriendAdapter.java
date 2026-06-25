@@ -24,9 +24,15 @@ public class FriendAdapter extends ListAdapter<UserProfile, FriendAdapter.Friend
     private final OnFriendActionListener listener;
     private final String actionText; // Default fallback action
     private java.util.Map<String, String> userStatusMap = new java.util.HashMap<>();
+    private java.util.Map<String, Integer> unreadCountsMap = new java.util.HashMap<>();
 
     public void setUserStatusMap(java.util.Map<String, String> map) {
         this.userStatusMap = map;
+        notifyDataSetChanged();
+    }
+
+    public void setUnreadCountsMap(java.util.Map<String, Integer> map) {
+        this.unreadCountsMap = map;
         notifyDataSetChanged();
     }
 
@@ -68,7 +74,12 @@ public class FriendAdapter extends ListAdapter<UserProfile, FriendAdapter.Friend
                 dynamicAction = holder.itemView.getContext().getString(R.string.friend_action_accept);
             }
         }
-        holder.bind(user, listener, dynamicAction);
+        int unreadCount = 0;
+        if (unreadCountsMap != null && unreadCountsMap.containsKey(user.uid)) {
+            Integer count = unreadCountsMap.get(user.uid);
+            if (count != null) unreadCount = count;
+        }
+        holder.bind(user, listener, dynamicAction, unreadCount);
     }
 
     static class FriendViewHolder extends RecyclerView.ViewHolder {
@@ -77,6 +88,8 @@ public class FriendAdapter extends ListAdapter<UserProfile, FriendAdapter.Friend
         private final TextView tvInitials;
         private final ImageView ivAvatar;
         private final com.google.android.material.button.MaterialButton btnAction;
+        private final ImageView ivVipCrown;
+        private final View badgeUnread;
 
         public FriendViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -85,11 +98,20 @@ public class FriendAdapter extends ListAdapter<UserProfile, FriendAdapter.Friend
             tvInitials = itemView.findViewById(R.id.tv_initials);
             ivAvatar = itemView.findViewById(R.id.iv_avatar);
             btnAction = itemView.findViewById(R.id.btn_action);
+            ivVipCrown = itemView.findViewById(R.id.iv_vip_crown);
+            badgeUnread = itemView.findViewById(R.id.badge_unread);
         }
 
-        public void bind(UserProfile user, OnFriendActionListener listener, String dynamicAction) {
+        public void bind(UserProfile user, OnFriendActionListener listener, String dynamicAction, int unreadCount) {
             tvName.setText(user.name != null ? user.name : user.email);
             tvUsername.setText(user.username != null ? "@" + user.username : "");
+            
+            if (ivVipCrown != null) {
+                ivVipCrown.setVisibility(user.isVip ? View.VISIBLE : View.GONE);
+            }
+            if (badgeUnread != null) {
+                badgeUnread.setVisibility(unreadCount > 0 ? View.VISIBLE : View.GONE);
+            }
             
             btnAction.setText(dynamicAction);
             btnAction.setOnClickListener(v -> {
@@ -111,7 +133,7 @@ public class FriendAdapter extends ListAdapter<UserProfile, FriendAdapter.Friend
             if (user.avatarUrl != null && !user.avatarUrl.isEmpty()) {
                 ivAvatar.setVisibility(View.VISIBLE);
                 tvInitials.setVisibility(View.GONE);
-                Glide.with(itemView.getContext()).load(user.avatarUrl).circleCrop().into(ivAvatar);
+                com.tomaflow.app.utils.AvatarHelper.loadAvatar(itemView.getContext(), user.avatarUrl, ivAvatar);
             } else {
                 ivAvatar.setVisibility(View.GONE);
                 tvInitials.setVisibility(View.VISIBLE);

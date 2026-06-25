@@ -57,4 +57,18 @@ public class ChatRepository {
 
         return messagesLiveData;
     }
+
+    public void markMessagesAsRead(String chatId, String currentUserId) {
+        db.collection("chats").document(chatId).collection("messages")
+                .whereEqualTo("receiverId", currentUserId)
+                .whereEqualTo("isRead", false)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    com.google.firebase.firestore.WriteBatch batch = db.batch();
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : queryDocumentSnapshots.getDocuments()) {
+                        batch.update(doc.getReference(), "isRead", true);
+                    }
+                    batch.commit();
+                });
+    }
 }

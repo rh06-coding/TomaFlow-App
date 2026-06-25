@@ -78,7 +78,30 @@ public class ProfileFragment extends Fragment {
                         if (ivAvatar != null) {
                             ivAvatar.setVisibility(View.VISIBLE);
                             tvInitials.setVisibility(View.GONE);
-                            com.bumptech.glide.Glide.with(this).load(profile.avatarUrl).circleCrop().into(ivAvatar);
+                            com.tomaflow.app.utils.AvatarHelper.loadAvatar(requireContext(), profile.avatarUrl, ivAvatar);
+                        }
+                    }
+                    
+                    // Update VIP status from Firebase
+                    com.tomaflow.app.data.repository.SubscriptionManager sm = new com.tomaflow.app.data.repository.SubscriptionManager(requireContext());
+                    if (profile.isVip && !sm.isVip()) {
+                        sm.setVip(true);
+                    }
+                    
+                    TextView tvRole = view.findViewById(R.id.tv_profile_role);
+                    View btnUpgrade = view.findViewById(R.id.btn_upgrade_vip);
+                    
+                    if (profile.isVip || sm.isVip()) {
+                        tvRole.setText(R.string.premium_badge);
+                        tvRole.setTextColor(ContextCompat.getColor(requireContext(), R.color.toma_warning));
+                        if (btnUpgrade != null) btnUpgrade.setVisibility(View.GONE);
+                    } else {
+                        tvRole.setText(getString(R.string.profile_role));
+                        tvRole.setTextColor(ContextCompat.getColor(requireContext(), R.color.toma_primary));
+                        
+                        if (btnUpgrade != null) {
+                            btnUpgrade.setVisibility(View.VISIBLE);
+                            btnUpgrade.setOnClickListener(v -> startActivity(new Intent(requireContext(), com.tomaflow.app.ui.premium.PremiumActivity.class)));
                         }
                     }
                 }
@@ -104,6 +127,13 @@ public class ProfileFragment extends Fragment {
             cardFriends.setOnClickListener(v -> {
                 startActivity(new Intent(requireContext(), com.tomaflow.app.ui.friends.FriendsActivity.class));
             });
+            
+            View badgeUnread = view.findViewById(R.id.badge_friends_unread);
+            if (badgeUnread != null) {
+                com.tomaflow.app.utils.UnreadBadgeManager.getInstance().getTotalUnreadCount().observe(getViewLifecycleOwner(), count -> {
+                    badgeUnread.setVisibility((count != null && count > 0) ? View.VISIBLE : View.GONE);
+                });
+            }
         }
 
         TextView tvHours = view.findViewById(R.id.tv_hours_value);
@@ -160,22 +190,6 @@ public class ProfileFragment extends Fragment {
             if (tvLevel != null) tvLevel.setText(String.valueOf(level));
         });
 
-        com.tomaflow.app.data.repository.SubscriptionManager sm = new com.tomaflow.app.data.repository.SubscriptionManager(requireContext());
-        TextView tvRole = view.findViewById(R.id.tv_profile_role);
-        if (sm.isVip()) {
-            tvRole.setText(R.string.premium_badge);
-            tvRole.setTextColor(ContextCompat.getColor(requireContext(), R.color.toma_warning));
-        } else {
-            tvRole.setText(getString(R.string.profile_role));
-            tvRole.setTextColor(ContextCompat.getColor(requireContext(), R.color.toma_primary));
-            
-            // Add upgrade button to the header
-            com.google.android.material.button.MaterialButton btnUpgrade = new com.google.android.material.button.MaterialButton(requireContext());
-            btnUpgrade.setText(R.string.premium_btn_upgrade);
-            btnUpgrade.setOnClickListener(v -> startActivity(new Intent(requireContext(), com.tomaflow.app.ui.premium.PremiumActivity.class)));
-            ((ViewGroup) view.findViewById(R.id.container_avatar).getParent()).addView(btnUpgrade, 2);
-        }
-
         view.findViewById(R.id.btn_logout).setOnClickListener(v -> {
             new Thread(() -> {
                 // Stop services if running
@@ -189,6 +203,9 @@ public class ProfileFragment extends Fragment {
                 requireContext().getSharedPreferences("tomaflow_subscription", android.content.Context.MODE_PRIVATE).edit().clear().apply();
                 requireContext().getSharedPreferences("rewards_prefs", android.content.Context.MODE_PRIVATE).edit().clear().apply();
                 requireContext().getSharedPreferences(com.tomaflow.app.constants.AppConstants.PREFERENCES_FILE_NAME, android.content.Context.MODE_PRIVATE).edit().clear().apply();
+                
+                // Clear Unread Badge Manager
+                com.tomaflow.app.utils.UnreadBadgeManager.getInstance().clear();
                 
                 auth.signOut();
                 

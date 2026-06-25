@@ -207,4 +207,20 @@ public class FriendRepository {
             return null;
         });
     }
+
+    // Get live data for a specific user profile
+    public LiveData<UserProfile> getUserProfileLiveData(String uid) {
+        MutableLiveData<UserProfile> liveData = new MutableLiveData<>();
+        db.collection("users").document(uid).addSnapshotListener((snapshot, e) -> {
+            if (e != null) return;
+            if (snapshot != null && snapshot.exists()) {
+                UserProfile profile = snapshot.toObject(UserProfile.class);
+                if (profile != null) {
+                    profile.uid = snapshot.getId();
+                    liveData.setValue(profile);
+                }
+            }
+        });
+        return liveData;
+    }
 }

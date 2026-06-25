@@ -290,12 +290,16 @@
 
     <!-- Premium / VIP -->
     <string name="premium_title">Nâng cấp VIP</string>
-    <string name="premium_subtitle">Mở khóa toàn bộ tiềm năng của bạn</string>
+    <string name="premium_badge">VIP 👑</string>
     <string name="premium_btn_upgrade">Nâng cấp Ngay</string>
+    <string name="premium_btn_cancel_vip">Hủy VIP</string>
+    <string name="premium_cancel_title">Hủy Đăng ký VIP</string>
+    <string name="premium_cancel_msg">Bạn có chắc chắn muốn hủy gói VIP? Bạn sẽ mất quyền truy cập vào các tính năng cao cấp ngay lập tức.</string>
+    <string name="premium_cancel_confirm">Hủy VIP</string>
+    <string name="premium_subtitle">Mở khóa toàn bộ tiềm năng của bạn</string>
     <string name="premium_btn_later">Để sau</string>
     <string name="premium_gate_title">Tính năng VIP</string>
     <string name="premium_gate_desc">Tính năng này dành cho thành viên VIP.</string>
-    <string name="premium_badge">VIP 👑</string>
     <string name="premium_success">Bạn đã là thành viên VIP! 🎉</string>
     <string name="feature_normal_tasks_limit">Gói miễn phí: tối đa 5 công việc</string>
     <string name="premium_feature_1">Tất cả nhạc nền</string>

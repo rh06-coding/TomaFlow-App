@@ -125,37 +125,49 @@ public class FriendsListFragment extends Fragment {
             
             for (int i = 0; i < connections.size(); i++) {
                 String targetUid = connections.get(i).senderId.equals(myUid) ? connections.get(i).receiverId : connections.get(i).senderId;
-                friendRepository.getUserProfile(targetUid).addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        friendsList.add(task.getResult());
+                
+                // Initialize unknown placeholder to maintain count
+                UserProfile placeholder = new UserProfile(targetUid, "", "", "unknown", getString(R.string.friend_unknown_user), "", "");
+                friendsList.add(placeholder);
+                final int index = i;
+                
+                friendRepository.getUserProfileLiveData(targetUid).observe(getViewLifecycleOwner(), profile -> {
+                    if (profile != null) {
+                        friendsList.set(index, profile);
                     } else {
-                        friendsList.add(new UserProfile(targetUid, "", "", "unknown", getString(R.string.friend_unknown_user), "", ""));
+                        friendsList.set(index, placeholder);
                     }
                     
-                    pendingCount[0]--;
-                    if (pendingCount[0] == 0) {
-                        if (adapter == null) {
-                            adapter = new FriendAdapter(getString(R.string.friend_status_friend), (user, action) -> {
-                                if (getString(R.string.friend_status_friend).equals(action)) {
-                                    new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                                        .setTitle(R.string.friend_action_unfriend)
-                                        .setMessage(getString(R.string.friend_unfriend_confirm, user.name))
-                                        .setPositiveButton(R.string.friend_action_unfriend, (dialog, which) -> {
-                                            // Find connection ID
-                                            String myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                            String connectionId = myId.compareTo(user.uid) < 0 ? myId + "_" + user.uid : user.uid + "_" + myId;
-                                            friendRepository.removeConnection(connectionId)
-                                                .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), getString(R.string.friend_unfriended, user.name), true));
-                                        })
-                                        .setNegativeButton(R.string.action_cancel, null)
-                                        .show();
-                                }
-                            });
-                            rvFriends.setAdapter(adapter);
-                        }
+                    if (adapter == null) {
+                        adapter = new FriendAdapter(getString(R.string.friend_status_friend), (user, action) -> {
+                            if (getString(R.string.friend_status_friend).equals(action)) {
+                                new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                                    .setTitle(R.string.friend_action_unfriend)
+                                    .setMessage(getString(R.string.friend_unfriend_confirm, user.name))
+                                    .setPositiveButton(R.string.friend_action_unfriend, (dialog, which) -> {
+                                        String myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                        String connectionId = myId.compareTo(user.uid) < 0 ? myId + "_" + user.uid : user.uid + "_" + myId;
+                                        friendRepository.removeConnection(connectionId)
+                                            .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), getString(R.string.friend_unfriended, user.name), true));
+                                    })
+                                    .setNegativeButton(R.string.action_cancel, null)
+                                    .show();
+                            }
+                        });
+                        rvFriends.setAdapter(adapter);
                         adapter.setUserStatusMap(statusMap);
-                        adapter.submitList(friendsList);
+                        adapter.submitList(new ArrayList<>(friendsList));
+                    } else {
+                        adapter.submitList(new ArrayList<>(friendsList));
+                        adapter.notifyItemChanged(index);
                     }
+                    
+                    // Observe unread badges
+                    com.tomaflow.app.utils.UnreadBadgeManager.getInstance().getUnreadPerFriend().observe(getViewLifecycleOwner(), unreadMap -> {
+                        if (adapter != null) {
+                            adapter.setUnreadCountsMap(unreadMap);
+                        }
+                    });
                 });
             }
         });

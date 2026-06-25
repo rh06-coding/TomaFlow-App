@@ -55,4 +55,9 @@ public class ProfileRepository {
                     (task.getResult().size() == 1 && task.getResult().getDocuments().get(0).getId().equals(uid));
             });
     }
+
+    public Task<Void> updateVipStatus(boolean isVip) {
+        if (uid == null) return null;
+        return db.collection("users").document(uid).update("isVip", isVip);
+    }
 }

@@ -18,8 +18,7 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.tomaflow.app.R;
 import com.tomaflow.app.data.model.UserProfile;
 import com.tomaflow.app.data.repository.ProfileRepository;
@@ -118,7 +117,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 if (currentAvatarUrl != null && !currentAvatarUrl.isEmpty() && selectedImageUri == null) {
                     ivAvatar.setVisibility(View.VISIBLE);
                     tvInitials.setVisibility(View.GONE);
-                    Glide.with(this).load(currentAvatarUrl).circleCrop().into(ivAvatar);
+                    com.tomaflow.app.utils.AvatarHelper.loadAvatar(this, currentAvatarUrl, ivAvatar);
                 }
             } else {
                 // Generate stable username if null
@@ -143,6 +142,29 @@ public class EditProfileActivity extends AppCompatActivity {
                 tvInitials.setText(initials.toUpperCase());
                 tvInitials.setVisibility(View.VISIBLE);
                 ivAvatar.setVisibility(View.GONE);
+            }
+            
+            // Handle VIP status
+            com.tomaflow.app.data.repository.SubscriptionManager sm = new com.tomaflow.app.data.repository.SubscriptionManager(this);
+            boolean isVip = (profile != null && profile.isVip) || sm.isVip();
+            View btnCancelVip = findViewById(R.id.btn_cancel_vip);
+            if (isVip) {
+                btnCancelVip.setVisibility(View.VISIBLE);
+                btnCancelVip.setOnClickListener(v -> {
+                    new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                        .setTitle(R.string.premium_cancel_title)
+                        .setMessage(R.string.premium_cancel_msg)
+                        .setPositiveButton(R.string.premium_cancel_confirm, (dialog, which) -> {
+                            repository.updateVipStatus(false);
+                            sm.setVip(false);
+                            TomaToast.show(this, "VIP cancelled", false);
+                            btnCancelVip.setVisibility(View.GONE);
+                        })
+                        .setNegativeButton(R.string.action_cancel, null)
+                        .show();
+                });
+            } else {
+                btnCancelVip.setVisibility(View.GONE);
             }
         });
     }
@@ -199,20 +221,43 @@ public class EditProfileActivity extends AppCompatActivity {
                 
                 // Upload avatar if selected
                 if (selectedImageUri != null) {
-                    StorageReference storageRef = FirebaseStorage.getInstance().getReference().child("avatars/" + user.getUid() + ".jpg");
-                    storageRef.putFile(selectedImageUri).addOnSuccessListener(taskSnapshot -> {
-                        storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                            saveToFirestore(name, username, email, phone, dob, uri.toString());
-                        });
-                    }).addOnFailureListener(e -> {
-                        TomaToast.show(this, "Failed to upload avatar", false);
-                        saveToFirestore(name, username, email, phone, dob, currentAvatarUrl);
-                    });
+                    String base64Avatar = encodeImageToBase64(selectedImageUri);
+                    if (base64Avatar != null) {
+                        saveToFirestore(name, username, email, phone, dob, base64Avatar);
+                    } else {
+                        TomaToast.show(this, "Failed to process image", false);
+                        findViewById(R.id.btn_save).setEnabled(true);
+                    }
                 } else {
                     saveToFirestore(name, username, email, phone, dob, currentAvatarUrl);
                 }
             });
         });
+    }
+
+    private String encodeImageToBase64(Uri imageUri) {
+        try {
+            java.io.InputStream imageStream = getContentResolver().openInputStream(imageUri);
+            android.graphics.Bitmap selectedImage = android.graphics.BitmapFactory.decodeStream(imageStream);
+            
+            // Resize to max 250x250
+            int MAX_SIZE = 250;
+            int width = selectedImage.getWidth();
+            int height = selectedImage.getHeight();
+            float ratio = Math.min((float) MAX_SIZE / width, (float) MAX_SIZE / height);
+            int newWidth = Math.round(ratio * width);
+            int newHeight = Math.round(ratio * height);
+            
+            android.graphics.Bitmap resizedBitmap = android.graphics.Bitmap.createScaledBitmap(selectedImage, newWidth, newHeight, false);
+            
+            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+            resizedBitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 70, baos);
+            byte[] b = baos.toByteArray();
+            return "data:image/jpeg;base64," + android.util.Base64.encodeToString(b, android.util.Base64.DEFAULT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void saveToFirestore(String name, String username, String email, String phone, String dob, String avatarUrl) {
