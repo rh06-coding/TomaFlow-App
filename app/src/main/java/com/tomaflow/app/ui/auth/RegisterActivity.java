@@ -15,6 +15,10 @@ import com.tomaflow.app.MainActivity;
 import com.tomaflow.app.R;
 
 public class RegisterActivity extends AppCompatActivity {
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.tomaflow.app.utils.LanguageManager.wrap(base));
+    }
 
     private EditText mEdtName, mEdtEmail, mEdtPassword, mEdtConfirm;
     private MaterialButton mBtnCreate;
@@ -82,7 +86,8 @@ public class RegisterActivity extends AppCompatActivity {
             })
             .addOnFailureListener(e -> {
                 mBtnCreate.setEnabled(true);
-                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_register_failed), true);
+                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_register_failed), false);
             });
     }
 }
+

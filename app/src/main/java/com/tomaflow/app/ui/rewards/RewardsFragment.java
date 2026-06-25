@@ -42,8 +42,22 @@ public class RewardsFragment extends Fragment {
         viewModel.getDailyTomatoes().observe(getViewLifecycleOwner(), adapter::submitList);
 
         com.tomaflow.app.data.repository.SessionRepository sessionRepository = new com.tomaflow.app.data.repository.SessionRepository(requireActivity().getApplication());
-        sessionRepository.getDailyStatsSince(0).observe(getViewLifecycleOwner(), stats -> {
-            int totalMinutes = com.tomaflow.app.ui.stats.StatsAggregator.totalMinutes(stats);
+        sessionRepository.getAllSessions().observe(getViewLifecycleOwner(), sessions -> {
+            if (sessions == null) return;
+            
+            long totalSeconds = 0;
+            java.util.Set<String> activeDays = new java.util.HashSet<>();
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+            sdf.setTimeZone(java.util.TimeZone.getDefault());
+            
+            for (com.tomaflow.app.data.db.entity.SessionEntity s : sessions) {
+                if ("Completed".equals(s.status)) {
+                    totalSeconds += s.duration;
+                    activeDays.add(sdf.format(new java.util.Date(s.startTime)));
+                }
+            }
+            
+            int totalMinutes = (int) (totalSeconds / 60);
             int hours = totalMinutes / 60;
             
             // 1 Level = 10 hours (600 minutes)
@@ -51,17 +65,42 @@ public class RewardsFragment extends Fragment {
             int currentLevelXp = totalMinutes % 600;
             int nextLevelXp = 600;
             
+            int streak = 0;
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            String todayStr = sdf.format(cal.getTime());
+            
+            cal.add(java.util.Calendar.DAY_OF_YEAR, -1);
+            String yesterdayStr = sdf.format(cal.getTime());
+            
+            if (activeDays.contains(todayStr)) {
+                streak = 1;
+                cal.setTime(new java.util.Date());
+            } else if (activeDays.contains(yesterdayStr)) {
+                streak = 1;
+            }
+            
+            if (streak > 0) {
+                while (true) {
+                    cal.add(java.util.Calendar.DAY_OF_YEAR, -1);
+                    if (activeDays.contains(sdf.format(cal.getTime()))) {
+                        streak++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            
             TextView tvLevel = view.findViewById(R.id.tv_rewards_level);
             TextView tvHours = view.findViewById(R.id.tv_rewards_hours);
             TextView tvStreak = view.findViewById(R.id.tv_rewards_streak);
             TextView tvXp = view.findViewById(R.id.tv_rewards_xp);
             com.google.android.material.progressindicator.LinearProgressIndicator progressLevel = view.findViewById(R.id.progress_level);
             
-            if (tvLevel != null) tvLevel.setText("Level " + level);
+            if (tvLevel != null) tvLevel.setText(getString(R.string.rewards_level, level));
             if (tvHours != null) tvHours.setText(String.valueOf(hours));
-            if (tvStreak != null) tvStreak.setText("1"); // Mock streak for now
+            if (tvStreak != null) tvStreak.setText(String.valueOf(streak));
             
-            if (tvXp != null) tvXp.setText(String.format(Locale.getDefault(), "%d / %d XP to Level %d", currentLevelXp, nextLevelXp, level + 1));
+            if (tvXp != null) tvXp.setText(getString(R.string.rewards_xp_progress, currentLevelXp, nextLevelXp, level + 1));
             if (progressLevel != null) {
                 progressLevel.setMax(nextLevelXp);
                 progressLevel.setProgressCompat(currentLevelXp, true);

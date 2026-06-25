@@ -239,7 +239,7 @@
     <string name="stats_tab_month">MONTH</string>
     <string name="stats_focus_label">FOCUS</string>
     <string name="stats_breaks_label">BREAKS</string>
-    <string name="profile_ranking">RANKING</string>
+    <string name="profile_level">LEVEL</string>
     <string name="profile_hours">HOURS</string>
     <string name="profile_streak">STREAK</string>
     <string name="dialog_btn_skip">Skip Break</string>
@@ -281,7 +281,7 @@
     <string name="error_empty_content">Please enter some content</string>
     <string name="friend_system_coming_soon">Friend system coming in the next update!</string>
     <string name="journal_entry_default">Journal Entry</string>
-    <string name="rewards_farm_title">My Tomato Farm</string>
+    <string name="rewards_farm_title">My Farm</string>
     <string name="day_mon">M</string>
     <string name="day_tue">T</string>
     <string name="day_wed">W</string>
@@ -315,10 +315,10 @@
     <string name="leaderboard_title">Leaderboard</string>
     <string name="leaderboard_tab_global">Global</string>
     <string name="leaderboard_tab_friends">Friends</string>
-    <string name="leaderboard_coming_soon">Friends feature coming soon!</string>
+    <string name="leaderboard_empty_title">No friends yet</string>
+    <string name="leaderboard_empty_msg">Add friends to compete on the leaderboard!</string>
     <string name="leaderboard_rank">Rank #%1$d</string>
     <string name="leaderboard_empty">No data yet. Complete a session to appear here!</string>
-    <string name="friend_system_msg_full">We are working on adding social features. Soon you\'ll be able to focus together with your friends!</string>
     <string name="btn_add_friends">Add Friends</string>
     
     <!-- Profile -->
@@ -329,4 +329,53 @@
 
     <string name="task_items_count">%1$d ITEMS</string>
     <string name="profile_edit">Edit Profile</string>
+    <!-- Edit Profile -->
+    <string name="profile_tap_avatar">Tap to change avatar</string>
+    <string name="profile_change_password">Change Password</string>
+    <string name="profile_save">Save Profile</string>
+
+    <!-- Friends -->
+    <string name="profile_friends">Friends</string>
+    <string name="profile_friends_desc">Find and connect with friends</string>
+    <string name="friend_profile_title">Friend Profile</string>
+    <string name="friend_message">Message</string>
+    <string name="friend_chat_name">Name</string>
+    <string name="friend_find_contacts">Find friends from Contacts</string>
+    <string name="friend_no_friends">No friends yet</string>
+    <string name="friend_received_requests">Received Requests</string>
+    <string name="friend_no_received_requests">No received requests</string>
+    <string name="friend_sent_requests">Sent Requests</string>
+    <string name="friend_no_sent_requests">No sent requests</string>
+    <string name="friend_add">Add</string>
+    <string name="friend_search_hint">Search username or email</string>
+    <string name="friend_tab_requests">Requests</string>
+    <string name="rewards_level">Level %1$d</string>
+    <string name="rewards_xp_progress">%1$d / %2$d XP to Level %3$d</string>
+
+    <string name="friend_permission_contacts_denied">Permission denied. Cannot read contacts.</string>
+    <string name="friend_action_unfriend">Unfriend</string>
+    <string name="friend_unfriend_confirm">Are you sure you want to unfriend %1$s?</string>
+    <string name="friend_unfriended">Unfriended %1$s</string>
+    <string name="friend_request_sent">Friend request sent to %1$s</string>
+    <string name="friend_request_failed">Failed to send request</string>
+    <string name="friend_searching_contacts">Searching contacts...</string>
+    <string name="friend_no_contacts_found">No contacts found.</string>
+    <string name="friend_no_friends_from_contacts">No friends found from contacts.</string>
+    <string name="friend_unknown_user">Unknown User</string>
+    <string name="friend_status_friend">Friend</string>
+    <string name="friend_action_accept">Accept</string>
+    <string name="friend_action_reject">Reject</string>
+    <string name="friend_request_accepted">Accepted %1$s</string>
+    <string name="friend_request_rejected">Rejected %1$s</string>
+    <string name="friend_request_process_failed">Failed to process request</string>
+    <string name="friend_status_sent">Sent</string>
+    <string name="friend_profile_cycles">%1$d cycles</string>
+    
+    <string name="leaderboard_streak">🔥 %1$d days streak</string>
+    <string name="leaderboard_pomodoros">pomodoros</string>
+    <string name="leaderboard_you">(You)</string>
 </resources>
+
+
+
+

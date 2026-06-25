@@ -61,11 +61,11 @@ public class FriendAdapter extends ListAdapter<UserProfile, FriendAdapter.Friend
         if (userStatusMap != null && userStatusMap.containsKey(user.uid)) {
             String status = userStatusMap.get(user.uid);
             if ("ACCEPTED".equals(status)) {
-                dynamicAction = "Friend";
+                dynamicAction = holder.itemView.getContext().getString(R.string.friend_status_friend);
             } else if ("SENT".equals(status)) {
-                dynamicAction = "Sent";
+                dynamicAction = holder.itemView.getContext().getString(R.string.friend_status_sent);
             } else if ("RECEIVED".equals(status)) {
-                dynamicAction = "Accept";
+                dynamicAction = holder.itemView.getContext().getString(R.string.friend_action_accept);
             }
         }
         holder.bind(user, listener, dynamicAction);
@@ -102,7 +102,7 @@ public class FriendAdapter extends ListAdapter<UserProfile, FriendAdapter.Friend
                 itemView.getContext().startActivity(intent);
             });
             
-            if (dynamicAction.equals("Sent")) {
+            if (dynamicAction.equals(itemView.getContext().getString(R.string.friend_status_sent))) {
                 btnAction.setEnabled(false);
             } else {
                 btnAction.setEnabled(true);

@@ -20,6 +20,10 @@ import androidx.appcompat.app.AppCompatActivity;
  *     "select sum(DURATION_MINUTES) from SESSION where strftime('%W', CREATED_AT) = strftime('%W', 'now')"
  */
 public class StatsActivity extends AppCompatActivity {
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.tomaflow.app.utils.LanguageManager.wrap(base));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,3 +31,4 @@ public class StatsActivity extends AppCompatActivity {
         // TODO: setContentView(R.layout.activity_stats);
     }
 }
+

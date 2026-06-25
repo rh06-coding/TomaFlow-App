@@ -39,7 +39,7 @@ public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.
         holder.tvPomodoros.setText(String.valueOf(entry.pomodoros));
         
         if (entry.streak > 0) {
-            holder.tvStreak.setText("🔥 " + entry.streak + " days streak");
+            holder.tvStreak.setText(holder.itemView.getContext().getString(R.string.leaderboard_streak, entry.streak));
             holder.tvStreak.setVisibility(View.VISIBLE);
         } else {
             holder.tvStreak.setVisibility(View.GONE);

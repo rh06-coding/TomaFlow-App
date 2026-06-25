@@ -11,6 +11,10 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.tomaflow.app.R;
 
 public class FriendsActivity extends AppCompatActivity {
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.tomaflow.app.utils.LanguageManager.wrap(base));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +32,10 @@ public class FriendsActivity extends AppCompatActivity {
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             switch (position) {
                 case 0:
-                    tab.setText("Friends");
+                    tab.setText(R.string.profile_friends);
                     break;
                 case 1:
-                    tab.setText("Requests");
+                    tab.setText(R.string.friend_tab_requests);
                     break;
             }
         }).attach();
@@ -57,3 +61,4 @@ public class FriendsActivity extends AppCompatActivity {
         }
     }
 }
+
