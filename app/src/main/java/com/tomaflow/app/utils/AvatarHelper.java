@@ -1,6 +1,7 @@
 package com.tomaflow.app.utils;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -69,6 +70,22 @@ public class AvatarHelper {
                         .circleCrop()
                         .into(imageView);
             } catch (Exception ignored) {}
+        }
+    }
+
+    public static void bindCurrentUserAvatar(androidx.fragment.app.Fragment fragment, View view, int imageViewId) {
+        if (fragment == null || view == null) return;
+        android.widget.ImageView ivAvatar = view.findViewById(imageViewId);
+        if (ivAvatar == null) return;
+
+        com.google.firebase.auth.FirebaseUser user = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            com.tomaflow.app.data.repository.ProfileRepository repo = new com.tomaflow.app.data.repository.ProfileRepository(user.getUid());
+            repo.getProfile().observe(fragment.getViewLifecycleOwner(), profile -> {
+                if (profile != null && profile.avatarUrl != null && !profile.avatarUrl.isEmpty()) {
+                    loadAvatar(fragment.getContext(), profile.avatarUrl, ivAvatar);
+                }
+            });
         }
     }
 }
