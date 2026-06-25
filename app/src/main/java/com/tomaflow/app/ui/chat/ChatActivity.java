@@ -184,6 +184,7 @@ public class ChatActivity extends AppCompatActivity {
                 if (messages.size() > 0) {
                     rvChat.scrollToPosition(messages.size() - 1);
                 }
+                chatRepository.markMessagesAsRead(chatId, currentUserId);
             }
         });
     }

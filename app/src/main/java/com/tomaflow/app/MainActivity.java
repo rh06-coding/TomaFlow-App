@@ -61,6 +61,17 @@ public class MainActivity extends AppCompatActivity {
                     mBottomNav.setVisibility(android.view.View.VISIBLE);
                 }
             });
+
+            // Setup Unread Badge
+            com.tomaflow.app.utils.UnreadBadgeManager.getInstance().getTotalUnreadCount().observe(this, count -> {
+                com.google.android.material.badge.BadgeDrawable badge = mBottomNav.getOrCreateBadge(R.id.nav_profile);
+                if (count != null && count > 0) {
+                    badge.setVisible(true);
+                    badge.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, R.color.toma_error));
+                } else {
+                    badge.setVisible(false);
+                }
+            });
         }
     }
 }
