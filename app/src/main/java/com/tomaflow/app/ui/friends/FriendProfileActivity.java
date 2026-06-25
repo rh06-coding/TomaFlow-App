@@ -16,6 +16,10 @@ import com.tomaflow.app.data.repository.ProfileRepository;
 import com.tomaflow.app.utils.TomaToast;
 
 public class FriendProfileActivity extends AppCompatActivity {
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.tomaflow.app.utils.LanguageManager.wrap(base));
+    }
 
     public static final String EXTRA_USER_ID = "extra_user_id";
 
@@ -118,20 +122,21 @@ public class FriendProfileActivity extends AppCompatActivity {
                 final int finalCompletedCycles = completedCycles;
 
                 runOnUiThread(() -> {
-                    tvLevel.setText("Level " + finalLevel);
+                    tvLevel.setText(getString(R.string.rewards_level, finalLevel));
                     tvHours.setText(String.valueOf(finalHours));
-                    tvStreak.setText(finalCompletedCycles + " cycles");
+                    tvStreak.setText(getString(R.string.friend_profile_cycles, finalCompletedCycles));
                 });
             }
 
             @Override
             public void onFailure(Exception e) {
                 runOnUiThread(() -> {
-                    tvLevel.setText("Level 1");
+                    tvLevel.setText(getString(R.string.rewards_level, 1));
                     tvHours.setText("0");
-                    tvStreak.setText("0");
+                    tvStreak.setText(getString(R.string.friend_profile_cycles, 0));
                 });
             }
         });
     }
 }
+

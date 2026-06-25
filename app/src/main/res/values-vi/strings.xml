@@ -281,7 +281,7 @@
     <string name="error_empty_content">Vui lòng nhập nội dung</string>
     <string name="friend_system_coming_soon">Hệ thống bạn bè sẽ có trong bản cập nhật tới!</string>
     <string name="journal_entry_default">Mục Nhật ký</string>
-    <string name="rewards_farm_title">Nông trại Cà chua của tôi</string>
+    <string name="rewards_farm_title">Nông trại của tôi</string>
     <string name="day_mon">Hai</string>
     <string name="day_tue">Ba</string>
     <string name="day_wed">Tư</string>
@@ -315,10 +315,10 @@
     <string name="leaderboard_title">Bảng xếp hạng</string>
     <string name="leaderboard_tab_global">Toàn cầu</string>
     <string name="leaderboard_tab_friends">Bạn bè</string>
-    <string name="leaderboard_coming_soon">Tính năng bạn bè sắp ra mắt!</string>
+    <string name="leaderboard_empty_title">Chưa có bạn bè</string>
+    <string name="leaderboard_empty_msg">Thêm bạn bè để cùng đua top trên bảng xếp hạng!</string>
     <string name="leaderboard_rank">Hạng #%1$d</string>
     <string name="leaderboard_empty">Chưa có dữ liệu. Hãy hoàn thành phiên để xuất hiện ở đây!</string>
-    <string name="friend_system_msg_full">Chúng tôi đang cập nhật tính năng xã hội. Chẳng bao lâu nữa bạn sẽ có thể tập trung cùng bạn bè!</string>
     <string name="btn_add_friends">Thêm Bạn bè</string>
     
     <!-- Profile -->
@@ -351,6 +351,29 @@
     <string name="friend_tab_requests">Lời mời</string>
     <string name="rewards_level">Cấp độ %1$d</string>
     <string name="rewards_xp_progress">%1$d / %2$d XP lên Cấp %3$d</string>
+
+    <string name="friend_permission_contacts_denied">Bị từ chối quyền. Không thể đọc danh bạ.</string>
+    <string name="friend_action_unfriend">Hủy kết bạn</string>
+    <string name="friend_unfriend_confirm">Bạn có chắc chắn muốn hủy kết bạn với %1$s không?</string>
+    <string name="friend_unfriended">Đã hủy kết bạn với %1$s</string>
+    <string name="friend_request_sent">Đã gửi lời mời kết bạn đến %1$s</string>
+    <string name="friend_request_failed">Gửi lời mời thất bại</string>
+    <string name="friend_searching_contacts">Đang tìm danh bạ...</string>
+    <string name="friend_no_contacts_found">Không tìm thấy liên hệ nào.</string>
+    <string name="friend_no_friends_from_contacts">Không tìm thấy bạn bè nào từ danh bạ.</string>
+    <string name="friend_unknown_user">Người dùng Không xác định</string>
+    <string name="friend_status_friend">Bạn bè</string>
+    <string name="friend_action_accept">Chấp nhận</string>
+    <string name="friend_action_reject">Từ chối</string>
+    <string name="friend_request_accepted">Đã chấp nhận %1$s</string>
+    <string name="friend_request_rejected">Đã từ chối %1$s</string>
+    <string name="friend_request_process_failed">Xử lý lời mời thất bại</string>
+    <string name="friend_status_sent">Đã gửi</string>
+    <string name="friend_profile_cycles">%1$d chu kỳ</string>
+    
+    <string name="leaderboard_streak">🔥 %1$d ngày liên tiếp</string>
+    <string name="leaderboard_pomodoros">pomodoro</string>
+    <string name="leaderboard_you">(Bạn)</string>
 </resources>
 
 

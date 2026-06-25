@@ -95,7 +95,7 @@ public class ProfileFragment extends Fragment {
         View cardLeaderboard = view.findViewById(R.id.card_leaderboard);
         if (cardLeaderboard != null) {
             cardLeaderboard.setOnClickListener(v -> {
-                com.tomaflow.app.utils.TomaToast.show(requireContext(), "Leaderboard coming soon!", true);
+                startActivity(new Intent(requireContext(), com.tomaflow.app.ui.leaderboard.LeaderboardActivity.class));
             });
         }
         

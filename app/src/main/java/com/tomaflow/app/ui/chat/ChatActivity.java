@@ -20,6 +20,10 @@ import com.tomaflow.app.data.model.ChatMessage;
 import com.tomaflow.app.data.repository.ChatRepository;
 
 public class ChatActivity extends AppCompatActivity {
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.tomaflow.app.utils.LanguageManager.wrap(base));
+    }
 
     public static final String EXTRA_FRIEND_ID = "friend_id";
     public static final String EXTRA_FRIEND_NAME = "friend_name";
@@ -184,3 +188,4 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 }
+

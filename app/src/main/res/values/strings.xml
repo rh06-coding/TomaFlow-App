@@ -315,10 +315,10 @@
     <string name="leaderboard_title">Leaderboard</string>
     <string name="leaderboard_tab_global">Global</string>
     <string name="leaderboard_tab_friends">Friends</string>
-    <string name="leaderboard_coming_soon">Friends feature coming soon!</string>
+    <string name="leaderboard_empty_title">No friends yet</string>
+    <string name="leaderboard_empty_msg">Add friends to compete on the leaderboard!</string>
     <string name="leaderboard_rank">Rank #%1$d</string>
     <string name="leaderboard_empty">No data yet. Complete a session to appear here!</string>
-    <string name="friend_system_msg_full">We are working on adding social features. Soon you\'ll be able to focus together with your friends!</string>
     <string name="btn_add_friends">Add Friends</string>
     
     <!-- Profile -->
@@ -351,6 +351,29 @@
     <string name="friend_tab_requests">Requests</string>
     <string name="rewards_level">Level %1$d</string>
     <string name="rewards_xp_progress">%1$d / %2$d XP to Level %3$d</string>
+
+    <string name="friend_permission_contacts_denied">Permission denied. Cannot read contacts.</string>
+    <string name="friend_action_unfriend">Unfriend</string>
+    <string name="friend_unfriend_confirm">Are you sure you want to unfriend %1$s?</string>
+    <string name="friend_unfriended">Unfriended %1$s</string>
+    <string name="friend_request_sent">Friend request sent to %1$s</string>
+    <string name="friend_request_failed">Failed to send request</string>
+    <string name="friend_searching_contacts">Searching contacts...</string>
+    <string name="friend_no_contacts_found">No contacts found.</string>
+    <string name="friend_no_friends_from_contacts">No friends found from contacts.</string>
+    <string name="friend_unknown_user">Unknown User</string>
+    <string name="friend_status_friend">Friend</string>
+    <string name="friend_action_accept">Accept</string>
+    <string name="friend_action_reject">Reject</string>
+    <string name="friend_request_accepted">Accepted %1$s</string>
+    <string name="friend_request_rejected">Rejected %1$s</string>
+    <string name="friend_request_process_failed">Failed to process request</string>
+    <string name="friend_status_sent">Sent</string>
+    <string name="friend_profile_cycles">%1$d cycles</string>
+    
+    <string name="leaderboard_streak">🔥 %1$d days streak</string>
+    <string name="leaderboard_pomodoros">pomodoros</string>
+    <string name="leaderboard_you">(You)</string>
 </resources>
 
 

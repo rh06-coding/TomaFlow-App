@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                tools:text="(You)"
+                android:text="@string/leaderboard_you"
                 android:textColor="@color/toma_text_muted"
                 android:textSize="12sp"
                 android:visibility="gone" />
@@ -91,9 +91,10 @@
             android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/tv_pomodoros_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="pomodoros"
+            android:text="@string/leaderboard_pomodoros"
             android:textColor="@color/toma_primary"
             android:textSize="12sp" />
     </LinearLayout>

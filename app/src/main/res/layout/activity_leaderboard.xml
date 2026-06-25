@@ -23,27 +23,7 @@
             app:titleTextColor="@color/toma_text"
             app:titleTextAppearance="@style/TextAppearance.Toma.Label" />
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/toma_background"
-            app:tabIndicatorColor="@color/toma_primary"
-            app:tabSelectedTextColor="@color/toma_primary"
-            app:tabTextColor="@color/toma_text_muted"
-            app:tabIndicatorFullWidth="false">
 
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/leaderboard_tab_global" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/leaderboard_tab_friends" />
-
-        </com.google.android.material.tabs.TabLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -62,7 +42,7 @@
             android:paddingTop="16dp"
             android:paddingBottom="100dp" />
 
-        <!-- Friends Tab Empty State -->
+        <!-- Empty State (Shown if no friends) -->
         <LinearLayout
             android:id="@+id/layout_friends_empty"
             android:layout_width="match_parent"
@@ -82,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="@string/leaderboard_coming_soon"
+                android:text="@string/leaderboard_empty_title"
                 android:textAppearance="@style/TextAppearance.Toma.Title"
                 android:gravity="center" />
 
@@ -90,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/friend_system_msg_full"
+                android:text="@string/leaderboard_empty_msg"
                 android:textAppearance="@style/TextAppearance.Toma.Body"
                 android:gravity="center" />
 

@@ -40,44 +40,29 @@ public class TomaToast {
             }
         }
 
-        if (parentView == null) {
-            // Fallback
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-            return;
-        }
+        if (parentView != null) {
+            try {
+                Snackbar snackbar = Snackbar.make(parentView, message, Snackbar.LENGTH_LONG);
+                if (!isSuccess) {
+                    snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.toma_error));
+                } else {
+                    snackbar.setBackgroundTint(ContextCompat.getColor(context, R.color.toma_success));
+                }
+                snackbar.setTextColor(ContextCompat.getColor(context, android.R.color.white));
+                
+                View snackbarView = snackbar.getView();
+                float dp = 4f; // Tighter shadow
+                snackbarView.setElevation(android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics()));
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.P) {
+                    snackbarView.setOutlineSpotShadowColor(android.graphics.Color.parseColor("#4D000000")); // Darker spot shadow (30% black)
+                    snackbarView.setOutlineAmbientShadowColor(android.graphics.Color.parseColor("#80000000")); // Darker ambient shadow (50% black)
+                }
 
-        try {
-            Snackbar snackbar = Snackbar.make(parentView, "", Snackbar.LENGTH_LONG);
-            Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-            
-            layout.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
-            layout.setPadding(0, 0, 0, 0);
-            if (layout.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) layout.getLayoutParams();
-                params.setMargins(0, 0, 0, 0);
-                layout.setLayoutParams(params);
+                snackbar.show();
+            } catch (Exception e) {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
-
-            LayoutInflater inflater = LayoutInflater.from(context);
-            View customView = inflater.inflate(R.layout.layout_toma_snackbar, null);
-
-            TextView tvMessage = customView.findViewById(R.id.snackbar_text);
-            tvMessage.setText(message);
-
-            ImageView icon = customView.findViewById(R.id.snackbar_icon);
-            View container = customView.findViewById(R.id.snackbar_container);
-
-            if (!isSuccess) {
-                icon.setImageResource(R.drawable.ic_close);
-                container.setBackgroundResource(R.drawable.bg_toma_snackbar_error);
-            } else {
-                icon.setImageResource(R.drawable.ic_check);
-                container.setBackgroundResource(R.drawable.bg_toma_snackbar_success);
-            }
-
-            layout.addView(customView, 0);
-            snackbar.show();
-        } catch (Exception e) {
+        } else {
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
     }

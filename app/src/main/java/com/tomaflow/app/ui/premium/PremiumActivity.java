@@ -11,6 +11,10 @@ import com.tomaflow.app.R;
 import com.tomaflow.app.data.repository.SubscriptionManager;
 
 public class PremiumActivity extends AppCompatActivity {
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.tomaflow.app.utils.LanguageManager.wrap(base));
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,3 +38,4 @@ public class PremiumActivity extends AppCompatActivity {
         });
     }
 }
+

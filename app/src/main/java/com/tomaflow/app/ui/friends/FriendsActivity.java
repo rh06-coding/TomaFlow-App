@@ -11,6 +11,10 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.tomaflow.app.R;
 
 public class FriendsActivity extends AppCompatActivity {
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.tomaflow.app.utils.LanguageManager.wrap(base));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,3 +61,4 @@ public class FriendsActivity extends AppCompatActivity {
         }
     }
 }
+

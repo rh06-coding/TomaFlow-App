@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     } catch (ApiException e) {
                         Log.w(TAG, "Google sign in failed", e);
-                        com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_google_failed), true);
+                        com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_google_failed), false);
                     }
                 }
             }
@@ -135,7 +135,7 @@ public class LoginActivity extends AppCompatActivity {
                             goToMain();
                         });
                     } else {
-                        com.tomaflow.app.utils.TomaToast.show(LoginActivity.this, getString(R.string.auth_login_failed), true);
+                        com.tomaflow.app.utils.TomaToast.show(LoginActivity.this, getString(R.string.auth_login_failed), false);
                     }
                 });
     }
@@ -152,7 +152,7 @@ public class LoginActivity extends AppCompatActivity {
             .addOnSuccessListener(result -> goToMain())
             .addOnFailureListener(e -> {
                 mBtnSignIn.setEnabled(true);
-                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_login_failed_msg), true);
+                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_login_failed_msg), false);
             });
     }
 
@@ -166,7 +166,7 @@ public class LoginActivity extends AppCompatActivity {
             .addOnSuccessListener(v ->
                 com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_reset_email_sent)))
             .addOnFailureListener(e ->
-                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_reset_email_failed), true));
+                com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_reset_email_failed), false));
     }
 
     private void goToMain() {

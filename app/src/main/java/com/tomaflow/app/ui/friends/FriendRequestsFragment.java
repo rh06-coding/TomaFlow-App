@@ -58,13 +58,13 @@ public class FriendRequestsFragment extends Fragment {
             @Override
             public void onAccept(FriendRequestItem item) {
                 friendRepository.acceptFriendRequest(item.connection.id)
-                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Accepted request from " + item.user.name, true));
+                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), getString(R.string.friend_request_accepted, item.user.name), true));
             }
 
             @Override
             public void onDecline(FriendRequestItem item) {
                 friendRepository.removeConnection(item.connection.id)
-                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Declined request", false));
+                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), getString(R.string.friend_request_rejected, item.user.name), false));
             }
         });
         rvReceived.setAdapter(receivedAdapter);
@@ -76,7 +76,7 @@ public class FriendRequestsFragment extends Fragment {
             @Override
             public void onDecline(FriendRequestItem item) {
                 friendRepository.removeConnection(item.connection.id)
-                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Canceled request", false));
+                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), getString(R.string.friend_request_rejected, item.user.name), false));
             }
         });
         rvSent.setAdapter(sentAdapter);
@@ -103,7 +103,7 @@ public class FriendRequestsFragment extends Fragment {
                     if (task.isSuccessful() && task.getResult() != null) {
                         items.add(new FriendRequestItem(connections.get(index), task.getResult(), false));
                     } else {
-                        UserProfile dummy = new UserProfile(connections.get(index).senderId, "", "", "unknown", "Unknown User", "", "");
+                        UserProfile dummy = new UserProfile(connections.get(index).senderId, "", "", "unknown", getString(R.string.friend_unknown_user), "", "");
                         items.add(new FriendRequestItem(connections.get(index), dummy, false));
                     }
                     
@@ -134,7 +134,7 @@ public class FriendRequestsFragment extends Fragment {
                     if (task.isSuccessful() && task.getResult() != null) {
                         items.add(new FriendRequestItem(connections.get(index), task.getResult(), true));
                     } else {
-                        UserProfile dummy = new UserProfile(connections.get(index).receiverId, "", "", "unknown", "Unknown User", "", "");
+                        UserProfile dummy = new UserProfile(connections.get(index).receiverId, "", "", "unknown", getString(R.string.friend_unknown_user), "", "");
                         items.add(new FriendRequestItem(connections.get(index), dummy, true));
                     }
                     

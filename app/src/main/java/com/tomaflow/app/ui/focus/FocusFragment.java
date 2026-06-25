@@ -224,7 +224,7 @@ public class FocusFragment extends Fragment {
                     } else if (player.getCurrentTrack() != null) {
                         player.resume(requireContext());
                     } else {
-                        com.tomaflow.app.utils.TomaToast.show(getContext(), R.string.focus_select_music_first, true);
+                        com.tomaflow.app.utils.TomaToast.show(getContext(), R.string.focus_select_music_first, false);
                     }
                 }
             });
@@ -250,7 +250,7 @@ public class FocusFragment extends Fragment {
             if (state.phase == PomodoroTimer.Phase.FOCUS) {
                 com.tomaflow.app.timer.SettingsManager settings = new com.tomaflow.app.timer.SettingsManager(requireContext());
                 if (settings.isStrictMode()) {
-                    com.tomaflow.app.utils.TomaToast.show(requireContext(), R.string.strict_mode_blocked, true);
+                    com.tomaflow.app.utils.TomaToast.show(requireContext(), R.string.strict_mode_blocked, false);
                     return;
                 }
             }
@@ -269,7 +269,7 @@ public class FocusFragment extends Fragment {
         if (cur != null && cur.phase == PomodoroTimer.Phase.FOCUS) {
             com.tomaflow.app.timer.SettingsManager settings = new com.tomaflow.app.timer.SettingsManager(requireContext());
             if (settings.isStrictMode()) {
-                com.tomaflow.app.utils.TomaToast.show(requireContext(), R.string.strict_mode_blocked, true);
+                com.tomaflow.app.utils.TomaToast.show(requireContext(), R.string.strict_mode_blocked, false);
                 return;
             }
             new AlertDialog.Builder(requireContext())
@@ -293,7 +293,7 @@ public class FocusFragment extends Fragment {
         if (cur != null && cur.phase == PomodoroTimer.Phase.FOCUS) {
             com.tomaflow.app.timer.SettingsManager settings = new com.tomaflow.app.timer.SettingsManager(requireContext());
             if (settings.isStrictMode()) {
-                com.tomaflow.app.utils.TomaToast.show(requireContext(), R.string.strict_mode_blocked, true);
+                com.tomaflow.app.utils.TomaToast.show(requireContext(), R.string.strict_mode_blocked, false);
                 return;
             }
             new AlertDialog.Builder(requireContext())

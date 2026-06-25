@@ -29,6 +29,10 @@ import java.util.Calendar;
 import java.util.Locale;
 
 public class EditProfileActivity extends AppCompatActivity {
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        super.attachBaseContext(com.tomaflow.app.utils.LanguageManager.wrap(base));
+    }
 
     private ImageView ivAvatar;
     private TextView tvInitials;
@@ -222,3 +226,4 @@ public class EditProfileActivity extends AppCompatActivity {
         });
     }
 }
+

@@ -48,7 +48,7 @@ public class FriendsListFragment extends Fragment {
             if (isGranted) {
                 findFriendsFromContacts();
             } else {
-                TomaToast.show(requireContext(), "Permission denied. Cannot read contacts.", false);
+                TomaToast.show(requireContext(), R.string.friend_permission_contacts_denied, false);
             }
         });
     }
@@ -67,23 +67,23 @@ public class FriendsListFragment extends Fragment {
         rvFriends = view.findViewById(R.id.rv_friends);
         rvFriends.setLayoutManager(new LinearLayoutManager(getContext()));
         
-        adapter = new FriendAdapter("Add", (user, action) -> {
-            if ("Friend".equals(action)) {
+        adapter = new FriendAdapter(getString(R.string.friend_add), (user, action) -> {
+            if (getString(R.string.friend_status_friend).equals(action)) {
                 new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                    .setTitle("Unfriend")
-                    .setMessage("Are you sure you want to unfriend " + user.name + "?")
-                    .setPositiveButton("Unfriend", (dialog, which) -> {
+                    .setTitle(R.string.friend_action_unfriend)
+                    .setMessage(getString(R.string.friend_unfriend_confirm, user.name))
+                    .setPositiveButton(R.string.friend_action_unfriend, (dialog, which) -> {
                         String myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                         String connectionId = myId.compareTo(user.uid) < 0 ? myId + "_" + user.uid : user.uid + "_" + myId;
                         friendRepository.removeConnection(connectionId)
-                            .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Unfriended " + user.name, true));
+                            .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), getString(R.string.friend_unfriended, user.name), true));
                     })
-                    .setNegativeButton("Cancel", null)
+                    .setNegativeButton(R.string.action_cancel, null)
                     .show();
-            } else if ("Add".equals(action)) {
+            } else if (getString(R.string.friend_add).equals(action)) {
                 friendRepository.sendFriendRequest(user.uid)
-                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Friend request sent to " + user.name, true))
-                    .addOnFailureListener(e -> TomaToast.show(requireContext(), "Failed to send request", false));
+                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), getString(R.string.friend_request_sent, user.name), true))
+                    .addOnFailureListener(e -> TomaToast.show(requireContext(), R.string.friend_request_failed, false));
             }
         });
         rvFriends.setAdapter(adapter);
@@ -129,25 +129,25 @@ public class FriendsListFragment extends Fragment {
                     if (task.isSuccessful() && task.getResult() != null) {
                         friendsList.add(task.getResult());
                     } else {
-                        friendsList.add(new UserProfile(targetUid, "", "", "unknown", "Unknown User", "", ""));
+                        friendsList.add(new UserProfile(targetUid, "", "", "unknown", getString(R.string.friend_unknown_user), "", ""));
                     }
                     
                     pendingCount[0]--;
                     if (pendingCount[0] == 0) {
                         if (adapter == null) {
-                            adapter = new FriendAdapter("Friend", (user, action) -> {
-                                if ("Friend".equals(action)) {
+                            adapter = new FriendAdapter(getString(R.string.friend_status_friend), (user, action) -> {
+                                if (getString(R.string.friend_status_friend).equals(action)) {
                                     new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                                        .setTitle("Unfriend")
-                                        .setMessage("Are you sure you want to unfriend " + user.name + "?")
-                                        .setPositiveButton("Unfriend", (dialog, which) -> {
+                                        .setTitle(R.string.friend_action_unfriend)
+                                        .setMessage(getString(R.string.friend_unfriend_confirm, user.name))
+                                        .setPositiveButton(R.string.friend_action_unfriend, (dialog, which) -> {
                                             // Find connection ID
                                             String myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                             String connectionId = myId.compareTo(user.uid) < 0 ? myId + "_" + user.uid : user.uid + "_" + myId;
                                             friendRepository.removeConnection(connectionId)
-                                                .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Unfriended " + user.name, true));
+                                                .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), getString(R.string.friend_unfriended, user.name), true));
                                         })
-                                        .setNegativeButton("Cancel", null)
+                                        .setNegativeButton(R.string.action_cancel, null)
                                         .show();
                                 }
                             });
@@ -209,24 +209,24 @@ public class FriendsListFragment extends Fragment {
                 if (adapter != null) adapter.submitList(new ArrayList<>());
             } else {
                 emptyState.setVisibility(View.GONE);
-                adapter = new FriendAdapter("Add", (user, action) -> {
-                    if ("Friend".equals(action)) {
+                adapter = new FriendAdapter(getString(R.string.friend_add), (user, action) -> {
+                    if (getString(R.string.friend_status_friend).equals(action)) {
                         new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                            .setTitle("Unfriend")
-                            .setMessage("Are you sure you want to unfriend " + user.name + "?")
-                            .setPositiveButton("Unfriend", (dialog, which) -> {
+                            .setTitle(R.string.friend_action_unfriend)
+                            .setMessage(getString(R.string.friend_unfriend_confirm, user.name))
+                            .setPositiveButton(R.string.friend_action_unfriend, (dialog, which) -> {
                                 String myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                 String connectionId = myId.compareTo(user.uid) < 0 ? myId + "_" + user.uid : user.uid + "_" + myId;
                                 friendRepository.removeConnection(connectionId)
-                                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Unfriended " + user.name, true));
+                                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), getString(R.string.friend_unfriended, user.name), true));
                             })
-                            .setNegativeButton("Cancel", null)
+                            .setNegativeButton(R.string.action_cancel, null)
                             .show();
-                    } else if ("Add".equals(action)) {
+                    } else if (getString(R.string.friend_add).equals(action)) {
                         statusMap.put(user.uid, "SENT");
                         if (adapter != null) adapter.setUserStatusMap(statusMap);
                         friendRepository.sendFriendRequest(user.uid)
-                            .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Friend request sent to " + user.name, true));
+                            .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), getString(R.string.friend_request_sent, user.name), true));
                     }
                 });
                 adapter.setUserStatusMap(statusMap);
@@ -239,33 +239,33 @@ public class FriendsListFragment extends Fragment {
     private void findFriendsFromContacts() {
         List<String> phones = ContactsHelper.getPhoneNumbers(requireContext());
         if (phones.isEmpty()) {
-            TomaToast.show(requireContext(), "No contacts found.", false);
+            TomaToast.show(requireContext(), R.string.friend_no_contacts_found, false);
             return;
         }
-        TomaToast.show(requireContext(), "Searching contacts...", true);
+        TomaToast.show(requireContext(), R.string.friend_searching_contacts, true);
         friendRepository.findFriendsByPhones(phones).addOnSuccessListener(users -> {
             if (users.isEmpty()) {
-                TomaToast.show(requireContext(), "No friends found from contacts.", false);
+                TomaToast.show(requireContext(), R.string.friend_no_friends_from_contacts, false);
             } else {
                 emptyState.setVisibility(View.GONE);
-                adapter = new FriendAdapter("Add", (user, action) -> {
-                    if ("Friend".equals(action)) {
+                adapter = new FriendAdapter(getString(R.string.friend_add), (user, action) -> {
+                    if (getString(R.string.friend_status_friend).equals(action)) {
                         new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                            .setTitle("Unfriend")
-                            .setMessage("Are you sure you want to unfriend " + user.name + "?")
-                            .setPositiveButton("Unfriend", (dialog, which) -> {
+                            .setTitle(R.string.friend_action_unfriend)
+                            .setMessage(getString(R.string.friend_unfriend_confirm, user.name))
+                            .setPositiveButton(R.string.friend_action_unfriend, (dialog, which) -> {
                                 String myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                 String connectionId = myId.compareTo(user.uid) < 0 ? myId + "_" + user.uid : user.uid + "_" + myId;
                                 friendRepository.removeConnection(connectionId)
-                                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Unfriended " + user.name, true));
+                                    .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), getString(R.string.friend_unfriended, user.name), true));
                             })
-                            .setNegativeButton("Cancel", null)
+                            .setNegativeButton(R.string.action_cancel, null)
                             .show();
-                    } else if ("Add".equals(action)) {
+                    } else if (getString(R.string.friend_add).equals(action)) {
                         statusMap.put(user.uid, "SENT");
                         if (adapter != null) adapter.setUserStatusMap(statusMap);
                         friendRepository.sendFriendRequest(user.uid)
-                            .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), "Friend request sent to " + user.name, true));
+                            .addOnSuccessListener(aVoid -> TomaToast.show(requireContext(), getString(R.string.friend_request_sent, user.name), true));
                     }
                 });
                 adapter.setUserStatusMap(statusMap);
