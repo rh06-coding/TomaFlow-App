@@ -114,7 +114,11 @@ public class NoteAdapter extends ListAdapter<NoteEntity, NoteAdapter.NoteViewHol
             }
             
             tvMood.setText(moodText);
-            vMoodStrip.setBackgroundResource(colorRes);
+            // Use a rounded-left-corner shape so the strip follows the card's
+            // 16dp corner radius instead of poking out as a flat rectangle.
+            // mutate() so tint isn't shared across recycled rows.
+            vMoodStrip.setBackgroundResource(R.drawable.bg_mood_strip);
+            vMoodStrip.getBackground().mutate().setTint(androidx.core.content.ContextCompat.getColor(context, colorRes));
             tvMood.setTextColor(context.getResources().getColor(colorRes, null));
         }
     }
