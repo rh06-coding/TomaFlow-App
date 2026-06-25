@@ -10,18 +10,15 @@
     app:cardElevation="0dp"
     app:strokeWidth="0dp"
     app:cardPreventCornerOverlap="false"
-    app:cardBackgroundColor="@color/toma_background">
+    app:cardBackgroundColor="@color/toma_surface_muted">
 
-    <!-- clipToOutline + a 16dp-rounded background clips the 6dp mood strip to
-         the card's rounded left corners, so the strip follows the card instead
-         of poking out. -->
+    <!-- One shape: the card is the muted surface (no inner bg_card_muted box).
+         MaterialCardView clips its direct children to cardCornerRadius, so the
+         6dp mood strip follows the card's rounded left corners automatically. -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:clipToOutline="true"
-        android:outlineProvider="background"
-        android:background="@drawable/bg_note_clip">
+        android:orientation="horizontal">
 
         <View
             android:id="@+id/v_mood_strip"
@@ -34,8 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:background="@drawable/bg_card_muted">
+            android:padding="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
