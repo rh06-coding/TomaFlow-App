@@ -11,11 +11,12 @@
     abstract *;
 }
 
-# ── Keep data classes (entity field names used by Room) ───────────────────────
+# ── Keep data classes (entity field names used by Room & Firestore) ───────────
 -keepclassmembers class com.tomaflow.app.data.db.entity.** {
     <fields>;
     <init>(...);
 }
+-keep class com.tomaflow.app.data.model.** { *; }
 
 # ── Suppress warnings for unused Kotlin runtime (pulled by transitive deps) ───
 -dontwarn kotlin.**
