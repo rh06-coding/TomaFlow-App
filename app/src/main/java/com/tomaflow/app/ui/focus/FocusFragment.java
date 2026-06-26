@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -22,6 +21,7 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.tomaflow.app.R;
 import com.tomaflow.app.constants.AppConstants;
 import com.tomaflow.app.data.db.entity.TaskEntity;
+import com.tomaflow.app.databinding.FragmentFocusBinding;
 import com.tomaflow.app.timer.PomodoroTimer;
 import com.tomaflow.app.ui.timer.TimerView;
 import com.tomaflow.app.ui.timer.TimerViewModel;
@@ -41,6 +41,7 @@ public class FocusFragment extends Fragment {
     private static final int    COLOR_SHORT_BREAK_ARC = 0xFF3FA66B; // toma_success
     private static final int    COLOR_LONG_BREAK_ARC  = 0xFF3B82F6; // toma_info
 
+    private FragmentFocusBinding binding;
     private TimerViewModel        mTimerViewModel;
     private TaskViewModel         mTaskViewModel;
     private TaskEntity            mCurrentTask;
@@ -48,7 +49,6 @@ public class FocusFragment extends Fragment {
     private TextView              mTvTime;
     private TextView              mTvSessionLabel;
     private ImageButton           mBtnPlayPause;
-    private View                  mRootScrollView;
     private TomatoGrowthView      mTomatoGrowthView;
     private View                  mTomatoWidget;
     private TextView              mTvTomatoStatus;
@@ -133,7 +133,8 @@ public class FocusFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_focus, container, false);
+        binding = FragmentFocusBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -150,41 +151,37 @@ public class FocusFragment extends Fragment {
             avatar.setOnClickListener(v -> androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_profile));
         }
 
-        bindViews(view);
+        bindViews();
         setupTimerObserver();
         setupTaskObserver();
     }
 
     private boolean isTaskCompleted = false;
 
-    private void bindViews(View v) {
-        mRootScrollView   = v;
-        mTimerView        = v.findViewById(R.id.timer_view);
-        mTvTime           = v.findViewById(R.id.tv_time);
-        mTvSessionLabel   = v.findViewById(R.id.tv_session_label);
-        mBtnPlayPause     = v.findViewById(R.id.btn_play_pause);
-        mTomatoGrowthView = v.findViewById(R.id.tomato_growth_view);
-        mTomatoWidget     = v.findViewById(R.id.layout_tomato_widget);
-        mTvTomatoStatus   = v.findViewById(R.id.tv_tomato_status);
-        ImageButton btnReset     = v.findViewById(R.id.btn_reset);
-        ImageButton btnSkip      = v.findViewById(R.id.btn_skip);
-        CardView cardCurrentTask = v.findViewById(R.id.card_current_task);
+    private void bindViews() {
+        mTimerView        = binding.timerView;
+        mTvTime           = binding.tvTime;
+        mTvSessionLabel   = binding.tvSessionLabel;
+        mBtnPlayPause     = binding.btnPlayPause;
+        mTomatoGrowthView = binding.tomatoGrowthView;
+        mTomatoWidget     = binding.layoutTomatoWidget;
+        mTvTomatoStatus   = binding.tvTomatoStatus;
 
-        mTvTaskTitle    = v.findViewById(R.id.tv_task_title);
-        mTvTaskSubtitle = v.findViewById(R.id.tv_task_subtitle);
-        mTvTaskPomos    = v.findViewById(R.id.tv_task_pomos);
+        mTvTaskTitle    = binding.tvTaskTitle;
+        mTvTaskSubtitle = binding.tvTaskSubtitle;
+        mTvTaskPomos    = binding.tvTaskPomos;
 
         mTvTaskTitle.setText(getString(R.string.focus_no_task));
         mTvTaskSubtitle.setText(getString(R.string.focus_no_task_sub));
         if (mTvTaskPomos != null) mTvTaskPomos.setVisibility(View.GONE);
 
         mBtnPlayPause.setOnClickListener(v1 -> onPlayPauseClicked());
-        btnReset.setOnClickListener(v1 -> onResetClicked());
-        btnSkip.setOnClickListener(v1 -> onSkipClicked());
-        cardCurrentTask.setOnClickListener(v1 -> onTaskCardClicked());
+        binding.btnReset.setOnClickListener(v1 -> onResetClicked());
+        binding.btnSkip.setOnClickListener(v1 -> onSkipClicked());
+        binding.cardCurrentTask.setOnClickListener(v1 -> onTaskCardClicked());
 
         // ── Session Tab Switcher ───────────────────────────────────────────────
-        mSessionToggle = v.findViewById(R.id.session_toggle);
+        mSessionToggle = binding.sessionToggle;
         if (mSessionToggle != null) {
             mSessionToggle.check(R.id.btn_tab_focus); // default
             mSessionToggle.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
@@ -199,9 +196,9 @@ public class FocusFragment extends Fragment {
             });
         }
 
-        mTvMusicName = v.findViewById(R.id.tv_music_name);
-        View btnPickMusic = v.findViewById(R.id.btn_pick_music);
-        View btnPlayMusic = v.findViewById(R.id.btn_play_music);
+        mTvMusicName = binding.tvMusicName;
+        View btnPickMusic = binding.btnPickMusic;
+        View btnPlayMusic = binding.btnPlayMusic;
 
         if (btnPickMusic != null) {
             btnPickMusic.setOnClickListener(v1 -> {
@@ -212,7 +209,7 @@ public class FocusFragment extends Fragment {
                 musicPickerLauncher.launch(intent);
             });
         }
-        
+
         if (btnPlayMusic != null) {
             btnPlayMusic.setOnClickListener(v1 -> {
                 com.tomaflow.app.ui.music.AppMusicPlayer player = com.tomaflow.app.ui.music.AppMusicPlayer.getInstance();
@@ -576,13 +573,13 @@ public class FocusFragment extends Fragment {
         }
 
         // Background color animation
-        if (mRootScrollView != null) {
+        if (binding != null) {
             ValueAnimator bgAnimator = ValueAnimator.ofObject(
                     new ArgbEvaluator(), fromBg, toBg);
             bgAnimator.setDuration(PHASE_ANIM_MS);
             bgAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
             bgAnimator.addUpdateListener(anim ->
-                    mRootScrollView.setBackgroundColor((int) anim.getAnimatedValue()));
+                    binding.getRoot().setBackgroundColor((int) anim.getAnimatedValue()));
             bgAnimator.start();
         }
     }
@@ -625,11 +622,12 @@ public class FocusFragment extends Fragment {
         mTomatoGrowthView = null;
         mTomatoWidget     = null;
         mTvTomatoStatus   = null;
+        binding = null;
     }
 
     private final com.tomaflow.app.ui.music.AppMusicPlayer.OnPlaybackStateChanged mMusicListener = (isPlaying, track) -> {
-        if (getView() != null) {
-            android.widget.ImageView btnPlay = getView().findViewById(R.id.btn_play_music);
+        if (binding != null) {
+            android.widget.ImageView btnPlay = binding.btnPlayMusic;
             if (btnPlay != null) {
                 btnPlay.setImageResource(isPlaying ? R.drawable.ic_pause : R.drawable.ic_play);
             }

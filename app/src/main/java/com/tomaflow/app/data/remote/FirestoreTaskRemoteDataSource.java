@@ -1,6 +1,7 @@
 package com.tomaflow.app.data.remote;
 
 import android.util.Log;
+import com.tomaflow.app.utils.TomaFlowLog;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -53,7 +54,7 @@ public class FirestoreTaskRemoteDataSource {
                 .document(task.taskId)
                 .set(data, SetOptions.merge())
                 .addOnSuccessListener(unused ->
-                        Log.d(TAG, "Upload task success: " + task.taskId)
+                        TomaFlowLog.d(TAG, "Upload task success: " + task.taskId)
                 )
                 .addOnFailureListener(e ->
                         Log.e(TAG, "Upload task failed: " + task.taskId, e)
@@ -72,7 +73,7 @@ public class FirestoreTaskRemoteDataSource {
                 .document(taskId)
                 .delete()
                 .addOnSuccessListener(unused ->
-                        Log.d(TAG, "Delete task success: " + taskId)
+                        TomaFlowLog.d(TAG, "Delete task success: " + taskId)
                 )
                 .addOnFailureListener(e ->
                         Log.e(TAG, "Delete task failed: " + taskId, e)
@@ -114,7 +115,7 @@ public class FirestoreTaskRemoteDataSource {
                         tasks.add(task);
                     }
 
-                    Log.d(TAG, "Fetch tasks success: " + tasks.size());
+                    TomaFlowLog.d(TAG, "Fetch tasks success: " + tasks.size());
                     callback.onSuccess(tasks);
                 })
                 .addOnFailureListener(e -> {

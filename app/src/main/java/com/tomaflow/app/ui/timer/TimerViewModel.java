@@ -118,13 +118,23 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
     @Override
     public void onStateChanged(PomodoroTimer.TimerState state) {
         mTimerState.postValue(state);
+        // Capture focus start for the Failed path (SKIP/RESET). The Service captures
+        // its own epoch for Completed sessions, so this is only used when the user
+        // abandons a run. Catches the break->focus transition that sendCommand's
+        // Start guard misses.
+        if (state.phase == PomodoroTimer.Phase.FOCUS && state.isRunning && mFocusStartTime == 0L) {
+            mFocusStartTime = System.currentTimeMillis();
+        }
     }
 
 
     @Override
     public void onFocusComplete(int sessionCount) {
         mFocusCompleteEvent.postValue(sessionCount);
-        saveCurrentFocusSession("Completed");
+        // The Service is the sole persistor for Completed sessions — do NOT save here.
+        // (Previously both this ViewModel and the Service wrote a row, double-saving
+        // Room + Firestore with disagreeing timestamps and a missing taskId.)
+        mFocusStartTime = 0L;
         if (mCurrentTaskId != null) {
             mTaskRepository.decrementPomodoro(mCurrentTaskId, () -> {
                 mTaskCompletedEvent.postValue(true);
@@ -158,6 +168,10 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
         Intent intent = new Intent(TimerEngineService.ACTION_COMMAND);
         intent.setClass(getApplication(), TimerEngineService.class);
         intent.putExtra(AppConstants.INTENT_EXTRA_COMMAND, command);
+        // Attach the current task so the Service's Completed session row carries it.
+        if (AppConstants.COMMAND_START.equals(command) && mCurrentTaskId != null) {
+            intent.putExtra(AppConstants.INTENT_EXTRA_TASK_ID, mCurrentTaskId);
+        }
 
         getApplication().startService(intent);
     }
@@ -179,6 +193,14 @@ public class TimerViewModel extends AndroidViewModel implements PomodoroTimer.On
         }
 
         long endTime = System.currentTimeMillis();
+        // Skip near-zero "Failed" rows (e.g. user tapped Reset immediately after
+        // Start) so they don't pollute session history. The guard also makes a
+        // rapid double-RESET a no-op: the first call zeroes mFocusStartTime below,
+        // so the second call returns at the top.
+        if (endTime - mFocusStartTime < 10_000L) {
+            mFocusStartTime = 0L;
+            return;
+        }
 
         mSessionRepository.saveSession(
                 mCurrentTaskId,

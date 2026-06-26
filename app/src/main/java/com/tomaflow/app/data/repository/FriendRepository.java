@@ -1,20 +1,22 @@
 package com.tomaflow.app.data.repository;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.tomaflow.app.data.model.FriendConnection;
 import com.tomaflow.app.data.model.UserProfile;
 import com.tomaflow.app.utils.ConnectionIds;
+import com.tomaflow.app.utils.FirestoreLiveData;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FriendRepository {
     private final FirebaseFirestore db;
@@ -55,6 +57,7 @@ public class FriendRepository {
     }
 
     // 2. Suggest friends via Phone Contacts
+    @SuppressWarnings("unchecked")
     public Task<List<UserProfile>> findFriendsByPhones(List<String> phoneNumbers) {
         if (phoneNumbers == null || phoneNumbers.isEmpty()) {
             return Tasks.forResult(new ArrayList<>());
@@ -118,79 +121,106 @@ public class FriendRepository {
     }
 
     // 6. Get Pending Requests (where receiver is me)
-    private MutableLiveData<List<FriendConnection>> pendingRequestsLiveData;
+    private FirestoreLiveData<List<FriendConnection>> pendingRequestsLiveData;
     public LiveData<List<FriendConnection>> getPendingRequests() {
         if (pendingRequestsLiveData == null) {
-            pendingRequestsLiveData = new MutableLiveData<>();
-            db.collection("friend_connections")
-              .whereEqualTo("receiverId", currentUserId)
-              .whereEqualTo("status", "PENDING")
-              .addSnapshotListener((snapshot, e) -> {
-                  if (e != null) return;
-                  List<FriendConnection> list = new ArrayList<>();
-                  if (snapshot != null) {
-                      for (DocumentSnapshot doc : snapshot.getDocuments()) {
-                          list.add(doc.toObject(FriendConnection.class));
-                      }
-                  }
-                  pendingRequestsLiveData.setValue(list);
-              });
+            Query query = db.collection("friend_connections")
+                    .whereEqualTo("receiverId", currentUserId)
+                    .whereEqualTo("status", "PENDING");
+            pendingRequestsLiveData = new FirestoreLiveData<List<FriendConnection>>() {
+                @Override
+                protected ListenerRegistration listen() {
+                    return query.addSnapshotListener((snapshot, e) -> {
+                        if (e != null) return;
+                        List<FriendConnection> list = new ArrayList<>();
+                        if (snapshot != null) {
+                            for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                                list.add(doc.toObject(FriendConnection.class));
+                            }
+                        }
+                        setValue(list);
+                    });
+                }
+            };
         }
         return pendingRequestsLiveData;
     }
 
     // 6.5 Get Sent Requests (where sender is me)
-    private MutableLiveData<List<FriendConnection>> sentRequestsLiveData;
+    private FirestoreLiveData<List<FriendConnection>> sentRequestsLiveData;
     public LiveData<List<FriendConnection>> getSentRequests() {
         if (sentRequestsLiveData == null) {
-            sentRequestsLiveData = new MutableLiveData<>();
-            db.collection("friend_connections")
-              .whereEqualTo("senderId", currentUserId)
-              .whereEqualTo("status", "PENDING")
-              .addSnapshotListener((snapshot, e) -> {
-                  if (e != null) return;
-                  List<FriendConnection> list = new ArrayList<>();
-                  if (snapshot != null) {
-                      for (DocumentSnapshot doc : snapshot.getDocuments()) {
-                          list.add(doc.toObject(FriendConnection.class));
-                      }
-                  }
-                  sentRequestsLiveData.setValue(list);
-              });
+            Query query = db.collection("friend_connections")
+                    .whereEqualTo("senderId", currentUserId)
+                    .whereEqualTo("status", "PENDING");
+            sentRequestsLiveData = new FirestoreLiveData<List<FriendConnection>>() {
+                @Override
+                protected ListenerRegistration listen() {
+                    return query.addSnapshotListener((snapshot, e) -> {
+                        if (e != null) return;
+                        List<FriendConnection> list = new ArrayList<>();
+                        if (snapshot != null) {
+                            for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                                list.add(doc.toObject(FriendConnection.class));
+                            }
+                        }
+                        setValue(list);
+                    });
+                }
+            };
         }
         return sentRequestsLiveData;
     }
 
     // 7. Get Friends (where I am sender or receiver and status is ACCEPTED)
-    private MutableLiveData<List<FriendConnection>> friendsLiveData;
+    private FirestoreLiveData<List<FriendConnection>> friendsLiveData;
     public LiveData<List<FriendConnection>> getFriends() {
         if (friendsLiveData == null) {
-            friendsLiveData = new MutableLiveData<>();
-            db.collection("friend_connections")
-              .whereEqualTo("status", "ACCEPTED")
-              .whereIn("senderId", Arrays.asList(currentUserId))
-              .addSnapshotListener((snap1, e1) -> {
-                  db.collection("friend_connections")
-                    .whereEqualTo("status", "ACCEPTED")
-                    .whereIn("receiverId", Arrays.asList(currentUserId))
-                    .get()
-                    .addOnSuccessListener(snap2 -> {
-                        List<FriendConnection> list = new ArrayList<>();
-                        if (snap1 != null) {
-                            for (DocumentSnapshot doc : snap1.getDocuments()) {
-                                list.add(doc.toObject(FriendConnection.class));
-                            }
-                        }
-                        if (snap2 != null) {
-                            for (DocumentSnapshot doc : snap2.getDocuments()) {
-                                list.add(doc.toObject(FriendConnection.class));
-                            }
-                        }
-                        friendsLiveData.setValue(list);
-                    });
-              });
+            friendsLiveData = new FriendsLiveData();
         }
         return friendsLiveData;
+    }
+
+    /**
+     * Friends list is the union of two queries (I am sender OR I am receiver, both
+     * ACCEPTED). Firestore cannot OR two queries in one, so we listen to the
+     * sender-side docs and, on each emission, fetch the receiver-side docs once and
+     * merge. Only the outer snapshot listener is registered via FirestoreLiveData;
+     * the inner one-shot {@code .get()} is gated on having active observers so we
+     * don't publish after teardown.
+     *
+     * <p>Known limitation: the inner fetch is not live, so receiver-side new friends
+     * only refresh on the next sender-side doc change. Preserves prior behavior;
+     * tracked as a separate follow-up.</p>
+     */
+    private final class FriendsLiveData extends FirestoreLiveData<List<FriendConnection>> {
+        @Override
+        protected ListenerRegistration listen() {
+            Query senderQuery = db.collection("friend_connections")
+                    .whereEqualTo("status", "ACCEPTED")
+                    .whereEqualTo("senderId", currentUserId);
+            Query receiverQuery = db.collection("friend_connections")
+                    .whereEqualTo("status", "ACCEPTED")
+                    .whereEqualTo("receiverId", currentUserId);
+            return senderQuery.addSnapshotListener((snap1, e1) -> {
+                if (e1 != null) return;
+                receiverQuery.get().addOnSuccessListener(snap2 -> {
+                    if (!hasActiveObservers()) return;
+                    List<FriendConnection> list = new ArrayList<>();
+                    if (snap1 != null) {
+                        for (DocumentSnapshot doc : snap1.getDocuments()) {
+                            list.add(doc.toObject(FriendConnection.class));
+                        }
+                    }
+                    if (snap2 != null) {
+                        for (DocumentSnapshot doc : snap2.getDocuments()) {
+                            list.add(doc.toObject(FriendConnection.class));
+                        }
+                    }
+                    setValue(list);
+                });
+            });
+        }
     }
     
     // Get single user profile to map from connection to UserProfile
@@ -208,18 +238,28 @@ public class FriendRepository {
     }
 
     // Get live data for a specific user profile
+    private final Map<String, FirestoreLiveData<UserProfile>> userProfileCache = new HashMap<>();
     public LiveData<UserProfile> getUserProfileLiveData(String uid) {
-        MutableLiveData<UserProfile> liveData = new MutableLiveData<>();
-        db.collection("users").document(uid).addSnapshotListener((snapshot, e) -> {
-            if (e != null) return;
-            if (snapshot != null && snapshot.exists()) {
-                UserProfile profile = snapshot.toObject(UserProfile.class);
-                if (profile != null) {
-                    profile.uid = snapshot.getId();
-                    liveData.setValue(profile);
+        FirestoreLiveData<UserProfile> liveData = userProfileCache.get(uid);
+        if (liveData == null) {
+            com.google.firebase.firestore.DocumentReference ref = db.collection("users").document(uid);
+            liveData = new FirestoreLiveData<UserProfile>() {
+                @Override
+                protected ListenerRegistration listen() {
+                    return ref.addSnapshotListener((snapshot, e) -> {
+                        if (e != null) return;
+                        if (snapshot != null && snapshot.exists()) {
+                            UserProfile profile = snapshot.toObject(UserProfile.class);
+                            if (profile != null) {
+                                profile.uid = snapshot.getId();
+                                setValue(profile);
+                            }
+                        }
+                    });
                 }
-            }
-        });
+            };
+            userProfileCache.put(uid, liveData);
+        }
         return liveData;
     }
 }

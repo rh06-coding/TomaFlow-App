@@ -44,6 +44,15 @@ public class TimerEngineService extends Service {
     private SessionRepository    mSessionRepository;
     private PowerManager.WakeLock mWakeLock;
 
+    /** Task attached to the current focus run (plumbed from the UI via COMMAND_START).
+     *  Cleared on RESET. Sole source of the sessionId.taskId so the Service's session
+     *  row carries the task (the ViewModel no longer saves its own Completed row). */
+    private String mCurrentTaskId;
+    /** Wall-clock epoch when the current focus run started. Captured on RUNNING_FOCUS
+     *  entry in onStateChanged so the recorded session uses the real start time
+     *  regardless of which phase the user pressed Start from. */
+    private long mFocusStartEpoch = 0L;
+
     /** Dedicated background thread for ALL timer ticking — never touches main thread. */
     private HandlerThread        mTimerThread;
     /** Handler that posts work to mTimerThread. */
@@ -117,8 +126,9 @@ public class TimerEngineService extends Service {
         if (intent != null && ACTION_COMMAND.equals(intent.getAction())) {
             final String command = intent.getStringExtra(AppConstants.INTENT_EXTRA_COMMAND);
             final String extraPhase = intent.getStringExtra(AppConstants.INTENT_EXTRA_PHASE);
+            final String extraTaskId = intent.getStringExtra(AppConstants.INTENT_EXTRA_TASK_ID);
             // Execute command on the timer thread to avoid main-thread contention
-            mTimerHandler.post(() -> handleCommand(command, extraPhase));
+            mTimerHandler.post(() -> handleCommand(command, extraPhase, extraTaskId));
         }
         return START_STICKY;
     }
@@ -150,16 +160,19 @@ public class TimerEngineService extends Service {
     // ── Command handling (runs on mTimerThread) ───────────────────────────────
 
     private void handleCommand(String command) {
-        handleCommand(command, null);
+        handleCommand(command, null, null);
     }
 
-    private void handleCommand(String command, String extraPhase) {
+    private void handleCommand(String command, String extraPhase, String extraTaskId) {
         if (command == null) return;
 
         mTimer.setAutoStartBreak(mSettingsManager.isAutoStartBreak());
 
         switch (command) {
             case AppConstants.COMMAND_START:
+                // Task is attached to the run that START begins; null is valid
+                // (user started a pomodoro without selecting a task).
+                mCurrentTaskId = extraTaskId;
                 if (!mTimer.isRunning()) {
                     mTimer.setDurations(
                             mSettingsManager.getFocusDurationMs(),
@@ -195,6 +208,8 @@ public class TimerEngineService extends Service {
                 stopTick();
                 mNotificationHelper.cancelPhaseCompleteNotification();
                 mTimer.reset();
+                mCurrentTaskId = null;
+                mFocusStartEpoch = 0L;
                 break;
 
             case AppConstants.COMMAND_JUMP_TO_PHASE:
@@ -285,6 +300,13 @@ public class TimerEngineService extends Service {
                         com.tomaflow.app.utils.DndManager.checkAndDisableDnd(TimerEngineService.this);
                     }
                 });
+                // Capture the real focus start epoch when entering a running focus phase.
+                // This is the single source of truth for the session's start time and is
+                // correct regardless of which phase the user pressed Start from (the
+                // ViewModel's own capture previously missed the break->focus transition).
+                if (state.state == PomodoroTimer.State.RUNNING_FOCUS && state.isRunning && mFocusStartEpoch == 0L) {
+                    mFocusStartEpoch = System.currentTimeMillis();
+                }
                 // Persist state
                 mStateManager.saveState(state,
                         mTimer.getFocusDurationMs(),
@@ -301,14 +323,19 @@ public class TimerEngineService extends Service {
                     mNotificationHelper.vibrateForPhaseComplete(PomodoroTimer.Phase.FOCUS);
                 });
 
-                // Save session record
+                // Save session record — Service is the SOLE persistor for Completed
+                // sessions. (The ViewModel used to save its own row too, double-writing
+                // Room + Firestore with disagreeing timestamps and a missing taskId.)
+                long now = System.currentTimeMillis();
+                long start = mFocusStartEpoch > 0L ? mFocusStartEpoch : now - mTimer.getFocusDurationMs();
                 SessionEntity session = new SessionEntity();
-                session.startTime = System.currentTimeMillis() - mTimer.getFocusDurationMs();
-                session.endTime   = System.currentTimeMillis();
+                session.taskId    = mCurrentTaskId;
+                session.startTime = start;
+                session.endTime   = now;
                 session.duration  = (int) (mTimer.getFocusDurationMs() / 1000);
                 session.status    = "Completed";
                 mSessionRepository.insert(session);
-
+                mFocusStartEpoch = 0L;
 
                 // Break starts automatically — re-kick the tick loop
                 if (mTimer.isRunning()) scheduleTick();
@@ -421,5 +448,4 @@ public class TimerEngineService extends Service {
             );
         }
     }
-
 }

@@ -127,10 +127,11 @@ public class LoginActivity extends AppCompatActivity {
                             if (snapshotTask.isSuccessful() && snapshotTask.getResult() != null && !snapshotTask.getResult().exists()) {
                                 String email = mAuth.getCurrentUser().getEmail();
                                 String name = mAuth.getCurrentUser().getDisplayName();
-                                String generatedUsername = "user_" + uid.substring(0, 6).toLowerCase();
+                                String generatedUsername = "user_" + uid.substring(0, Math.min(6, uid.length())).toLowerCase();
                                 com.tomaflow.app.data.model.UserProfile userProfile = new com.tomaflow.app.data.model.UserProfile(
                                         uid, email, "", generatedUsername, name, "", "");
-                                com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document(uid).set(userProfile);
+                                com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document(uid).set(userProfile)
+                                        .addOnFailureListener(e -> com.tomaflow.app.utils.TomaFlowLog.e("LoginActivity", "Failed to create user profile doc", e));
                             }
                             goToMain();
                         });
@@ -170,42 +171,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void goToMain() {
-        // Kéo task từ Firestore về Room sau khi user đã đăng nhập.
-        com.tomaflow.app.data.repository.TaskRepository taskRepository = new com.tomaflow.app.data.repository.TaskRepository(getApplication());
-        taskRepository.syncTasksFromFirestore();
-
-        // Kéo lịch sử Pomodoro từ Firestore về Room
-        com.tomaflow.app.data.repository.SessionRepository sessionRepository = new com.tomaflow.app.data.repository.SessionRepository(getApplication());
-        sessionRepository.syncSessionsFromFirestore();
-
-        // Kéo huy hiệu từ Firestore về SharedPreferences
-        com.tomaflow.app.data.repository.RewardsRepository rewardsRepository = new com.tomaflow.app.data.repository.RewardsRepository(getApplication());
-        rewardsRepository.syncRewardsFromFirestore();
-
-        // Kéo nhật ký từ Firestore về Room
-        com.tomaflow.app.data.repository.NoteRepository noteRepository = new com.tomaflow.app.data.repository.NoteRepository(getApplication());
-        noteRepository.syncNotesFromFirestore();
-
-        String uid = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
-        if (uid != null) {
-            com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document(uid).get()
-                .addOnCompleteListener(task -> {
-                    boolean isDark = false;
-                    if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
-                        Boolean dark = task.getResult().getBoolean("isDarkMode");
-                        if (dark != null) isDark = dark;
-                    }
-                    getSharedPreferences("user_theme_prefs", MODE_PRIVATE).edit()
-                            .putBoolean("dark_" + uid, isDark)
-                            .putBoolean("last_dark", isDark).apply();
-                    new com.tomaflow.app.timer.SettingsManager(this).setDarkMode(isDark);
-                    androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(
-                            isDark ? androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES : androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO);
-                    navigateToMain();
-                });
-        } else {
-            navigateToMain();
-        }
+        // Sync + theme orchestration lives in SyncManager so it can also run on a
+        // cold start that skips LoginActivity (see MainActivity.onCreate).
+        new com.tomaflow.app.data.SyncManager(getApplication()).syncAllOnLogin(this::navigateToMain);
     }
 
     private void navigateToMain() {

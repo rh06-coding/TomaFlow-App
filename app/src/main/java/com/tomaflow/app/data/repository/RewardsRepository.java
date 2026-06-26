@@ -79,7 +79,7 @@ public class RewardsRepository {
                     editor.putBoolean("badge_" + entry.getKey(), entry.getValue());
                 }
                 editor.apply();
-                android.util.Log.d("FirestoreSync", "Synced badges from Firestore to Local: " + unlockedBadges.size());
+                com.tomaflow.app.utils.TomaFlowLog.d("FirestoreSync", "Synced badges from Firestore to Local: " + unlockedBadges.size());
             }
 
             @Override

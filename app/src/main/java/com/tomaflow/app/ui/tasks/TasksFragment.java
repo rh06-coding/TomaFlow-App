@@ -21,18 +21,15 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tomaflow.app.R;
 import com.tomaflow.app.data.db.entity.TaskEntity;
+import com.tomaflow.app.databinding.BottomSheetAddTaskBinding;
+import com.tomaflow.app.databinding.FragmentTasksBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TasksFragment extends Fragment {
 
-    private RecyclerView rvActive;
-    private RecyclerView rvDone;
-    private TextView tvActiveCountLabel;
-    private TextView tvDoneCountLabel;
-    private TextView tvEstPomosValue;
-    private TextView tvCompletionRateValue;
+    private FragmentTasksBinding binding;
     private TaskAdapter activeAdapter;
     private TaskAdapter doneAdapter;
     private final List<TaskEntity> activeTasks = new ArrayList<>();
@@ -43,8 +40,8 @@ public class TasksFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_tasks, container, false);
-        return view;
+        binding = FragmentTasksBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -52,13 +49,6 @@ public class TasksFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         com.tomaflow.app.utils.HeaderUIHelper.setupHeader(view, getString(R.string.nav_tasks), getViewLifecycleOwner());
-
-        rvActive = view.findViewById(R.id.rv_active);
-        rvDone = view.findViewById(R.id.rv_done);
-        tvActiveCountLabel = view.findViewById(R.id.tv_active_count_label);
-        tvDoneCountLabel = view.findViewById(R.id.tv_done_count_label);
-        tvEstPomosValue = view.findViewById(R.id.tv_est_pomos_value);
-        tvCompletionRateValue = view.findViewById(R.id.tv_completion_rate_value);
 
         mTaskViewModel = new ViewModelProvider(this).get(TaskViewModel.class);
 
@@ -70,8 +60,7 @@ public class TasksFragment extends Fragment {
         setupRecyclerViews();
         observeTasks();
 
-        FloatingActionButton fabAdd = view.findViewById(R.id.fab_add);
-        fabAdd.setOnClickListener(v -> showAddTaskDialog());
+        binding.fabAdd.setOnClickListener(v -> showAddTaskDialog());
     }
 
     private void setupRecyclerViews() {
@@ -85,8 +74,8 @@ public class TasksFragment extends Fragment {
                 .setNegativeButton(R.string.action_cancel, null)
                 .show();
         });
-        rvActive.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvActive.setAdapter(activeAdapter);
+        binding.rvActive.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rvActive.setAdapter(activeAdapter);
 
         doneAdapter = new TaskAdapter(doneTasks, task -> {
             new com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
@@ -98,8 +87,8 @@ public class TasksFragment extends Fragment {
                 .setNegativeButton(R.string.action_cancel, null)
                 .show();
         });
-        rvDone.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvDone.setAdapter(doneAdapter);
+        binding.rvDone.setLayoutManager(new LinearLayoutManager(getContext()));
+        binding.rvDone.setAdapter(doneAdapter);
     }
 
     /** Drive both lists from Room. Status changes re-emit and rebuild the split. */
@@ -121,25 +110,21 @@ public class TasksFragment extends Fragment {
             activeAdapter.notifyDataSetChanged();
             doneAdapter.notifyDataSetChanged();
             updateCounts();
-            
-            if (tvEstPomosValue != null) {
-                tvEstPomosValue.setText(String.valueOf(estPomos));
-            }
-            if (tvCompletionRateValue != null) {
-                int total = activeTasks.size() + doneTasks.size();
-                if (total == 0) {
-                    tvCompletionRateValue.setText("0%");
-                } else {
-                    int rate = (int) (((float) doneTasks.size() / total) * 100);
-                    tvCompletionRateValue.setText(rate + "%");
-                }
+
+            binding.tvEstPomosValue.setText(String.valueOf(estPomos));
+            int total = activeTasks.size() + doneTasks.size();
+            if (total == 0) {
+                binding.tvCompletionRateValue.setText("0%");
+            } else {
+                int rate = (int) (((float) doneTasks.size() / total) * 100);
+                binding.tvCompletionRateValue.setText(rate + "%");
             }
         });
     }
 
     private void updateCounts() {
-        tvActiveCountLabel.setText(getString(R.string.task_items_count, activeTasks.size()));
-        tvDoneCountLabel.setText(getString(R.string.task_items_count, doneTasks.size()));
+        binding.tvActiveCountLabel.setText(getString(R.string.task_items_count, activeTasks.size()));
+        binding.tvDoneCountLabel.setText(getString(R.string.task_items_count, doneTasks.size()));
     }
 
     private void showAddTaskDialog() {
@@ -150,52 +135,50 @@ public class TasksFragment extends Fragment {
         }
 
         BottomSheetDialog dialog = new BottomSheetDialog(requireContext());
-        View view = getLayoutInflater().inflate(R.layout.bottom_sheet_add_task, null);
-        dialog.setContentView(view);
-
-        EditText etTitle = view.findViewById(R.id.et_title);
-        EditText etNote = view.findViewById(R.id.et_note);
-        EditText etDurationMinutes = view.findViewById(R.id.et_duration_minutes);
-        TextView tvPomodoroCount = view.findViewById(R.id.tv_pomodoro_count);
-        ImageButton btnMinus = view.findViewById(R.id.btn_minus);
-        ImageButton btnPlus = view.findViewById(R.id.btn_plus);
-        MaterialButton btnSave = view.findViewById(R.id.btn_save);
+        BottomSheetAddTaskBinding sheetBinding = BottomSheetAddTaskBinding.inflate(getLayoutInflater());
+        dialog.setContentView(sheetBinding.getRoot());
 
         final int[] count = {1};
 
-        btnMinus.setOnClickListener(v -> {
+        sheetBinding.btnMinus.setOnClickListener(v -> {
             if (count[0] > 1) {
                 count[0]--;
-                tvPomodoroCount.setText(String.valueOf(count[0]));
+                sheetBinding.tvPomodoroCount.setText(String.valueOf(count[0]));
             }
         });
 
-        btnPlus.setOnClickListener(v -> {
+        sheetBinding.btnPlus.setOnClickListener(v -> {
             if (count[0] < 10) {
                 count[0]++;
-                tvPomodoroCount.setText(String.valueOf(count[0]));
+                sheetBinding.tvPomodoroCount.setText(String.valueOf(count[0]));
             }
         });
 
-        btnSave.setOnClickListener(v -> {
-            String title = etTitle.getText().toString().trim();
-            String note = etNote.getText().toString().trim();
+        sheetBinding.btnSave.setOnClickListener(v -> {
+            String title = sheetBinding.etTitle.getText().toString().trim();
+            String note = sheetBinding.etNote.getText().toString().trim();
             if (title.isEmpty()) {
                 com.tomaflow.app.utils.TomaToast.show(getContext(), R.string.task_name_required, false);
                 return;
             }
             int durationMinutes = 0;
-            String durStr = etDurationMinutes != null ? etDurationMinutes.getText().toString().trim() : "";
+            String durStr = sheetBinding.etDurationMinutes != null ? sheetBinding.etDurationMinutes.getText().toString().trim() : "";
             if (!durStr.isEmpty()) {
                 try { durationMinutes = Integer.parseInt(durStr); } catch (NumberFormatException ignored) {}
             }
 
             TaskEntity newTask = new TaskEntity(title, note, count[0], durationMinutes);
             mTaskViewModel.insert(newTask);
-            rvActive.scrollToPosition(0);
+            binding.rvActive.scrollToPosition(0);
             dialog.dismiss();
         });
 
         dialog.show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

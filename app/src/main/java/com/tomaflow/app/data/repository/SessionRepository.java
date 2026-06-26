@@ -103,13 +103,17 @@ public class SessionRepository {
         mRemoteDataSource.fetchSessions(user.getUid(), new FirestoreSessionRemoteDataSource.SessionFetchCallback() {
             @Override
             public void onSuccess(List<SessionEntity> sessions) {
+                // Guard against wiping local history when the remote returns an empty
+                // list — that usually means an offline/partial fetch, not "the user has
+                // no sessions". Delete-then-replace only when we actually got data.
+                if (sessions == null || sessions.isEmpty()) return;
                 sExecutor.execute(() -> {
                     mSessionDao.deleteAll();
                     for (SessionEntity session : sessions) {
                         // Insert/Replace vào Room local
                         mSessionDao.insert(session);
                     }
-                    android.util.Log.d("FirestoreSync", "Synced sessions from Firestore to Room: " + sessions.size());
+                    com.tomaflow.app.utils.TomaFlowLog.d("FirestoreSync", "Synced sessions from Firestore to Room: " + sessions.size());
                 });
             }
 
