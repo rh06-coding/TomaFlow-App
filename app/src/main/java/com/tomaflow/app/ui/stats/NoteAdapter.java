@@ -114,6 +114,8 @@ public class NoteAdapter extends ListAdapter<NoteEntity, NoteAdapter.NoteViewHol
             }
             
             tvMood.setText(moodText);
+            // Plain rectangular color — the parent LinearLayout's clipToOutline
+            // (see item_note.xml) rounds it to the card's 16dp corners.
             vMoodStrip.setBackgroundResource(colorRes);
             tvMood.setTextColor(context.getResources().getColor(colorRes, null));
         }

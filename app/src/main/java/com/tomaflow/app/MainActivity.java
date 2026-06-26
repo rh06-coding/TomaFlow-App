@@ -57,6 +57,19 @@ public class MainActivity extends AppCompatActivity {
             NavController navController = navHostFragment.getNavController();
             NavigationUI.setupWithNavController(mBottomNav, navController);
 
+            // NavigationUI only sets popUpTo(start) for non-start tabs, so tapping the
+            // Focus (start) tab from a secondary destination like Settings didn't pop
+            // — the user got stuck. Override selection so every tab pops to the start
+            // root first, giving a clean top-level switch from anywhere.
+            mBottomNav.setOnItemSelectedListener(item -> {
+                androidx.navigation.NavOptions opts = new androidx.navigation.NavOptions.Builder()
+                        .setLaunchSingleTop(true)
+                        .setPopUpTo(R.id.nav_focus, false)
+                        .build();
+                navController.navigate(item.getItemId(), null, opts);
+                return true;
+            });
+
             // Double tap to exit callback
             OnBackPressedCallback exitCallback = new OnBackPressedCallback(true) {
                 private long lastPressedTime;

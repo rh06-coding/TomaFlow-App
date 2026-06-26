@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scroll_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/toma_background">
@@ -43,27 +44,26 @@
                 android:id="@+id/range_toggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_pill_muted"
                 app:singleSelection="true"
                 app:selectionRequired="true">
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_week"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:text="@string/stats_tab_week"
-                    android:textColor="@color/toma_primary"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:paddingHorizontal="14dp" />
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_month"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:text="@string/stats_tab_month"
-                    android:textColor="@color/toma_text_muted"
-                    android:textStyle="bold" />
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:paddingHorizontal="14dp" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
         </LinearLayout>
 
