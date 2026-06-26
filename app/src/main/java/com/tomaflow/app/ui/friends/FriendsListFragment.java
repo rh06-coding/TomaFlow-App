@@ -121,6 +121,7 @@ public class FriendsListFragment extends Fragment {
             emptyState.setVisibility(View.GONE);
             List<UserProfile> friendsList = new ArrayList<>();
             int[] pendingCount = {connections.size()};
+            if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
             String myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             
             for (int i = 0; i < connections.size(); i++) {
@@ -181,6 +182,7 @@ public class FriendsListFragment extends Fragment {
 
     private void updateUserStatusMap() {
         statusMap.clear();
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) return;
         String myUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         
         List<com.tomaflow.app.data.model.FriendConnection> friends = friendRepository.getFriends().getValue();

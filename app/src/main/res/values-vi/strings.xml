@@ -109,7 +109,7 @@
 
     <string name="placeholder_task_title">Không có Công việc</string>
     <string name="placeholder_task_subtitle">Chọn một công việc để bắt đầu</string>
-    <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID_HERE</string>
+    <string name="default_web_client_id" translatable="false">586445907801-kv4hu5e5qh89g81h3lf5vl10dms6o925.apps.googleusercontent.com</string>
 
     <!-- Music -->
     <string name="focus_music_title">Nhạc nền</string>
