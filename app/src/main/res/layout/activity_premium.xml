@@ -111,15 +111,6 @@
             android:text="@string/premium_btn_upgrade"
             style="@style/Widget.Toma.Button.Primary" />
             
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_restore"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/btn_restore_purchases"
-            android:textColor="@color/toma_primary"
-            style="@style/Widget.MaterialComponents.Button.TextButton" />
-
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

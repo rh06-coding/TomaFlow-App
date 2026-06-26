@@ -275,8 +275,12 @@ public class FocusFragment extends Fragment {
                     .setPositiveButton(R.string.confirm_yes, (dialog, which) -> {
                         if (cur.isRunning) {
                             wiltTomato();
+                            binding.getRoot().postDelayed(() -> {
+                                mTimerViewModel.sendCommand(AppConstants.COMMAND_RESET);
+                            }, 2000);
+                        } else {
+                            mTimerViewModel.sendCommand(AppConstants.COMMAND_RESET);
                         }
-                        mTimerViewModel.sendCommand(AppConstants.COMMAND_RESET);
                     })
                     .setNegativeButton(R.string.confirm_no, null)
                     .show();
@@ -299,8 +303,12 @@ public class FocusFragment extends Fragment {
                     .setPositiveButton(R.string.confirm_yes_skip, (dialog, which) -> {
                         if (cur.isRunning) {
                             wiltTomato();
+                            binding.getRoot().postDelayed(() -> {
+                                mTimerViewModel.sendCommand(AppConstants.COMMAND_SKIP);
+                            }, 2000);
+                        } else {
+                            mTimerViewModel.sendCommand(AppConstants.COMMAND_SKIP);
                         }
-                        mTimerViewModel.sendCommand(AppConstants.COMMAND_SKIP);
                     })
                     .setNegativeButton(R.string.confirm_no, null)
                     .show();

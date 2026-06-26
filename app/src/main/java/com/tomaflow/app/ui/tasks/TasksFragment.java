@@ -162,10 +162,6 @@ public class TasksFragment extends Fragment {
                 return;
             }
             int durationMinutes = 0;
-            String durStr = sheetBinding.etDurationMinutes != null ? sheetBinding.etDurationMinutes.getText().toString().trim() : "";
-            if (!durStr.isEmpty()) {
-                try { durationMinutes = Integer.parseInt(durStr); } catch (NumberFormatException ignored) {}
-            }
 
             TaskEntity newTask = new TaskEntity(title, note, count[0], durationMinutes);
             mTaskViewModel.insert(newTask);

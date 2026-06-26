@@ -28,12 +28,6 @@ public class PremiumActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-        
-        findViewById(R.id.btn_restore).setOnClickListener(v -> {
-            android.content.Intent intent = new android.content.Intent(this, PremiumProcessingActivity.class);
-            startActivity(intent);
-            finish();
-        });
     }
 }
 
