@@ -60,6 +60,7 @@ public class FocusFragment extends Fragment {
     private PomodoroTimer.Phase   mPreviousPhase  = null;
     /** Trạng thái running trước — để phát hiện khi bắt đầu/dừng. */
     private boolean               mPreviousRunning = false;
+    private boolean               mIsWilting = false;
     private MaterialButtonToggleGroup mSessionToggle;
 
     private TextView mTvMusicName;
@@ -275,8 +276,12 @@ public class FocusFragment extends Fragment {
                     .setPositiveButton(R.string.confirm_yes, (dialog, which) -> {
                         if (cur.isRunning) {
                             wiltTomato();
+                            binding.getRoot().postDelayed(() -> {
+                                mTimerViewModel.sendCommand(AppConstants.COMMAND_RESET);
+                            }, 2000);
+                        } else {
+                            mTimerViewModel.sendCommand(AppConstants.COMMAND_RESET);
                         }
-                        mTimerViewModel.sendCommand(AppConstants.COMMAND_RESET);
                     })
                     .setNegativeButton(R.string.confirm_no, null)
                     .show();
@@ -299,8 +304,12 @@ public class FocusFragment extends Fragment {
                     .setPositiveButton(R.string.confirm_yes_skip, (dialog, which) -> {
                         if (cur.isRunning) {
                             wiltTomato();
+                            binding.getRoot().postDelayed(() -> {
+                                mTimerViewModel.sendCommand(AppConstants.COMMAND_SKIP);
+                            }, 2000);
+                        } else {
+                            mTimerViewModel.sendCommand(AppConstants.COMMAND_SKIP);
                         }
-                        mTimerViewModel.sendCommand(AppConstants.COMMAND_SKIP);
                     })
                     .setNegativeButton(R.string.confirm_no, null)
                     .show();
@@ -466,13 +475,15 @@ public class FocusFragment extends Fragment {
             if (mTomatoWidget.getVisibility() != View.VISIBLE) {
                 showTomatoWidget();
             }
-            float progress = 0f;
-            if (state.totalDurationMs > 0) {
-                progress = (float)(state.totalDurationMs - state.remainingMs) / state.totalDurationMs;
+            if (!mIsWilting) {
+                float progress = 0f;
+                if (state.totalDurationMs > 0) {
+                    progress = (float)(state.totalDurationMs - state.remainingMs) / state.totalDurationMs;
+                }
+                mTomatoGrowthView.setProgress(progress);
+                // Cập nhật label
+                updateTomatoLabel(progress);
             }
-            mTomatoGrowthView.setProgress(progress);
-            // Cập nhật label
-            updateTomatoLabel(progress);
         }
 
         if (justCompleted) {
@@ -486,7 +497,7 @@ public class FocusFragment extends Fragment {
     }
 
     private void updateTomatoLabel(float progress) {
-        if (mTvTomatoStatus == null) return;
+        if (mTvTomatoStatus == null || mIsWilting) return;
         String label;
         if (progress < 0.20f)      label = getString(R.string.toma_stage_seed);
         else if (progress < 0.40f) label = getString(R.string.toma_stage_sprout);
@@ -498,6 +509,7 @@ public class FocusFragment extends Fragment {
 
     private void wiltTomato() {
         if (mTomatoGrowthView == null) return;
+        mIsWilting = true;
         mTomatoGrowthView.showDead();
         if (mTvTomatoStatus != null) mTvTomatoStatus.setText(getString(R.string.toma_wilt));
         // Ẩn widget sau 2 giây
@@ -515,6 +527,7 @@ public class FocusFragment extends Fragment {
 
     private void hideTomatoWidget() {
         if (mTomatoWidget == null) return;
+        mIsWilting = false;
         mTomatoWidget.animate()
                 .alpha(0f)
                 .setDuration(300)

@@ -30,11 +30,7 @@ public class SettingsFragment extends Fragment {
 
         mSettingsManager = new SettingsManager(requireContext());
 
-        View avatar = view.findViewById(R.id.iv_avatar);
-        if (avatar != null) {
-            avatar.setOnClickListener(v -> androidx.navigation.Navigation.findNavController(v).navigate(R.id.nav_profile));
-            com.tomaflow.app.utils.AvatarHelper.bindCurrentUserAvatar(this, view, R.id.iv_avatar);
-        }
+        com.tomaflow.app.utils.HeaderUIHelper.setupHeader(view, getString(R.string.settings_title), getViewLifecycleOwner());
 
         bindDarkMode(view);
         bindDurationSettings(view);
