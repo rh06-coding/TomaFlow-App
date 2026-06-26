@@ -51,8 +51,11 @@ public class LoginActivity extends AppCompatActivity {
                             firebaseAuthWithGoogle(account.getIdToken());
                         }
                     } catch (ApiException e) {
-                        Log.w(TAG, "Google sign in failed", e);
-                        com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_google_failed), false);
+                        Log.w(TAG, "Google sign in failed code=" + e.getStatusCode(), e);
+                        String msg = e.getStatusCode() == 10 
+                                ? "Lỗi bảo mật Google (Code 10): Chưa thêm mã SHA-1 của máy này vào Firebase Console!" 
+                                : getString(R.string.auth_google_failed) + " (" + e.getStatusCode() + ")";
+                        com.tomaflow.app.utils.TomaToast.show(this, msg, false);
                     }
                 }
             }
