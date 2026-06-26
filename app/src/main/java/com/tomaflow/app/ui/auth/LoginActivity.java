@@ -134,18 +134,9 @@ public class LoginActivity extends AppCompatActivity {
                                 com.tomaflow.app.data.model.UserProfile userProfile = new com.tomaflow.app.data.model.UserProfile(
                                         uid, email, "", generatedUsername, name, "", "");
                                 com.google.firebase.firestore.FirebaseFirestore.getInstance().collection("users").document(uid).set(userProfile)
-                                        .addOnSuccessListener(aVoid -> {
-                                            com.tomaflow.app.utils.TomaToast.show(LoginActivity.this, "Đăng ký tài khoản Google thành công!", true);
-                                            goToMain();
-                                        })
-                                        .addOnFailureListener(e -> {
-                                            com.tomaflow.app.utils.TomaFlowLog.e("LoginActivity", "Failed to create user profile doc", e);
-                                            goToMain();
-                                        });
-                            } else {
-                                com.tomaflow.app.utils.TomaToast.show(LoginActivity.this, "Đăng nhập thành công!", true);
-                                goToMain();
+                                        .addOnFailureListener(e -> com.tomaflow.app.utils.TomaFlowLog.e("LoginActivity", "Failed to create user profile doc", e));
                             }
+                            goToMain();
                         });
                     } else {
                         com.tomaflow.app.utils.TomaToast.show(LoginActivity.this, getString(R.string.auth_login_failed), false);
@@ -162,10 +153,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mBtnSignIn.setEnabled(false);
         mAuth.signInWithEmailAndPassword(email, pass)
-            .addOnSuccessListener(result -> {
-                com.tomaflow.app.utils.TomaToast.show(LoginActivity.this, "Đăng nhập thành công!", true);
-                goToMain();
-            })
+            .addOnSuccessListener(result -> goToMain())
             .addOnFailureListener(e -> {
                 mBtnSignIn.setEnabled(true);
                 com.tomaflow.app.utils.TomaToast.show(this, getString(R.string.auth_login_failed_msg), false);
